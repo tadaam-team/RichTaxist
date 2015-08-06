@@ -1,0 +1,95 @@
+<resources>
+    <string name="appName">Богатый таксист</string>
+    <string name="settingsFromMenu">Настройки программы</string>
+    <string name="settingsAndExtras">Настройки\nи доп.возможности</string>
+    <string name="mainMenu">Главное меню</string>
+    <string name="openLastShift">Вернуться\nк последней смене</string>
+    <string name="openShift">Открыть сохраненную смену</string>
+    <string name="newShiftFromMenu">Новая смена</string>
+    <string name="newShift">Новая\nсмена</string>
+    <string name="showOrdersList">Список заказов</string>
+    <string name="shiftTotals">Итоги смены</string>
+    <string name="routeMap">Карта\nмаршрута</string>
+
+    <string name="contribute">Похвалить\ntadaam-team</string>
+    <string name="exportShifts">Экспорт и импорт\nсмен</string>
+    <string name="socials">tadaam-team\nв соцсетях</string>
+    <string name="chat">Водительский\nчат</string>
+    <string name="ipInputHint">Введите IP:</string>
+    <string name="enterChat">Войти в чат</string>
+    <string name="exit">Закрыть\nпрограмму</string>
+
+    <string name="addNewOrder">Добавить заказ</string>
+    <string name="mainScreenName">Заказ</string>
+    <string name="clearForm">Очистить форму</string>
+    <string name="arrivalDateTime">Подача</string>
+    <string name="date">дата</string>
+    <string name="time">время</string>
+    <string name="costInputHint">введите\nцену</string>
+
+    <string name="payType">Тип оплаты</string>
+    <string name="payTypeCash">наличные</string>
+    <string name="payTypeCard">безнал</string>
+    <string name="payTypeBonus">чаевые</string>
+
+
+    <string name="entryTextExampleMain">пример основного текста</string>
+    <string name="entryTextExampleAdditional">пример поясняющего текста</string>
+
+    <string name="shiftTotalsScreenName">Итоги за смену</string>
+    <string name="shiftStart">Начало смены</string>
+    <string name="shiftEnd">Конец смены</string>
+    <string name="revenueOfficial">Выручка офиц.</string>
+    <string name="revenueCash">- в т.ч. наличные</string>
+    <string name="revenueCard">- в т.ч. безналичные</string>
+    <string name="petrol">Бензин</string>
+    <string name="toTheCashier">Сдать в кассу</string>
+    <string name="salaryOfficial">Зарплата офиц.</string>
+    <string name="revenueBonus">Чаевые</string>
+    <string name="salaryPlusBonus">Зарплата с чаем</string>
+    <string name="closeShift">Закрыть смену</string>
+    <string name="continueShift">Продолжить\nсмену</string>
+    <string name="exitToMainMenu">Главное\nменю</string>
+    <string name="shiftIsOpen">Смена\nоткрыта</string>
+    <string name="shiftIsClosed">Смена\nзакрыта</string>
+
+    <string name="grandTotalsScreenName">Итоги по\nзарплате</string>
+    <string name="rangeStart">Первая смена</string>
+    <string name="rangeEnd">Последняя смена</string>
+    <string name="handedToTheCashier">Сдано кассу</string>
+
+    <string name="viewOfTimePicker">Способ ввода времени</string>
+    <string name="viewOfDatePicker">Способ ввода дат</string>
+    <string name="button">кнопка</string>
+    <string name="spinner">спиннер</string>
+    <string name="textInput">поле ввода</string>
+    <string name="timePickerInterval">Шаг спиннера минут</string>
+    <string name="showListHint">Подсказка по работе со списками</string>
+    <string name="listHint">взмах влево = редактировать. вправо = удалить</string>
+    <string name="show">показывать</string>
+    <string name="dontShow">не показывать</string>
+    <string name="listsSortOrder">Сортировка списков</string>
+    <string name="youngIsOnTop">свежий сверху</string>
+    <string name="youngIsNotOnTop">свежий снизу</string>
+    <string name="timePickClicks">Подтвержение\nввода времени</string>
+    <string name="singleTapTimePick">в 1 клик</string>
+    <string name="acknowledgedTimePick">с подтвеждением</string>
+    <string name="extraFunctions">Дополнительные возможности</string>
+
+    <string name="routeMapScreenName">Окно маршрута</string>
+    <string name="googleMapsKey">AIzaSyBmUdPfR9jbPxkCbj4seBxpaKp8sXvAkxk</string>
+    <string name="travelTime">Время в пути</string>
+    <string name="travelDistance">Пробег поездки</string>
+    <string name="closeOrder">Закрыть заказ</string>
+    <string name="openMap">Открыть карту</string>
+
+    <string name="signIn">Учетные\nзаписи</string>
+    <string name="userName">логин</string>
+    <string name="password">пароль</string>
+    <string name="email">почта</string>
+    <string name="signUp">Новый\nводитель</string>
+    <string name="logIn">Войти\n</string>
+    <string name="claimChangeDevice">Сменить\nустройство</string>
+    <string name="logOut">Выйти</string>
+    <string name="signUpDefault">Здравствуйте\n1\n1</string>
+</resources>

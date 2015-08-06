@@ -1,0 +1,30 @@
+<resources>
+    <color name="custom_theme_color">#FFFFFF</color>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:buttonStyle">@style/ButtonBordered</item>
+        <item name="android:buttonStyleToggle">@style/ToggleButtonBordered</item>
+        <item name="android:textViewStyle">@style/Text</item>
+        <item name="android:windowBackground">@color/custom_theme_color</item>
+        <item name="android:colorBackground">@color/custom_theme_color</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+<!--style params starting with "layout_" don't work by default. you need to add {style="@style/ButtonBordered"} to each widget-->
+    <style name="ButtonBordered" parent="android:style/Widget.Button">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="ToggleButtonBordered" parent="android:style/Widget.Button.Toggle">
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:layout_margin">2dp</item>
+    </style>
+
+    <style name="Text" parent="android:style/Widget.TextView">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+</resources>
