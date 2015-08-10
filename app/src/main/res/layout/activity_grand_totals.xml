@@ -1,160 +1,213 @@
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="384dp" android:layout_height="wrap_content"
-    tools:context=".SalaryActivity">
+    tools:context=".SalaryActivity"
+    android:orientation="vertical">
 
-    <TextView android:text="@string/rangeStart"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="wrap_content"
-        android:layout_row="0" android:layout_column="0"/>
-    <TextView android:text="@string/rangeEnd"
-        style="@style/Text"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
-        android:layout_row="0" android:layout_column="1"
-        android:layout_gravity="right" />
-
-    <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_row="1" android:layout_column="0" android:layout_columnSpan="2"
-        android:orientation="horizontal">
-
-        <Button android:text="@string/date"
-            style="@style/ButtonBordered"
-            android:id="@+id/buttonRangeStartDate"
-            android:layout_width="92dp" android:layout_height="60dp" />
-        <Button android:text="@string/time"
-            style="@style/ButtonBordered"
-            android:id="@+id/buttonRangeStartTime"
-            android:layout_width="92dp" android:layout_height="60dp" />
-        <Button android:text="@string/date"
-            style="@style/ButtonBordered"
-            android:id="@+id/buttonRangeEndDate"
-            android:layout_width="92dp" android:layout_height="60dp"/>
-        <Button android:text="@string/time"
-            style="@style/ButtonBordered"
-            android:id="@+id/buttonRangeEndTime"
-            android:layout_width="92dp" android:layout_height="60dp"/>
-    </LinearLayout>
+    <GridLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content">
+        <TextView android:text="@string/rangeStart"
+            style="@style/Text"
+            android:layout_width="188dp" android:layout_height="wrap_content"
+            android:layout_row="0" android:layout_column="0"/>
+        <TextView android:text="@string/rangeEnd"
+            style="@style/Text"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_row="0" android:layout_column="1"
+            android:layout_gravity="right" />
 
 
-    <LinearLayout android:id="@+id/seekBarPlaceHolder"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_row="2" android:layout_column="0" android:layout_columnSpan="2"
-        android:orientation="horizontal"
-        android:minHeight="20dp">
+        <LinearLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_row="1" android:layout_column="0" android:layout_columnSpan="2"
+            android:orientation="horizontal">
 
-    </LinearLayout>
-
-    <TextView android:text="@string/revenueOfficial"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="3" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_revenueOfficial"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="3" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
-
-
-    <TextView android:text="@string/revenueCash"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="4" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_revenueCash"
-        style="@style/Text"
-        android:layout_row="4" android:layout_column="1"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
+            <Button android:text="@string/date"
+                style="@style/ButtonBordered"
+                android:id="@+id/buttonRangeStartDate"
+                android:layout_width="92dp" android:layout_height="60dp" />
+            <Button android:text="@string/time"
+                style="@style/ButtonBordered"
+                android:id="@+id/buttonRangeStartTime"
+                android:layout_width="92dp" android:layout_height="60dp" />
+            <Button android:text="@string/date"
+                style="@style/ButtonBordered"
+                android:id="@+id/buttonRangeEndDate"
+                android:layout_width="92dp" android:layout_height="60dp"/>
+            <Button android:text="@string/time"
+                style="@style/ButtonBordered"
+                android:id="@+id/buttonRangeEndTime"
+                android:layout_width="92dp" android:layout_height="60dp"/>
+        </LinearLayout>
 
 
-    <TextView android:text="@string/revenueCard"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="5" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_revenueCard"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="5" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
+        <LinearLayout android:id="@+id/seekBarPlaceHolder"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_row="2" android:layout_column="0" android:layout_columnSpan="2"
+            android:orientation="horizontal"
+            android:minHeight="20dp">
+
+        </LinearLayout>
+    </GridLayout>
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <GridLayout
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:text="@string/revenueOfficial"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="0" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_revenueOfficial"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="0" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
 
 
-    <TextView android:text="@string/petrol"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="6" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_petrol"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="6" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
+            <TextView android:text="@string/revenueCash"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="1" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_revenueCash"
+                style="@style/Text"
+                android:layout_row="1" android:layout_column="1"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
 
 
-    <TextView android:text="@string/handedToTheCashier"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="7" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_toTheCashier"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="7" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
+            <TextView android:text="@string/revenueCard"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="2" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_revenueCard"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="2" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
 
 
-    <TextView android:text="@string/salaryOfficial"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="8" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_salaryOfficial"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="8" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"
-        android:textStyle="bold"
-        android:textColor="@android:color/holo_green_dark" />
+            <TextView android:text="@string/petrol"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="3" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_petrol"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="3" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
 
 
-    <TextView android:text="@string/revenueBonus"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="9" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_revenueBonus"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="9" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
+            <TextView android:text="@string/handedToTheCashier"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="4" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_toTheCashier"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="4" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
 
 
-    <TextView android:text="@string/salaryPlusBonus"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="10" android:layout_column="0"
-        android:gravity="center_vertical" />
-    <EditText android:id="@+id/gt_salaryPlusBonus"
-        style="@style/Text"
-        android:layout_width="188dp" android:layout_height="40dp"
-        android:layout_row="10" android:layout_column="1"
-        android:inputType="numberDecimal"
-        android:gravity="end"
-        android:enabled="false"/>
-</GridLayout>
+            <TextView android:text="@string/salaryOfficial"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="5" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_salaryOfficial"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="5" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:textStyle="bold"
+                android:textColor="@android:color/holo_green_dark"
+                android:hint="0" />
+
+
+            <TextView android:text="@string/revenueBonus"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="6" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_revenueBonus"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="6" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
+
+
+            <TextView android:text="@string/salaryPlusBonus"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="7" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_salaryPlusBonus"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="7" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
+
+
+            <TextView android:text="@string/workHoursSpent"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="8" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_workHoursSpent"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="8" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
+
+
+            <TextView android:text="@string/salaryPerHour"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="9" android:layout_column="0"
+                android:gravity="center_vertical" />
+            <EditText android:id="@+id/gt_salaryPerHour"
+                style="@style/Text"
+                android:layout_width="188dp" android:layout_height="40dp"
+                android:layout_row="9" android:layout_column="1"
+                android:inputType="numberDecimal"
+                android:gravity="end"
+                android:enabled="false"
+                android:hint="0" />
+
+
+        </GridLayout>
+    </ScrollView>
+</LinearLayout>

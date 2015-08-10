@@ -28,12 +28,16 @@ public class OrdersSQLHelper extends SQLHelper {
     static final String ARRIVAL_DATE_TIME = "arrivalDateTime";
     static final String DISTANCE = "distance";
     static final String TRAVEL_TIME = "travelTime";
-
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
-            + TYPE_OF_PAYMENT + " TINYINT, " + ARRIVAL_DATE_TIME + " DATETIME, " + PRICE + " INT, "+ SHIFT + " DATETIME, " + DISTANCE + " INT, " + TRAVEL_TIME + " LONGINT)";
+            + TYPE_OF_PAYMENT + " TINYINT, "
+            + ARRIVAL_DATE_TIME + " DATETIME, "
+            + PRICE + " INT, "
+            + SHIFT + " DATETIME, "
+            + DISTANCE + " INT, "
+            + TRAVEL_TIME + " LONGINT)";
 
     public OrdersSQLHelper(Context context) {
-        super(context, DB_NAME, null,DB_VERSION);
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
@@ -42,9 +46,7 @@ public class OrdersSQLHelper extends SQLHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        super.onUpgrade(sqLiteDatabase, i, i1);
-    }
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) { super.onUpgrade(sqLiteDatabase, i, i1); }
 
     public boolean commit(Order order){
         SQLiteDatabase db = getWritableDatabase();
@@ -65,7 +67,8 @@ public class OrdersSQLHelper extends SQLHelper {
                         + " AND " + ARRIVAL_DATE_TIME   + " = ?"
                         + " AND " + TYPE_OF_PAYMENT     + " = ?"
                         + " AND " + SHIFT               + " = ?",
-                new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime), String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
+                new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
+                        String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
         db.close();
         return result;
     }
@@ -79,14 +82,15 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public int remove(List<Order> orders){
         SQLiteDatabase db = getWritableDatabase();
-        int result=0;
+        int result = 0;
         for (int i = 0; i < orders.size(); i++) {
             Order order =  orders.get(i);
             result += db.delete(TABLE_NAME, PRICE           + " = ?"
                             + " AND " + ARRIVAL_DATE_TIME   + " = ?"
                             + " AND " + TYPE_OF_PAYMENT     + " = ?"
                             + " AND " + SHIFT               + " = ?",
-                    new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime), String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
+                    new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
+                            String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
         }
         db.close();
         return result;
@@ -96,8 +100,9 @@ public class OrdersSQLHelper extends SQLHelper {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME +
-                " WHERE " + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "' AND " + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "' AND "
+                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -128,8 +133,7 @@ public class OrdersSQLHelper extends SQLHelper {
     }
 
     public boolean hasShiftOrders(Shift shift) {
-        OrdersStorageList ordersStorage = new OrdersStorageList(false);
-
+//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
@@ -139,12 +143,10 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public Map<TypeOfPayment,Integer> getSumOrdersByShift(Shift shift) {
         Map<TypeOfPayment,Integer> result = new HashMap<>();
-        OrdersStorageList ordersStorage = new OrdersStorageList(false);
-
+//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
         String selectQuery = "SELECT typeOfPayment, SUM(price) FROM " + TABLE_NAME +
                 " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "' GROUP BY typeOfPayment";
-
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -161,7 +163,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public Map<String,Object> getDistanceAndTimeByShift(Shift shift) {
         Map<String,Object> result = new HashMap<>();
-        OrdersStorageList ordersStorage = new OrdersStorageList(false);
+//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
         // Select All Query
         String selectQuery = "SELECT SUM(distance), SUM(travelTime) FROM " + TABLE_NAME +
@@ -172,16 +174,16 @@ public class OrdersSQLHelper extends SQLHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                result.put(Order.PARAM_DISTANCE,cursor.getInt(0));
-                result.put(Order.PARAM_TRAVEL_TIME,cursor.getInt(1));
+                result.put(Order.PARAM_DISTANCE, cursor.getInt(0));
+                result.put(Order.PARAM_TRAVEL_TIME, cursor.getInt(1));
             } while (cursor.moveToNext());
         }
         return result;
     }
 
-    public OrdersStorageList getOrders(Date date) {
-        return getOrders(date, date);
-    }
+//    public OrdersStorageList getOrders(Date date) {
+//        return getOrders(date, date);
+//    }
 
     private Order loadOrderFromCursor(Cursor cursor) {
         Date arrivalDateTime = null;
@@ -194,6 +196,6 @@ public class OrdersSQLHelper extends SQLHelper {
         int distance = cursor.getInt(5);
         long travelTime = cursor.getLong(6);
 
-        return new Order(arrivalDateTime,price,typeOfPayment, ShiftsStorage.getShiftByID(shift),distance,travelTime);
+        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shift), distance, travelTime);
     }
 }

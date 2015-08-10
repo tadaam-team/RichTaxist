@@ -38,8 +38,10 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
     RangeSeekBar<Long> seekBar;
 
     String clickedButtonID;
-    int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, salaryPlusBonus;
-    EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol, gt_toTheCashier, gt_salaryOfficial, gt_salaryPlusBonus;
+    int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, salaryPlusBonus, salaryPerHour;
+    float workHoursSpent;
+    EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
+            gt_toTheCashier, gt_salaryOfficial, gt_salaryPlusBonus, gt_workHoursSpent, gt_salaryPerHour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +51,18 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         dateSetListener = GrandTotalsActivity.this;
         timeSetListener = GrandTotalsActivity.this;
 
-        buttonRangeStartDate = (Button) findViewById(R.id.buttonRangeStartDate);
-        buttonRangeStartTime = (Button) findViewById(R.id.buttonRangeStartTime);
-        buttonRangeEndDate = (Button) findViewById(R.id.buttonRangeEndDate);
-        buttonRangeEndTime = (Button) findViewById(R.id.buttonRangeEndTime);
-        seekBarPlaceHolder = (ViewGroup) findViewById(R.id.seekBarPlaceHolder);
-
+        initiateWidgets();
         rangeStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
         rangeEnd = Calendar.getInstance();
 
-        //получим список всех смен,
-        //найдем дату начала первой смены
+        //получим список всех смен и найдем дату начала первой смены
         shifts = ShiftsStorage.getShifts(rangeStart.getTime(), rangeEnd.getTime(), false);
         if (shifts.size() != 0) {
             //отсечем заведомо пустой кусок шкалы между 01.01.2015 и датой начала первой смены
             rangeStart.setTime(shifts.get(0).beginShift);
             createButtonsAndSeekBar(rangeStart, rangeEnd);
-            getTotalsFromShifts();
+            calculateGrandTotals();
+            refreshWidgets();
         } else {
             //если в списке нет смен, то отключаем кнопки. seekBar не создаем, итоги не считаем
             buttonRangeStartDate.setEnabled(false);
@@ -76,7 +73,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
     }
 
     private void createButtonsAndSeekBar(final Calendar rangeStart, final Calendar rangeEnd) {
-        buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
         buttonRangeStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +84,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonRangeStartDate";
             }
         });
-        buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
         buttonRangeStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +94,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonRangeStartTime";
             }
         });
-        buttonRangeEndDate.setText(getStringDateFromCal(rangeEnd));
         buttonRangeEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,7 +105,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonRangeEndDate";
             }
         });
-        buttonRangeEndTime.setText(getStringTimeFromCal(rangeEnd));
         buttonRangeEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,19 +122,16 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
                 rangeStart.setTimeInMillis(minValue);
-                buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
-                buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
                 rangeEnd.setTimeInMillis(maxValue);
-                buttonRangeEndDate.setText(getStringDateFromCal(rangeEnd));
-                buttonRangeEndTime.setText(getStringTimeFromCal(rangeEnd));
-                getTotalsFromShifts();
+                calculateGrandTotals();
+                refreshWidgets();
             }
         });
         seekBarPlaceHolder.removeAllViews();
         seekBarPlaceHolder.addView(seekBar);
     }
 
-    private int getTotalsFromShifts() {
+    private int calculateGrandTotals() {
         //необходимая инициализация. значения сразу перезаписываются
         Calendar firstShiftStart = Calendar.getInstance();
         Calendar firstShiftEnd = Calendar.getInstance();
@@ -153,9 +143,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
         shifts = ShiftsStorage.getShifts(rangeStart.getTime(), rangeEnd.getTime(), true); //true заменить на переменную из сторожа
         if (shifts.size() == 0) {
+            //в интервал не попало начало ни одной смены
             //не факт, что заказы вообще есть в этом интервале, но processPartlyShift с этим разберется сам
             processPartlyShift(rangeStart, rangeEnd);
-            refreshWidgets();
             Log.d(LOG_TAG, "no whole shifts to process");
             return 1;
         }
@@ -218,45 +208,77 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 processWholeShifts(shifts);
             }
         }
-        refreshWidgets();
         return 0;
     }
 
-    private void refreshWidgets(){
-        gt_revenueOfficial = (EditText) findViewById(R.id.gt_revenueOfficial);
-        gt_revenueCash = (EditText) findViewById(R.id.gt_revenueCash);
-        gt_revenueCard = (EditText) findViewById(R.id.gt_revenueCard);
-        gt_revenueBonus = (EditText) findViewById(R.id.gt_revenueBonus);
-        gt_petrol = (EditText) findViewById(R.id.gt_petrol);
-        gt_toTheCashier = (EditText) findViewById(R.id.gt_toTheCashier);
-        gt_salaryOfficial = (EditText) findViewById(R.id.gt_salaryOfficial);
-        gt_salaryPlusBonus = (EditText) findViewById(R.id.gt_salaryPlusBonus);
+    private void initiateWidgets() {
+        buttonRangeStartDate = (Button) findViewById(R.id.buttonRangeStartDate);
+        buttonRangeStartTime = (Button) findViewById(R.id.buttonRangeStartTime);
+        buttonRangeEndDate   = (Button) findViewById(R.id.buttonRangeEndDate);
+        buttonRangeEndTime   = (Button) findViewById(R.id.buttonRangeEndTime);
+        seekBarPlaceHolder   = (ViewGroup) findViewById(R.id.seekBarPlaceHolder);
 
-        gt_revenueOfficial.setText(Integer.toString(revenueOfficial));
-        gt_revenueCash.setText(Integer.toString(revenueCash));
-        gt_revenueCard.setText(Integer.toString(revenueCard));
-        gt_revenueBonus.setText(Integer.toString(revenueBonus));
-        gt_petrol.setText(Integer.toString(petrol));
-        gt_toTheCashier.setText(Integer.toString(toTheCashier));
-        gt_salaryOfficial.setText(Integer.toString(salaryOfficial));
-        gt_salaryPlusBonus.setText(Integer.toString(salaryPlusBonus));
+        gt_revenueOfficial  = (EditText) findViewById(R.id.gt_revenueOfficial);
+        gt_revenueCash      = (EditText) findViewById(R.id.gt_revenueCash);
+        gt_revenueCard      = (EditText) findViewById(R.id.gt_revenueCard);
+        gt_revenueBonus     = (EditText) findViewById(R.id.gt_revenueBonus);
+        gt_petrol           = (EditText) findViewById(R.id.gt_petrol);
+        gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
+        gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
+        gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
+        gt_workHoursSpent   = (EditText) findViewById(R.id.gt_workHoursSpent);
+        gt_salaryPerHour    = (EditText) findViewById(R.id.gt_salaryPerHour);
+    }
+
+    private void refreshWidgets(){
+        buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
+        buttonRangeEndDate.  setText(getStringDateFromCal(rangeEnd));
+        buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
+        buttonRangeEndTime.  setText(getStringTimeFromCal(rangeEnd));
+
+        gt_revenueOfficial. setText(String.valueOf(revenueOfficial));
+        gt_revenueCash.     setText(String.valueOf(revenueCash));
+        gt_revenueCard.     setText(String.valueOf(revenueCard));
+        gt_revenueBonus.    setText(String.valueOf(revenueBonus));
+        gt_petrol.          setText(String.valueOf(petrol));
+        gt_toTheCashier.    setText(String.valueOf(toTheCashier));
+        gt_salaryOfficial.  setText(String.valueOf(salaryOfficial));
+        gt_salaryPlusBonus. setText(String.valueOf(salaryPlusBonus));
+        gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
+        gt_salaryPerHour.   setText(String.valueOf(salaryPerHour));
     }
 
     private void processWholeShifts(ArrayList<Shift> wholeShifts) {
+        int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
+        revenueOfficialLocal = revenueCashLocal = revenueCardLocal = revenueBonusLocal = petrolLocal = toTheCashierLocal = salaryOfficialLocal = salaryPlusBonusLocal = 0;
+        float workHoursSpentLocal = 0.0f;
+
         for (Shift shift : wholeShifts) {
-            revenueOfficial += shift.revenueOfficial;
-            revenueCash     += shift.revenueCash;
-            revenueCard     += shift.revenueCard;
-            revenueBonus    += shift.revenueBonus;
-            petrol          += shift.petrol;
-            toTheCashier    += shift.handOverToTheCashier;
-            salaryOfficial  += shift.salaryOfficial;
-            salaryPlusBonus += shift.salaryPlusBonus;
+            revenueOfficialLocal += shift.revenueOfficial;
+            revenueCashLocal     += shift.revenueCash;
+            revenueCardLocal     += shift.revenueCard;
+            revenueBonusLocal    += shift.revenueBonus;
+            petrolLocal          += shift.petrol;
+            toTheCashierLocal    += shift.handOverToTheCashier;
+            salaryOfficialLocal  += shift.salaryOfficial;
+            salaryPlusBonusLocal += shift.salaryPlusBonus;
+            workHoursSpentLocal  += shift.workHoursSpent;
         }
-        refreshWidgets();
+
+        revenueOfficial = revenueOfficialLocal;
+        revenueCash     = revenueCashLocal;
+        revenueCard     = revenueCardLocal;
+        revenueBonus    = revenueBonusLocal;
+        petrol          = petrolLocal;
+        toTheCashier    = toTheCashierLocal;
+        salaryOfficial  = salaryOfficialLocal;
+        salaryPlusBonus = salaryPlusBonusLocal;
+        workHoursSpent  = workHoursSpentLocal;
+        salaryPerHour   = Math.round(salaryPlusBonus / workHoursSpent);
     }
 
     //обработать не целую смену (а точнее список заказов, по которым arrivalDateTime лежит между датами)
+    //передаваемый интервал всегда меньше 1 смены, если юзер закрывает предыдущую смену перед тем как открывать новую
     private void processPartlyShift(Calendar fromDate, Calendar toDate) {
         int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
         revenueCashLocal = revenueCardLocal = revenueBonusLocal = 0;
@@ -264,29 +286,31 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         if (orders.size() != 0) {
             for (Order order : orders) {
                 switch (order.typeOfPayment) {
-                    case CASH: revenueCashLocal += order.price; break;
-                    case CARD: revenueCardLocal += order.price; break;
+                    case CASH: revenueCashLocal   += order.price; break;
+                    case CARD: revenueCardLocal   += order.price; break;
                     case BONUS: revenueBonusLocal += order.price; break;
                 }
             }
 
-            revenueOfficialLocal = revenueCashLocal + revenueCardLocal;
-            petrolLocal = (int) (revenueOfficialLocal * 0.13);
-            toTheCashierLocal = revenueCashLocal - petrolLocal;
-            salaryOfficialLocal = (revenueOfficialLocal / 2) - petrolLocal;
-            salaryPlusBonusLocal = salaryOfficialLocal + revenueBonusLocal;
+            revenueOfficialLocal    = revenueCashLocal + revenueCardLocal;
+            petrolLocal             = (int) (revenueOfficialLocal * 0.13);
+            toTheCashierLocal       = revenueCashLocal - petrolLocal;
+            salaryOfficialLocal     = (revenueOfficialLocal / 2) - petrolLocal;
+            salaryPlusBonusLocal    = salaryOfficialLocal + revenueBonusLocal;
 
             revenueOfficial += revenueOfficialLocal;
-            revenueCash += revenueCashLocal;
-            revenueCard += revenueCardLocal;
-            revenueBonus += revenueBonusLocal;
-            petrol += petrolLocal;
-            toTheCashier += toTheCashierLocal;
-            salaryOfficial += salaryOfficialLocal;
+            revenueCash     += revenueCashLocal;
+            revenueCard     += revenueCardLocal;
+            revenueBonus    += revenueBonusLocal;
+            petrol          += petrolLocal;
+            toTheCashier    += toTheCashierLocal;
+            salaryOfficial  += salaryOfficialLocal;
             salaryPlusBonus += salaryPlusBonusLocal;
         }
         else{
-            revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
+            revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier
+                    = salaryOfficial = salaryPlusBonus = salaryPerHour = 0;
+            workHoursSpent = 0.0f;
         }
     }
 
@@ -319,18 +343,17 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 rangeStart.set(Calendar.YEAR, year);
                 rangeStart.set(Calendar.MONTH, month);
                 rangeStart.set(Calendar.DAY_OF_MONTH, day);
-                buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
                 seekBar.setSelectedMinValue(rangeStart.getTimeInMillis());
                 break;
             case "buttonRangeEndDate":
                 rangeEnd.set(Calendar.YEAR, year);
                 rangeEnd.set(Calendar.MONTH, month);
                 rangeEnd.set(Calendar.DAY_OF_MONTH, day);
-                buttonRangeEndDate.setText(getStringDateFromCal(rangeEnd));
                 seekBar.setSelectedMaxValue(rangeEnd.getTimeInMillis());
                 break;
         }
-        getTotalsFromShifts();
+        calculateGrandTotals();
+        refreshWidgets();
     }
 
     //вызывается после завершения ввода в диалоге времени
@@ -340,17 +363,16 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             case "buttonRangeStartTime":
                 rangeStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 rangeStart.set(Calendar.MINUTE, minute);
-                buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
                 seekBar.setSelectedMinValue(rangeStart.getTimeInMillis());
                 break;
             case "buttonRangeEndTime":
                 rangeEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 rangeEnd.set(Calendar.MINUTE, minute);
-                buttonRangeEndTime.setText(getStringTimeFromCal(rangeEnd));
                 seekBar.setSelectedMaxValue(rangeEnd.getTimeInMillis());
                 break;
             default: Toast.makeText(getApplicationContext(), "ошибка ввода", Toast.LENGTH_SHORT).show(); break;
         }
-        getTotalsFromShifts();
+        calculateGrandTotals();
+        refreshWidgets();
     }
 }

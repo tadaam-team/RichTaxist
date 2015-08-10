@@ -1,5 +1,7 @@
 package tt.richTaxist;
 
+import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +27,8 @@ public class Shift {
     public int salaryPlusBonus;
     public Date beginShift;
     public Date endShift; //по этому полю проверяется закрыта ли смена. == null пока не закрыта
+    public float workHoursSpent;
+    public int salaryPerHour;
     public int distance;
     public long travelTime;
     private static final String LOG_TAG = "ShiftClass";
@@ -78,17 +82,29 @@ public class Shift {
         }
         revenueOfficial = revenueCash + revenueCard;
 
-        if (petrol == 0) {//значит вызван метод при создании экрана ShiftTotalsActivity
+        if (petrol == 0) {//значит факт бензин еще не известен или уже заполнен
             if (!petrolFilledByHands) this.petrol = (int) (revenueOfficial * 0.13);
             else {/*иначе мы не трогаем введенный руками бензин*/}
         }
-        else{//значит вызван метод при щелчке на кнопку _totals_petrol после ввода факт. бензина
+        else{//нажата кнопка _st_petrol после ввода факт. бензина
             this.petrol = petrol;
         }
 
         handOverToTheCashier = revenueCash - this.petrol;
         salaryOfficial = (revenueOfficial / 2) - this.petrol;
         salaryPlusBonus = salaryOfficial + revenueBonus;
+
+        long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
+        workHoursSpent = (float) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
+        workHoursSpent = RoundResult(workHoursSpent, 1);
+        salaryPerHour  = Math.round(salaryPlusBonus / workHoursSpent);
         ShiftsStorage.update(this);
+    }
+
+
+    float RoundResult (float value, int decimalSigns) {
+        int multiplier = (int) Math.pow(10.0, (double) decimalSigns);
+        int numerator = Math.round(value * multiplier);
+        return (float) numerator / multiplier;
     }
 }

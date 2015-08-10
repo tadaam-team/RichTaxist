@@ -22,16 +22,15 @@ public class ChatLoginActivity extends Activity{
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		ipAddress = (EditText) findViewById(R.id.et_IP);
-		ipAddress.setText(Storage.IP);
+		ipAddress.setText("109.195.91.45");
 
 		Button connect = (Button)findViewById(R.id.chat_login);
 		connect.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Client.SERVER_IP = ipAddress.getText().toString();
-				Intent intent = new Intent(getBaseContext(), ChatActivity.class);
+				startActivity(new Intent(getBaseContext(), ChatActivity.class));
 				//Log.e("ServerIP", Client.SERVER_IP);
-				startActivity(intent);
 			}
 		});
 	}

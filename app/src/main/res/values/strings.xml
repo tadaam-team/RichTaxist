@@ -47,6 +47,9 @@
     <string name="salaryOfficial">Зарплата офиц.</string>
     <string name="revenueBonus">Чаевые</string>
     <string name="salaryPlusBonus">Зарплата с чаем</string>
+    <string name="workHoursSpent">Отработано часов</string>
+    <string name="salaryPerHour">Зарплата в час</string>
+    <string name="crutch">Костыль для ScrollView</string>
     <string name="closeShift">Закрыть смену</string>
     <string name="continueShift">Продолжить\nсмену</string>
     <string name="exitToMainMenu">Главное\nменю</string>

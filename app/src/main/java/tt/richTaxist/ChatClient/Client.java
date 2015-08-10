@@ -13,7 +13,7 @@ import java.net.Socket;
 public class Client {
 	private String serverMessage;
 	public static  String SERVER_IP; // your computer IP address
-	public static final int SERVER_PORT = 2222;
+	public static final int SERVER_PORT = 26502;
 	private OnMessageReceived mMessageListener = null;
 	private boolean mRun = false;
 	PrintWriter out;

@@ -33,19 +33,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     Calendar shiftStart, shiftEnd;
     String clickedButtonID;
 
-    Button buttonShiftStartDate;
-    Button buttonShiftStartTime;
-    Button buttonShiftEndDate;
-    Button buttonShiftEndTime;
-    EditText st_revenueOfficial;
-    EditText st_revenueCash;
-    EditText st_revenueCard;
-    EditText st_revenueBonus;
-    Button   st_petrol;
-    EditText st_toTheCashier;
-    EditText st_salaryOfficial;
-    EditText st_salaryPlusBonus;
-    ToggleButton st_shiftIsClosed;
+    Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, buttonContinueShift;
+    EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryPlusBonus, st_workHoursSpent, st_salaryPerHour;
+    ToggleButton buttonShiftIsClosed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,53 +48,36 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         currentShift = MainActivity.currentShift;
         currentShift.calculateShiftTotals(0);
 
-        buttonShiftStartDate = (Button)       findViewById(R.id.buttonShiftStartDate);
-        buttonShiftStartTime = (Button)       findViewById(R.id.buttonShiftStartTime);
-        buttonShiftEndDate   = (Button)       findViewById(R.id.buttonShiftEndDate);
-        buttonShiftEndTime   = (Button)       findViewById(R.id.buttonShiftEndTime);
-        st_revenueOfficial   = (EditText)     findViewById(R.id.st_revenueOfficial);
-        st_revenueCash       = (EditText)     findViewById(R.id.st_revenueCash);
-        st_revenueCard       = (EditText)     findViewById(R.id.st_revenueCard);
-        st_revenueBonus      = (EditText)     findViewById(R.id.st_revenueBonus);
-        st_petrol            = (Button)       findViewById(R.id.st_petrol);
-        st_toTheCashier      = (EditText)     findViewById(R.id.st_toTheCashier);
-        st_salaryOfficial    = (EditText)     findViewById(R.id.st_salaryOfficial);
-        st_salaryPlusBonus   = (EditText)     findViewById(R.id.st_salaryPlusBonus);
-        st_shiftIsClosed     = (ToggleButton) findViewById(R.id.buttonShiftIsClosed);
-
         //найдем даты начала и конца смены
         shiftStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
         shiftStart.setTime(currentShift.beginShift);
         shiftEnd = Calendar.getInstance();
-        if (currentShift.isClosed()) shiftEnd.setTime(currentShift.endShift);
+        initiateWidgets();
+
+        if (currentShift.isClosed()) {
+            shiftEnd.setTime(currentShift.endShift);
+            buttonContinueShift.setEnabled(false);
+        }
         else {
             buttonShiftEndDate.setEnabled(false);
             buttonShiftEndTime.setEnabled(false);
+            buttonContinueShift.setEnabled(true);
         }
         createButtons(shiftStart, shiftEnd);
+        refreshWidgets();
+    }
 
-        //достанем из хранилища данные по этой смене и заполним поля ShiftTotalsActivity
-        st_revenueOfficial.setText(Integer.toString(currentShift.revenueOfficial));
-        st_revenueCash.    setText(Integer.toString(currentShift.revenueCash));
-        st_revenueCard.    setText(Integer.toString(currentShift.revenueCard));
-        st_revenueBonus.   setText(Integer.toString(currentShift.revenueBonus));
+    public void onContinueShiftClick(View v) {
+        startActivity(new Intent(getApplicationContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+        Toast.makeText(getApplicationContext(), "продолжим смену", Toast.LENGTH_SHORT).show();
+        finish();
+    }
 
-        st_petrol.setText(Integer.toString(currentShift.petrol));
-        st_petrol.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DF_NumberInput().show(getSupportFragmentManager(), "fragment_petrol_input");
-            }
-        });
-
-        st_toTheCashier.   setText(Integer.toString(currentShift.handOverToTheCashier));
-        st_salaryOfficial. setText(Integer.toString(currentShift.salaryOfficial));
-        st_salaryPlusBonus.setText(Integer.toString(currentShift.salaryPlusBonus));
-        st_shiftIsClosed.  setChecked(currentShift.isClosed());
+    public void onPetrolClick(View v) {
+        new DF_NumberInput().show(getSupportFragmentManager(), "fragment_petrol_input");
     }
 
     private void createButtons(final Calendar rangeStart, final Calendar rangeEnd) {
-        buttonShiftStartDate.setText(getStringDateFromCal(rangeStart));
         buttonShiftStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +89,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonShiftStartDate";
             }
         });
-        buttonShiftStartTime.setText(getStringTimeFromCal(rangeStart));
         buttonShiftStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +99,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonShiftStartTime";
             }
         });
-        buttonShiftEndDate.setText(getStringDateFromCal(rangeEnd));
         buttonShiftEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,7 +110,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 clickedButtonID = "buttonShiftEndDate";
             }
         });
-        buttonShiftEndTime.setText(getStringTimeFromCal(rangeEnd));
         buttonShiftEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -172,14 +142,12 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 shiftStart.set(Calendar.YEAR, year);
                 shiftStart.set(Calendar.MONTH, month);
                 shiftStart.set(Calendar.DAY_OF_MONTH, day);
-                buttonShiftStartDate.setText(getStringDateFromCal(shiftStart));
                 updateShiftDate(shiftStart, currentShift.beginShift);
                 break;
             case "buttonShiftEndDate":
                 shiftEnd.set(Calendar.YEAR, year);
                 shiftEnd.set(Calendar.MONTH, month);
                 shiftEnd.set(Calendar.DAY_OF_MONTH, day);
-                buttonShiftEndDate.setText(getStringDateFromCal(shiftEnd));
                 updateShiftDate(shiftEnd, currentShift.endShift);
                 break;
         }
@@ -192,13 +160,11 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             case "buttonShiftStartTime":
                 shiftStart.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 shiftStart.set(Calendar.MINUTE, minute);
-                buttonShiftStartTime.setText(getStringTimeFromCal(shiftStart));
                 updateShiftTime(shiftStart, currentShift.beginShift);
                 break;
             case "buttonShiftEndTime":
                 shiftEnd.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 shiftEnd.set(Calendar.MINUTE, minute);
-                buttonShiftEndTime.setText(getStringTimeFromCal(shiftEnd));
                 updateShiftTime(shiftEnd, currentShift.endShift);
                 break;
             default: Toast.makeText(getApplicationContext(), "ошибка ввода", Toast.LENGTH_SHORT).show(); break;
@@ -212,6 +178,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.MONTH, source.get(Calendar.MONTH));
         buffer.set(Calendar.DAY_OF_MONTH, source.get(Calendar.DAY_OF_MONTH));
         destination.setTime(buffer.getTime().getTime());
+        currentShift.calculateShiftTotals(0);
+        refreshWidgets();
         ShiftsStorage.update(currentShift);
     }
 
@@ -221,13 +189,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
         buffer.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
         destination.setTime(buffer.getTime().getTime());
+        currentShift.calculateShiftTotals(0);
+        refreshWidgets();
         ShiftsStorage.update(currentShift);
-    }
-
-    public void onButtonContinueShiftClick(View button) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
-        Toast.makeText(getApplicationContext(), "продолжим смену", Toast.LENGTH_SHORT).show();
-        finish();
     }
 
     public void onButtonExitToMainMenuClick(View button) {
@@ -247,12 +211,13 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                         currentShift.closeShift();
                         buttonShiftEndDate.setEnabled(true);
                         buttonShiftEndTime.setEnabled(true);
+                        buttonContinueShift.setEnabled(false);
                     }
                 });
                 quitDialog.setNegativeButton("Вернуться", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        st_shiftIsClosed.setChecked(false);
+                        buttonShiftIsClosed.setChecked(false);
                     }
                 });
                 quitDialog.show();
@@ -260,12 +225,14 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 currentShift.closeShift();
                 buttonShiftEndDate.setEnabled(true);
                 buttonShiftEndTime.setEnabled(true);
+                buttonContinueShift.setEnabled(false);
             }
         }
         else {
             currentShift.openShift();
             buttonShiftEndDate.setEnabled(false);
             buttonShiftEndTime.setEnabled(false);
+            buttonContinueShift.setEnabled(true);
         }
     }
 
@@ -273,12 +240,48 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     public void onFinishEditDialog(int inputNumber) {
         currentShift.petrol = inputNumber;
         currentShift.petrolFilledByHands = true;
-        st_petrol.setText(String.valueOf(inputNumber));
         currentShift.calculateShiftTotals(inputNumber);
+        refreshWidgets();
+    }
 
-        st_toTheCashier.   setText(String.valueOf(currentShift.handOverToTheCashier));
-        st_salaryOfficial. setText(String.valueOf(currentShift.salaryOfficial));
-        st_salaryPlusBonus.setText(String.valueOf(currentShift.salaryPlusBonus));
+    private void initiateWidgets() {
+        buttonShiftStartDate    = (Button)   findViewById(R.id.buttonShiftStartDate);
+        buttonShiftStartTime    = (Button)   findViewById(R.id.buttonShiftStartTime);
+        buttonShiftEndDate      = (Button)   findViewById(R.id.buttonShiftEndDate);
+        buttonShiftEndTime      = (Button)   findViewById(R.id.buttonShiftEndTime);
+        st_revenueOfficial      = (EditText) findViewById(R.id.st_revenueOfficial);
+        st_revenueCash          = (EditText) findViewById(R.id.st_revenueCash);
+        st_revenueCard          = (EditText) findViewById(R.id.st_revenueCard);
+        st_revenueBonus         = (EditText) findViewById(R.id.st_revenueBonus);
+        st_petrol               = (Button)   findViewById(R.id.st_petrol);
+        st_toTheCashier         = (EditText) findViewById(R.id.st_toTheCashier);
+        st_salaryOfficial       = (EditText) findViewById(R.id.st_salaryOfficial);
+        st_salaryPlusBonus      = (EditText) findViewById(R.id.st_salaryPlusBonus);
+        st_workHoursSpent       = (EditText) findViewById(R.id.st_workHoursSpent);
+        st_salaryPerHour        = (EditText) findViewById(R.id.st_salaryPerHour);
+        buttonShiftIsClosed     = (ToggleButton) findViewById(R.id.buttonShiftIsClosed);
+        buttonContinueShift     = (Button)   findViewById(R.id.buttonContinueShift);
+    }
+
+    private void refreshWidgets(){
+        //спорным остается вопрос, отдавать все полномочия по вызову setText локально одному методу
+        //или сохранять локальность кода, выполняя инициализацию и стартовое обновление значений блока кнопок даты-времени в методе createButtons
+        buttonShiftStartDate.setText(getStringDateFromCal(shiftStart));
+        buttonShiftEndDate.setText(getStringDateFromCal(shiftEnd));
+        buttonShiftStartTime.setText(getStringTimeFromCal(shiftStart));
+        buttonShiftEndTime.setText(getStringTimeFromCal(shiftEnd));
+
+        st_revenueOfficial. setText(String.valueOf(currentShift.revenueOfficial));
+        st_revenueCash.     setText(String.valueOf(currentShift.revenueCash));
+        st_revenueCard.     setText(String.valueOf(currentShift.revenueCard));
+        st_revenueBonus.    setText(String.valueOf(currentShift.revenueBonus));
+        st_petrol.          setText(String.valueOf(currentShift.petrol));
+        st_toTheCashier.    setText(String.valueOf(currentShift.handOverToTheCashier));
+        st_salaryOfficial.  setText(String.valueOf(currentShift.salaryOfficial));
+        st_salaryPlusBonus. setText(String.valueOf(currentShift.salaryPlusBonus));
+        st_workHoursSpent.  setText(String.valueOf(currentShift.workHoursSpent));
+        st_salaryPerHour.   setText(String.valueOf(currentShift.salaryPerHour));
+        buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
 
     //TODO в это окно надо передавать автора и возвращаться в него. авторов м.б. три: FirstScreenActivity, ShiftsListActivity, MainActivity
