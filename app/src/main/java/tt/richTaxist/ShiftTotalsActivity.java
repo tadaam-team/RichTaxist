@@ -11,15 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
 import tt.richTaxist.Bricks.DF_NumberInput;
 import tt.richTaxist.DB.ShiftsStorage;
 
@@ -276,7 +273,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         st_revenueCard.     setText(String.valueOf(currentShift.revenueCard));
         st_revenueBonus.    setText(String.valueOf(currentShift.revenueBonus));
         st_petrol.          setText(String.valueOf(currentShift.petrol));
-        st_toTheCashier.    setText(String.valueOf(currentShift.handOverToTheCashier));
+        st_toTheCashier.    setText(String.valueOf(currentShift.toTheCashier));
         st_salaryOfficial.  setText(String.valueOf(currentShift.salaryOfficial));
         st_salaryPlusBonus. setText(String.valueOf(currentShift.salaryPlusBonus));
         st_workHoursSpent.  setText(String.valueOf(currentShift.workHoursSpent));

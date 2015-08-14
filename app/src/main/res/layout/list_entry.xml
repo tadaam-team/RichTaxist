@@ -4,12 +4,11 @@
     android:orientation="vertical" >
 
     <ImageView
-        android:id="@+id/entryImageView1"
-        android:layout_width="50dp" android:layout_height="50dp"
-        android:layout_marginLeft="10dp" android:layout_marginRight="10dp"
+        android:id="@+id/entryIcon"
+        android:layout_width="40dp" android:layout_height="40dp"
         android:layout_row="0" android:layout_column="0"
         android:layout_rowSpan="2"
-        android:background="#E4991D" />
+        android:layout_margin="10dp" />
 
     <TextView
         android:text="@string/entryTextExampleMain"

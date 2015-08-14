@@ -30,7 +30,7 @@
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">наличные</string>
     <string name="payTypeCard">безнал</string>
-    <string name="payTypeBonus">чаевые</string>
+    <string name="payTypeTip">чаевые</string>
 
 
     <string name="entryTextExampleMain">пример основного текста</string>
@@ -93,6 +93,10 @@
     <string name="signUp">Новый\nводитель</string>
     <string name="logIn">Войти\n</string>
     <string name="claimChangeDevice">Сменить\nустройство</string>
-    <string name="logOut">Выйти</string>
-    <string name="signUpDefault">Здравствуйте\n1\n1</string>
+    <string name="logOut">Выйти\n</string>
+    <string name="signUpDefault">Здравствуйте, пользователь</string>
+    <string name="userActive">- пользователь зарегистрирован</string>
+    <string name="emailVerified">- почта подтверждена</string>
+    <string name="IMEICorrect">- IMEI прошел проверку</string>
+    <string name="premiumUser">- премиум подписка подключена</string>
 </resources>

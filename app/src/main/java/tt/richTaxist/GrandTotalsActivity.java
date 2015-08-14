@@ -9,15 +9,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
 import tt.richTaxist.DB.OrdersStorage;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.gps.RangeSeekBar;
@@ -70,6 +67,25 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             buttonRangeEndDate.setEnabled(false);
             buttonRangeEndTime.setEnabled(false);
         }
+    }
+
+    private void initiateWidgets() {
+        buttonRangeStartDate = (Button) findViewById(R.id.buttonRangeStartDate);
+        buttonRangeStartTime = (Button) findViewById(R.id.buttonRangeStartTime);
+        buttonRangeEndDate   = (Button) findViewById(R.id.buttonRangeEndDate);
+        buttonRangeEndTime   = (Button) findViewById(R.id.buttonRangeEndTime);
+        seekBarPlaceHolder   = (ViewGroup) findViewById(R.id.seekBarPlaceHolder);
+
+        gt_revenueOfficial  = (EditText) findViewById(R.id.gt_revenueOfficial);
+        gt_revenueCash      = (EditText) findViewById(R.id.gt_revenueCash);
+        gt_revenueCard      = (EditText) findViewById(R.id.gt_revenueCard);
+        gt_revenueBonus     = (EditText) findViewById(R.id.gt_revenueBonus);
+        gt_petrol           = (EditText) findViewById(R.id.gt_petrol);
+        gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
+        gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
+        gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
+        gt_workHoursSpent   = (EditText) findViewById(R.id.gt_workHoursSpent);
+        gt_salaryPerHour    = (EditText) findViewById(R.id.gt_salaryPerHour);
     }
 
     private void createButtonsAndSeekBar(final Calendar rangeStart, final Calendar rangeEnd) {
@@ -177,7 +193,10 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         // 1) последняя смена закрыта и следовательно есть данные по факт. бензину
         // 2) выбранный rangeEnd не отсекает часть последней смены, следовательно находится раньше lastShiftEnd
         // в идеале бы проверку запилить на предмет, есть ли в отсеченном куске заказ и применять 13% только, если он там есть
-        boolean lastShiftIsWhole = lastShift.isClosed() && rangeEnd.after(lastShiftEnd);
+        //проверка lastShiftEnd.after(now) нужна на случай, если водитель уже добавил последний заказ будущим часом (числом),
+        //закрыл смену и хочет посмотреть итоги, но дата закрытия еще не наступила
+        Calendar now = Calendar.getInstance();
+        boolean lastShiftIsWhole = lastShift.isClosed() && (rangeEnd.after(lastShiftEnd) || lastShiftEnd.after(now));
 
         if (firstShiftIsWhole) {
             if (!lastShiftIsWhole) {
@@ -211,55 +230,19 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         return 0;
     }
 
-    private void initiateWidgets() {
-        buttonRangeStartDate = (Button) findViewById(R.id.buttonRangeStartDate);
-        buttonRangeStartTime = (Button) findViewById(R.id.buttonRangeStartTime);
-        buttonRangeEndDate   = (Button) findViewById(R.id.buttonRangeEndDate);
-        buttonRangeEndTime   = (Button) findViewById(R.id.buttonRangeEndTime);
-        seekBarPlaceHolder   = (ViewGroup) findViewById(R.id.seekBarPlaceHolder);
-
-        gt_revenueOfficial  = (EditText) findViewById(R.id.gt_revenueOfficial);
-        gt_revenueCash      = (EditText) findViewById(R.id.gt_revenueCash);
-        gt_revenueCard      = (EditText) findViewById(R.id.gt_revenueCard);
-        gt_revenueBonus     = (EditText) findViewById(R.id.gt_revenueBonus);
-        gt_petrol           = (EditText) findViewById(R.id.gt_petrol);
-        gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
-        gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
-        gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
-        gt_workHoursSpent   = (EditText) findViewById(R.id.gt_workHoursSpent);
-        gt_salaryPerHour    = (EditText) findViewById(R.id.gt_salaryPerHour);
-    }
-
-    private void refreshWidgets(){
-        buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
-        buttonRangeEndDate.  setText(getStringDateFromCal(rangeEnd));
-        buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
-        buttonRangeEndTime.  setText(getStringTimeFromCal(rangeEnd));
-
-        gt_revenueOfficial. setText(String.valueOf(revenueOfficial));
-        gt_revenueCash.     setText(String.valueOf(revenueCash));
-        gt_revenueCard.     setText(String.valueOf(revenueCard));
-        gt_revenueBonus.    setText(String.valueOf(revenueBonus));
-        gt_petrol.          setText(String.valueOf(petrol));
-        gt_toTheCashier.    setText(String.valueOf(toTheCashier));
-        gt_salaryOfficial.  setText(String.valueOf(salaryOfficial));
-        gt_salaryPlusBonus. setText(String.valueOf(salaryPlusBonus));
-        gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
-        gt_salaryPerHour.   setText(String.valueOf(salaryPerHour));
-    }
-
     private void processWholeShifts(ArrayList<Shift> wholeShifts) {
         int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
         revenueOfficialLocal = revenueCashLocal = revenueCardLocal = revenueBonusLocal = petrolLocal = toTheCashierLocal = salaryOfficialLocal = salaryPlusBonusLocal = 0;
         float workHoursSpentLocal = 0.0f;
 
         for (Shift shift : wholeShifts) {
+            Log.d(LOG_TAG, "shift.workHoursSpent: " + String.valueOf(shift.workHoursSpent));
             revenueOfficialLocal += shift.revenueOfficial;
             revenueCashLocal     += shift.revenueCash;
             revenueCardLocal     += shift.revenueCard;
             revenueBonusLocal    += shift.revenueBonus;
             petrolLocal          += shift.petrol;
-            toTheCashierLocal    += shift.handOverToTheCashier;
+            toTheCashierLocal    += shift.toTheCashier;
             salaryOfficialLocal  += shift.salaryOfficial;
             salaryPlusBonusLocal += shift.salaryPlusBonus;
             workHoursSpentLocal  += shift.workHoursSpent;
@@ -273,7 +256,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         toTheCashier    = toTheCashierLocal;
         salaryOfficial  = salaryOfficialLocal;
         salaryPlusBonus = salaryPlusBonusLocal;
+        Log.d(LOG_TAG, "workHoursSpent: " + String.valueOf(workHoursSpent));
         workHoursSpent  = workHoursSpentLocal;
+        Log.d(LOG_TAG, "workHoursSpent: " + String.valueOf(workHoursSpent));
         salaryPerHour   = Math.round(salaryPlusBonus / workHoursSpent);
     }
 
@@ -288,7 +273,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 switch (order.typeOfPayment) {
                     case CASH: revenueCashLocal   += order.price; break;
                     case CARD: revenueCardLocal   += order.price; break;
-                    case BONUS: revenueBonusLocal += order.price; break;
+                    case TIP: revenueBonusLocal += order.price; break;
                 }
             }
 
@@ -298,7 +283,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             salaryOfficialLocal     = (revenueOfficialLocal / 2) - petrolLocal;
             salaryPlusBonusLocal    = salaryOfficialLocal + revenueBonusLocal;
 
+            Log.d(LOG_TAG, "revenueOfficial: " + String.valueOf(revenueOfficial));
             revenueOfficial += revenueOfficialLocal;
+            Log.d(LOG_TAG, "revenueOfficial: " + String.valueOf(revenueOfficial));
             revenueCash     += revenueCashLocal;
             revenueCard     += revenueCardLocal;
             revenueBonus    += revenueBonusLocal;
@@ -306,12 +293,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             toTheCashier    += toTheCashierLocal;
             salaryOfficial  += salaryOfficialLocal;
             salaryPlusBonus += salaryPlusBonusLocal;
+            //processPartlyShift не обрабатывает отработку не целой смены, т.к. алгоритм слишком сложен
         }
-        else{
-            revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier
-                    = salaryOfficial = salaryPlusBonus = salaryPerHour = 0;
-            workHoursSpent = 0.0f;
-        }
+        else {/*если в переданном куске нет заказов, то анализировать нечего, как нечего и прибавлять к (возможно) ранее посчитанным числам*/}
     }
 
     private void logDate (String dateName, Calendar dateToLog){
@@ -328,7 +312,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         cal.setTimeInMillis(date.getTimeInMillis());
         return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
     }
-
     private String getStringTimeFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
@@ -374,5 +357,23 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         }
         calculateGrandTotals();
         refreshWidgets();
+    }
+
+    private void refreshWidgets(){
+        buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
+        buttonRangeEndDate.  setText(getStringDateFromCal(rangeEnd));
+        buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
+        buttonRangeEndTime.  setText(getStringTimeFromCal(rangeEnd));
+
+        gt_revenueOfficial. setText(String.valueOf(revenueOfficial));
+        gt_revenueCash.     setText(String.valueOf(revenueCash));
+        gt_revenueCard.     setText(String.valueOf(revenueCard));
+        gt_revenueBonus.    setText(String.valueOf(revenueBonus));
+        gt_petrol.          setText(String.valueOf(petrol));
+        gt_toTheCashier.    setText(String.valueOf(toTheCashier));
+        gt_salaryOfficial.  setText(String.valueOf(salaryOfficial));
+        gt_salaryPlusBonus. setText(String.valueOf(salaryPlusBonus));
+        gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
+        gt_salaryPerHour.   setText(String.valueOf(salaryPerHour));
     }
 }

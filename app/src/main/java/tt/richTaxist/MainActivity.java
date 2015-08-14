@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         switch (typeOfPaymentUI.getCheckedRadioButtonId()){
             case R.id.choiceCache:  return TypeOfPayment.CASH;
             case R.id.choiceCard:   return TypeOfPayment.CARD;
-            case R.id.choiceBonus:  return TypeOfPayment.BONUS;
+            case R.id.choiceBonus:  return TypeOfPayment.TIP;
             default:                throw new IllegalArgumentException();//"ошибка обработки типа оплаты";
         }
     }
@@ -344,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             switch (receivedOrder.typeOfPayment) {
                 case CASH:  typeOfPaymentUI.check(R.id.choiceCache); break;
                 case CARD:  typeOfPaymentUI.check(R.id.choiceCard);  break;
-                case BONUS: typeOfPaymentUI.check(R.id.choiceBonus); break;
+                case TIP: typeOfPaymentUI.check(R.id.choiceBonus); break;
                 default:    typeOfPaymentUI.clearCheck();
             }
         } else{

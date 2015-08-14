@@ -1,12 +1,9 @@
 package tt.richTaxist;
 
-import android.widget.Toast;
-
-import java.util.ArrayList;
+import android.util.Log;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-
 import tt.richTaxist.DB.OrdersStorage;
 import tt.richTaxist.DB.ShiftsStorage;
 
@@ -14,19 +11,13 @@ import tt.richTaxist.DB.ShiftsStorage;
  * Created by Tau on 27.06.2015.
  */
 public class Shift {
-    final public ArrayList<ArrayList<Order>> listOfAllOrdersPerOneShift = new ArrayList<>();
-    public Date shiftID;
-    public int revenueCash;
-    public int revenueCard;
-    public int revenueOfficial;
-    public int revenueBonus;
-    public int petrol;
-    public boolean petrolFilledByHands;
-    public int handOverToTheCashier;
-    public int salaryOfficial;
-    public int salaryPlusBonus;
+//    final public ArrayList<ArrayList<Order>> listOfAllOrdersPerOneShift = new ArrayList<>();
+    public int shiftID;
     public Date beginShift;
     public Date endShift; //по этому полю проверяется закрыта ли смена. == null пока не закрыта
+    public int revenueCash, revenueCard, revenueOfficial, petrol;
+    public boolean petrolFilledByHands;
+    public int toTheCashier, salaryOfficial, revenueBonus, salaryPlusBonus;
     public float workHoursSpent;
     public int salaryPerHour;
     public int distance;
@@ -34,12 +25,17 @@ public class Shift {
     private static final String LOG_TAG = "ShiftClass";
 
     public Shift() {
-        beginShift = shiftID = new Date();//инициализируем сегодняшним днем
+        Shift lastShift = ShiftsStorage.getLastShift();
+        if (lastShift == null) shiftID = 1;
+        else shiftID = lastShift.shiftID + 1;
+
+        beginShift = new Date();
         petrolFilledByHands = false;
+        Log.d(LOG_TAG, "new shift created. ID: " + String.valueOf(shiftID));
         ShiftsStorage.commit(this);
     }
 
-    public Shift(Date shiftID) {
+    public Shift(int shiftID) {
         this.shiftID = shiftID;
     }
 
@@ -49,7 +45,7 @@ public class Shift {
         calendar.setTime(beginShift);
         return String.format("дата начала = %02d.%02d.%02d %02d:%02d,\nвыручка офиц. = %d,\nсдать в кассу = %d,\nбензин = %d, закрыта? = %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR) % 100,
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), revenueOfficial, handOverToTheCashier, petrol, this.isClosed()?"да":"нет");
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), revenueOfficial, toTheCashier, petrol, this.isClosed()?"да":"нет");
     }
 
     public void closeShift() {
@@ -70,14 +66,14 @@ public class Shift {
     }
 
     public void calculateShiftTotals(int petrol){
-        Map<TypeOfPayment,Integer> results = OrdersStorage.getSumOrdersByShift(this);
-        revenueCash = revenueCard = revenueOfficial = revenueBonus = handOverToTheCashier = salaryOfficial = salaryPlusBonus = 0;
+        Map<TypeOfPayment,Integer> pricesOfOrders = OrdersStorage.getSumOrdersByShift(this);
+        revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
 
-        for (Map.Entry<TypeOfPayment,Integer> x: results.entrySet()){
-            switch (x.getKey()){
-                case CASH: revenueCash = x.getValue(); break;
-                case CARD: revenueCard = x.getValue(); break;
-                case BONUS: revenueBonus = x.getValue(); break;
+        for (Map.Entry<TypeOfPayment,Integer> priceOfOrder : pricesOfOrders.entrySet()){
+            switch (priceOfOrder.getKey()){
+                case CASH: revenueCash = priceOfOrder.getValue(); break;
+                case CARD: revenueCard = priceOfOrder.getValue(); break;
+                case TIP: revenueBonus = priceOfOrder.getValue(); break;
             }
         }
         revenueOfficial = revenueCash + revenueCard;
@@ -90,13 +86,13 @@ public class Shift {
             this.petrol = petrol;
         }
 
-        handOverToTheCashier = revenueCash - this.petrol;
+        toTheCashier = revenueCash - this.petrol;
         salaryOfficial = (revenueOfficial / 2) - this.petrol;
         salaryPlusBonus = salaryOfficial + revenueBonus;
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
         workHoursSpent = (float) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
-        workHoursSpent = RoundResult(workHoursSpent, 1);
+        workHoursSpent = RoundResult(workHoursSpent, 2);
         salaryPerHour  = Math.round(salaryPlusBonus / workHoursSpent);
         ShiftsStorage.update(this);
     }

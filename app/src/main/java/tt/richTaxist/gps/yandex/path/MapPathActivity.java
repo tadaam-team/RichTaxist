@@ -47,7 +47,7 @@ public class MapPathActivity extends Fragment implements OnMyLocationListener, M
         double startLat = coords.get(0).getLat();
         double startLon = coords.get(0).getLon();
         double endLat = coords.get(coords.size() - 1).getLat();
-        double endLon = coords.get(coords.size() - 1).getLon();;
+        double endLon = coords.get(coords.size() - 1).getLon();
 
         double maxLat = -1000;
         double minLat = 1000;
@@ -79,7 +79,7 @@ public class MapPathActivity extends Fragment implements OnMyLocationListener, M
         // Create a layer of objects for the map
         Overlay mOverlay = new Overlay(mMapController);
 
-        OverlayItem startPoint = new OverlayItem(new GeoPoint(startLat , startLon), res.getDrawable(R.drawable.point));
+        OverlayItem startPoint = new OverlayItem(new GeoPoint(startLat , startLon), res.getDrawable(R.drawable.ic_location));
         // Create the balloon model for the object
         BalloonItem balloonStart = new BalloonItem(getActivity(),startPoint.getGeoPoint());
         balloonStart.setText(getString(R.string.rangeStart));
@@ -91,7 +91,7 @@ public class MapPathActivity extends Fragment implements OnMyLocationListener, M
         // Add the layer to the map
         mMapController.getOverlayManager().addOverlay(mOverlay);
 
-        OverlayItem endPoint = new OverlayItem(new GeoPoint(endLat , endLon), res.getDrawable(R.drawable.point));
+        OverlayItem endPoint = new OverlayItem(new GeoPoint(endLat , endLon), res.getDrawable(R.drawable.ic_location));
         // Create the balloon model for the object
         BalloonItem balloonEnd = new BalloonItem(getActivity(),startPoint.getGeoPoint());
         balloonStart.setText(getString(R.string.rangeEnd));

@@ -14,13 +14,11 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-
 import tt.richTaxist.ChatClient.ChatLoginActivity;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.gps.GPSHelper;
@@ -28,6 +26,7 @@ import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity {
     static AppCompatActivity activity;
+    static Context context;
     private static final String LOG_TAG = "FirstScreenActivity";
 
     @Override
@@ -36,6 +35,7 @@ public class FirstScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_first_screen);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity = FirstScreenActivity.this;
+        context = getApplicationContext();
         MainActivity.context = getApplicationContext();
         GPSHelper.startService(MainActivity.context);
 
@@ -57,8 +57,7 @@ public class FirstScreenActivity extends AppCompatActivity {
 
         if (Storage.currentUser == null) {
             // Отправляем данные на Parse.com для проверки только если юзер еще не авторизован
-            Log.d(LOG_TAG, "userName: " + Storage.userName);
-            Log.d(LOG_TAG, "password: " + Storage.password);
+            Log.d(LOG_TAG, "username: " + Storage.username + "password: " + Storage.password);
             authorize(this);
         }
 
@@ -226,47 +225,86 @@ public class FirstScreenActivity extends AppCompatActivity {
         LogInCallback logInCallback = new LogInCallback() {
             public void done(ParseUser user, ParseException error) {
                 if (user != null) {
-                    //пользователь авторизован. загрузим его сохраненные настройки из облака
-                    Storage.currentUser = user;
-//                    Storage.typeOfDateInput = Storage.stringToTypeOfInput(user.getString("typeOfDateInput"), context);
-//                    Storage.typeOfTimeInput = Storage.stringToTypeOfInput(user.getString("typeOfTimeInput"), context);
-                    Storage.timePickerStep = user.getInt("timePickerStep");
-                    Storage.showListHint = user.getBoolean("showListHint");
-                    Storage.youngIsOnTop = user.getBoolean("youngIsOnTop");
-                    Storage.singleTapTimePick = user.getBoolean("singleTapTimePick");
-
-                    if (user.getString("IMEI") != null && !user.getString("IMEI").equals("detached")) {
-                        //пользователь авторизован и имеет привязанный IMEI. проверим его соответствие
-                        Log.d(LOG_TAG, "IMEI OK? " + String.valueOf(Storage.deviceIMEI.equals(user.getString("IMEI"))));
-                        if (Storage.deviceIMEI.equals(user.getString("IMEI"))) {
-                            //пользователь авторизован, имеет привязанный IMEI и IMEI соответствует текущему устройству
-                            Toast.makeText(context, "Здравствуйте, " + user.getUsername() + "\nПриятной работы", Toast.LENGTH_LONG).show();
-                            Storage.userHasPaidAccess = true;
-                        } else {
-                            Toast.makeText(context,
-                                    "Здравствуйте, " + user.getUsername() +
-                                            "\nВы вошли в систему с другого устройства." +
-                                            "\nСейчас платные опции недоступны." +
-                                            "\nЧтобы привязать логин к новому устройству" +
-                                            "\nперейдите в меню \"Учетные записи\"", Toast.LENGTH_LONG).show();
-                            Storage.userHasPaidAccess = false;
-                        }
-                    } else {
-                        //пользователь авторизован, но IMEI еще не привязан или отвязан по запросу
-                        Storage.currentUser.put("IMEI", Storage.deviceIMEI);
-                        Storage.currentUser.saveInBackground();
-                        Toast.makeText(context, "Вы привязали это устройство" +
-                                "\nк своей учетной записи." +
-                                "\nПриятной работы", Toast.LENGTH_LONG).show();
-                    }
+                    Storage.userHasAccess = verifyUser(user);
                 } else {
-                    //если логин-пароль "" или не соответствуют какой-либо УЗ на сервере
                     Log.d(LOG_TAG, "error code " + error.getCode());//всегда 101
-                    Toast.makeText(context, "Пользователь не авторизован", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Ошибка логина или пароля", Toast.LENGTH_SHORT).show();
                 }
             }
         };
-        ParseUser.logInInBackground(Storage.userName, Storage.password, logInCallback);
+        if (Storage.username != null && !Storage.username.equals("")) ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
+    }
+
+
+    private boolean verifyUser(ParseUser user) {
+        //пользователь авторизован. загрузим его сохраненные настройки из облака
+        Log.d(LOG_TAG, "user logged in");
+//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
+
+
+        Storage.currentUser         = user;
+        Storage.showListHint        = user.getBoolean("showListHint");
+        Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
+        Storage.singleTapTimePick   = user.getBoolean("singleTapTimePick");
+        Storage.premiumUser         = user.getBoolean("premiumUser");
+        Storage.emailVerified       = user.getBoolean("emailVerified");
+
+        //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
+        if (!Storage.emailVerified) {
+            //для бесплатного доступа вообще то необязательно подтверждать почту или сверять IMEI,
+            // но для дисциплины напомним юзеру, что надо подтвердить
+            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
+                    "\nВаш email еще не подтвержден", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Log.d(LOG_TAG, "email verified");
+//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
+        //пользователь авторизован и почта подтверждена--------------------------------------------
+
+
+        if (!Storage.premiumUser){
+            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
+                    "\nПриятной работы", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Log.d(LOG_TAG, "user is premium");
+//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
+        //пользователь авторизован, почта подтверждена и есть подписка-----------------------------
+
+
+        if (user.getString("IMEI") == null || user.getString("IMEI").equals("detached")) {
+            //IMEI еще не привязан или отвязан по запросу
+            Storage.currentUser.put("IMEI", Storage.deviceIMEI);
+            Storage.currentUser.saveInBackground();
+            Toast.makeText(context,  "Здравствуйте, " + user.getUsername() +
+                    "\nВы привязали это устройство" +
+                    "\nк своей учетной записи." +
+                    "\nПриятной работы", Toast.LENGTH_LONG).show();
+
+            Log.d(LOG_TAG, "IMEI saved");
+            return true;
+        }
+        Log.d(LOG_TAG, "IMEI not null");
+        //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
+
+
+        if (!Storage.deviceIMEI.equals(user.getString("IMEI"))) {
+            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
+                    "\nВы вошли в систему с другого устройства." +
+                    "\nСейчас платные опции недоступны." +
+                    "\nЧтобы привязать логин к новому устройству" +
+                    "\nперейдите в меню \"Учетные записи\"" +
+                    "\nи нажмите \"Сменить устройство\"", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        Log.d(LOG_TAG, "IMEI check passed");
+//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
+        //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
+
+
+        Toast.makeText(context, "Здравствуйте, " + user.getUsername() + "\nПриятной работы", Toast.LENGTH_LONG).show();
+        Log.d(LOG_TAG, "user has access!!");
+        return true;
     }
 
     @Override

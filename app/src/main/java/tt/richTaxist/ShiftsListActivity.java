@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +17,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Calendar;
-
 import tt.richTaxist.DB.OrdersStorage;
 import tt.richTaxist.DB.ShiftsStorage;
 
@@ -114,9 +111,9 @@ public class ShiftsListActivity extends ListActivity {
             textViewAdditional.setText(String.format("зп офиц. = %d, зп с чаем = %d", shift.salaryOfficial, shift.salaryPlusBonus));
 
             //назначим картинку каждой строке списка
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.entryImageView1);
-            if (shift.isClosed()) imageView.setImageResource(R.drawable.ic_lock_white_24dp);
-            else                  imageView.setImageResource(R.drawable.ic_lock_open_white_24dp);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.entryIcon);
+            if (shift.isClosed()) imageView.setImageResource(R.drawable.ic_lock_closed_black);
+            else                  imageView.setImageResource(R.drawable.ic_lock_open_black);
 
             return convertView;
         }

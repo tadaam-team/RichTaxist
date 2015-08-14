@@ -106,10 +106,10 @@ public class OrdersListActivity extends ListActivity {
             textViewAdditional.setText(String.format("цена = %d, тип оплаты = %s", order.price, order.typeOfPayment.toString()));
 
             //назначим картинку каждой строке списка
-            ImageView imageView = (ImageView) convertView.findViewById(R.id.entryImageView1);
-            imageView.setImageResource(android.R.drawable.ic_menu_info_details);
-            //пример, как назначить отдельным строкам специфические картинки:
-//            if ("Google".equals(order.toString())) imageView.setImageResource(android.R.drawable.ic_menu_gallery);
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.entryIcon);
+            if (TypeOfPayment.CASH.equals(order.typeOfPayment))  imageView.setImageResource(R.drawable.ic_cash);
+            if (TypeOfPayment.CARD.equals(order.typeOfPayment))  imageView.setImageResource(R.drawable.ic_card);
+            if (TypeOfPayment.TIP.equals(order.typeOfPayment))   imageView.setImageResource(R.drawable.ic_tip);
 
             return convertView;
         }

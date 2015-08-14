@@ -4,13 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
+import android.util.Log;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import tt.richTaxist.DB.OrdersStorageList;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.Order;
@@ -21,6 +20,7 @@ import tt.richTaxist.TypeOfPayment;
  * Created by AlexShredder on 29.06.2015.
  */
 public class OrdersSQLHelper extends SQLHelper {
+    private static final String LOG_TAG = "OrdersSQLHelper";
     static final String TABLE_NAME = "orders";
     static final String TYPE_OF_PAYMENT = "typeOfPayment";
     static final String PRICE = "price";
@@ -32,7 +32,7 @@ public class OrdersSQLHelper extends SQLHelper {
             + TYPE_OF_PAYMENT + " TINYINT, "
             + ARRIVAL_DATE_TIME + " DATETIME, "
             + PRICE + " INT, "
-            + SHIFT + " DATETIME, "
+            + SHIFT + " INT, "
             + DISTANCE + " INT, "
             + TRAVEL_TIME + " LONGINT)";
 
@@ -54,7 +54,7 @@ public class OrdersSQLHelper extends SQLHelper {
         cv.put(PRICE, order.price);
         cv.put(ARRIVAL_DATE_TIME, dateFormat.format(order.arrivalDateTime));
         cv.put(TYPE_OF_PAYMENT, order.typeOfPayment.id);
-        cv.put(SHIFT, dateFormat.format(order.shift.shiftID));
+        cv.put(SHIFT, order.shift.shiftID);
 
         long result = db.insert(OrdersSQLHelper.TABLE_NAME, null, cv);
         db.close();
@@ -68,7 +68,7 @@ public class OrdersSQLHelper extends SQLHelper {
                         + " AND " + TYPE_OF_PAYMENT     + " = ?"
                         + " AND " + SHIFT               + " = ?",
                 new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                        String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
+                        String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
         db.close();
         return result;
     }
@@ -76,7 +76,7 @@ public class OrdersSQLHelper extends SQLHelper {
     public void deleteOrdersByShift(Shift shift) {
         SQLiteDatabase db = getWritableDatabase();
         // Select All Query
-        int result = db.delete(TABLE_NAME, SHIFT + " = ?", new String[]{dateFormat.format(shift.shiftID)});
+        int result = db.delete(TABLE_NAME, SHIFT + " = ?", new String[]{String.valueOf(shift.shiftID)});
         db.close();
     }
 
@@ -90,7 +90,7 @@ public class OrdersSQLHelper extends SQLHelper {
                             + " AND " + TYPE_OF_PAYMENT     + " = ?"
                             + " AND " + SHIFT               + " = ?",
                     new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                            String.valueOf(order.typeOfPayment.id), dateFormat.format(order.shift.shiftID)});
+                            String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
         }
         db.close();
         return result;
@@ -118,7 +118,7 @@ public class OrdersSQLHelper extends SQLHelper {
     public OrdersStorageList getOrdersByShift(Shift shift) {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
 
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -135,10 +135,12 @@ public class OrdersSQLHelper extends SQLHelper {
     public boolean hasShiftOrders(Shift shift) {
 //        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        return cursor.getCount()>0;
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
+        return result;
     }
 
     public Map<TypeOfPayment,Integer> getSumOrdersByShift(Shift shift) {
@@ -146,18 +148,20 @@ public class OrdersSQLHelper extends SQLHelper {
 //        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
         String selectQuery = "SELECT typeOfPayment, SUM(price) FROM " + TABLE_NAME +
-                " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "' GROUP BY typeOfPayment";
+                " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "' GROUP BY typeOfPayment";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        Log.d(LOG_TAG, "cursor.getColumnCount(): " + String.valueOf(cursor.getColumnCount()));
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
                 TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(0));
                 int sum = cursor.getInt(1);
-                result.put(typeOfPayment,sum);
+                result.put(typeOfPayment, sum);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return result;
     }
 
@@ -167,7 +171,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
         // Select All Query
         String selectQuery = "SELECT SUM(distance), SUM(travelTime) FROM " + TABLE_NAME +
-                " WHERE " + SHIFT + "='" + dateFormat.format(shift.shiftID) + "'";
+                " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -192,10 +196,10 @@ public class OrdersSQLHelper extends SQLHelper {
         } catch (ParseException e) { e.printStackTrace(); }
         TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(1));
         int price = cursor.getInt(3);
-        String shift = cursor.getString(4);
+        int shiftID = cursor.getInt(4);
         int distance = cursor.getInt(5);
         long travelTime = cursor.getLong(6);
 
-        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shift), distance, travelTime);
+        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), distance, travelTime);
     }
 }

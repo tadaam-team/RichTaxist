@@ -5,16 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-
 import com.parse.ParseUser;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-
 import tt.richTaxist.gps.GPSHelper;
 
 /**
@@ -26,14 +23,20 @@ public class Storage {
     public static int timePickerStep = 10;
     public static Boolean showListHint = true;
     public static Boolean youngIsOnTop = true;
-    public static Boolean singleTapTimePick = true;
+    public static Boolean singleTapTimePick = false;
 
     public static ParseUser currentUser;
-    public static String userName = "pro";
-    public static String password = "pro";
+    public static String username = "";
+    public static String password = "";
     public static String deviceIMEI = "";
-    //TODO привязать платные участки проги к булевому userHasPaidAccess
-    public static Boolean userHasPaidAccess = false;
+    public static Boolean emailVerified = false;
+    public static Boolean premiumUser = false;
+    //TODO привязать платные участки проги к булевому userHasAccess
+    public static Boolean userHasAccess = false;
+    //TODO: проверять каждые 6 часов, что с пользователем все хорошо.
+    // Если плохо, сбрасывать доступ, но так чтобы это отразилось на следующем опросе состояния, а не выкидывать его из платного процесса
+    public static long sessionLength = 0;
+
     public static String IP = "";
     //ниже пока не используемая информация
     public static String phoneModel = "";
@@ -62,7 +65,7 @@ public class Storage {
         Log.d(LOG_TAG, "Created");
     }
 
-//два метода ниже нужны для отправки в Parse и получения из него, т.к. enum он не понимает
+    //два метода ниже нужны для отправки в Parse и получения из него, т.к. enum он не понимает
     public static String typeOfInputToString(TypeOfInput typeOfInput, Context context) {
         switch (typeOfInput){
             case BUTTON: return context.getString(R.string.button);
@@ -81,15 +84,16 @@ public class Storage {
         else Log.d(LOG_TAG, "ошибка перевода String в enum");           return TypeOfInput.BUTTON;
     }
 
-    public void saveSettings(Context context){//to cloud and file
+    public static void saveSettings(Context context){//to cloud and file
         Log.d(LOG_TAG, "saving settings to cloud");
         if (currentUser != null) {
             currentUser.put("typeOfDateInput", typeOfInputToString(typeOfDateInput, context));
             currentUser.put("typeOfTimeInput", typeOfInputToString(typeOfTimeInput, context));
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("showListHint", showListHint);
-            currentUser.put("userHasPaidAccess", userHasPaidAccess);
-            //userHasPaidAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
+            currentUser.put("premiumUser", premiumUser);
+            currentUser.put("userHasAccess", userHasAccess);
+            //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("singleTapTimePick", singleTapTimePick);
             currentUser.saveInBackground();
@@ -102,7 +106,7 @@ public class Storage {
 
         try {
             output = new FileOutputStream(path);
-            prop.setProperty("userName", userName);
+            prop.setProperty("username", username);
             prop.setProperty("password", password);
             prop.store(output, null);
         } catch (IOException io) {
@@ -129,7 +133,7 @@ public class Storage {
         try {
             input = new FileInputStream(path);
             prop.load(input);
-            userName         = prop.getProperty("userName");//дефолта быть не должно, т.к. это приведет к ошибке сличения IMEI
+            username = prop.getProperty("username");//дефолта быть не должно, т.к. это приведет к ошибке сличения IMEI
             password         = prop.getProperty("password");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -145,6 +149,18 @@ public class Storage {
         }
     }
 
+    public static void resetSettings() {
+        emailVerified = false;
+        premiumUser = false;
+        userHasAccess = false;
+
+        typeOfDateInput = TypeOfInput.BUTTON;
+        typeOfTimeInput = TypeOfInput.BUTTON;
+        timePickerStep = 10;
+        showListHint = true;
+        youngIsOnTop = true;
+        singleTapTimePick = false;
+    }
 
     static void openQuitDialog(final AppCompatActivity currentActivity) {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(currentActivity);

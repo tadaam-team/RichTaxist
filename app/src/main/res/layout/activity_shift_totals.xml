@@ -203,7 +203,7 @@
             android:textOff="@string/shiftIsOpen"
             android:textOn="@string/shiftIsClosed"
             android:layout_width="124dp" android:layout_height="60dp"
-            android:drawableRight="@drawable/icon_on_off"
+            android:drawableRight="@drawable/ic_lock_selector"
             android:onClick="onButtonShiftIsClosedClick"/>
         <Button android:text="@string/continueShift"
             style="@style/ButtonBordered"

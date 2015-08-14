@@ -1,5 +1,4 @@
 package tt.richTaxist.gps;
-
 import java.math.BigDecimal;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,7 +13,6 @@ import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.widget.ImageView;
-
 import tt.richTaxist.R;
 
 /**
@@ -24,8 +22,8 @@ import tt.richTaxist.R;
 
 public class RangeSeekBar<T extends Number> extends ImageView {
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_normal);
-    private final Bitmap thumbPressedImage = BitmapFactory.decodeResource(getResources(), R.drawable.seek_thumb_pressed);
+    private final Bitmap thumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.ic_seek_thumb_normal);
+    private final Bitmap thumbPressedImage = BitmapFactory.decodeResource(getResources(), R.drawable.ic_seek_thumb_pressed);
     private final float thumbWidth = thumbImage.getWidth();
     private final float thumbHalfWidth = 0.5f * thumbWidth;
     private final float thumbHalfHeight = 0.5f * thumbImage.getHeight();

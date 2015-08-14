@@ -74,7 +74,7 @@
                     android:id="@+id/choiceCard"
                     android:layout_height="80dp" android:layout_width="124dp"
                     android:layout_marginLeft="2dp" android:layout_marginRight="2dp" />
-                <RadioButton android:text="@string/payTypeBonus"
+                <RadioButton android:text="@string/payTypeTip"
                     android:id="@+id/choiceBonus"
                     android:layout_height="80dp" android:layout_width="124dp"
                     android:layout_marginLeft="2dp" android:layout_marginRight="2dp" />

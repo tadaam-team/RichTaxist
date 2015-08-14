@@ -11,14 +11,14 @@
 
 <!--style params starting with "layout_" don't work by default. you need to add {style="@style/ButtonBordered"} to each widget-->
     <style name="ButtonBordered" parent="android:style/Widget.Button">
-        <item name="android:background">@drawable/button</item>
+        <item name="android:background">@drawable/button_selector</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:layout_margin">2dp</item>
     </style>
 
     <style name="ToggleButtonBordered" parent="android:style/Widget.Button.Toggle">
         <item name="android:gravity">center</item>
-        <item name="android:background">@drawable/button</item>
+        <item name="android:background">@drawable/button_selector</item>
         <item name="android:textColor">@color/text_color</item>
         <item name="android:layout_margin">2dp</item>
     </style>

@@ -3,7 +3,6 @@ package tt.richTaxist.DB;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import tt.richTaxist.DB.sql.ShiftsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Shift;
@@ -12,9 +11,7 @@ import tt.richTaxist.Shift;
  * Created by AlexShredder on 29.06.2015.
  */
 public class ShiftsStorage {
-
     private static ShiftsSQLHelper dbOpenHelper = new ShiftsSQLHelper(MainActivity.context);
-
     private ShiftsStorage() {
     }
 
@@ -33,7 +30,7 @@ public class ShiftsStorage {
     public static ArrayList<Shift> getShifts(Date fromDate, Date toDate, boolean youngIsOnTop) {
         return getDatabase().getShifts(fromDate, toDate, youngIsOnTop);
     }
-    public static Shift getShiftByID(String shiftID){
+    public static Shift getShiftByID(int shiftID){
         return getDatabase().getShiftByID(shiftID);
     }
     public static boolean isLastShiftClosed() {
@@ -45,13 +42,10 @@ public class ShiftsStorage {
     public static ArrayList<Shift> getShifts(Date date, boolean youngIsOnTop) {
         return getShifts(date, date, youngIsOnTop);
     }
-
     public static void update(Shift shift) {
         getDatabase().update(shift);
     }
-
     public static ArrayList<Shift> getShiftsForList() {
         return getDatabase().getShiftsForList();
     }
-
 }

@@ -6,7 +6,7 @@ package tt.richTaxist;
 public enum TypeOfPayment {
     CASH (0,R.string.payTypeCash),
     CARD (1,R.string.payTypeCard),
-    BONUS (2,R.string.payTypeBonus);
+    TIP  (2,R.string.payTypeTip);
 
     public final int id;
     private final int captionId;
