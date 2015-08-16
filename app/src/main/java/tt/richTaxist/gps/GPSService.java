@@ -90,8 +90,14 @@ public class GPSService extends Service {
             }else{
                 Log.d(LOG_TAG, "pi == null ");
             }
-            LocationsStorage.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
+            try {
+                LocationsStorage.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
+            } catch (Exception e) {
+                e.printStackTrace();
 
+                Log.d(LOG_TAG, "Error by store locations, database not ready");
+                stopSelf();
+            }
         }
         @Override
         public void run() {

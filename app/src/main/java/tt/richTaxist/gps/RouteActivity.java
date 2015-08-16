@@ -3,14 +3,17 @@ package tt.richTaxist.gps;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.SupportMapFragment;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import tt.richTaxist.DB.LocationsStorage;
 import tt.richTaxist.MainActivity;
@@ -18,12 +21,15 @@ import tt.richTaxist.R;
 import tt.richTaxist.Shift;
 
 public class RouteActivity extends FragmentActivity {
+    private static final String LOG_TAG = "Route activity";
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Fragment mapFragment;
+    private AsyncTask updateTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.gps_activity_route);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setUpMapIfNeeded();
@@ -33,7 +39,7 @@ public class RouteActivity extends FragmentActivity {
         ft.add(R.id.mapFragment, mapFragment);
         ft.commit();
 
-        Shift currentShift = MainActivity.currentShift;
+        final Shift currentShift = MainActivity.currentShift;
 
         //add RangeSeekBar to map window
         final Calendar rangeStart = Calendar.getInstance();
@@ -43,12 +49,13 @@ public class RouteActivity extends FragmentActivity {
 
         ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByShift(currentShift));
 
-        RangeSeekBar<Long> seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), RouteActivity.this);
+        final RangeSeekBar<Long> seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), RouteActivity.this);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Long>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
                 // handle changed range values
                 //TODO добавить окошки для введенных дат
+                if (updateTask!=null) updateTask.cancel(true);
                 rangeStart.setTimeInMillis(minValue);
                 rangeEnd.setTimeInMillis(maxValue);
                 String msg1 = String.format("%02d.%02d.%02d %02d:%02d", rangeStart.get(Calendar.DAY_OF_MONTH), rangeStart.get(Calendar.MONTH) + 1, rangeStart.get(Calendar.YEAR) % 100,
@@ -63,6 +70,47 @@ public class RouteActivity extends FragmentActivity {
         // add RangeSeekBar to pre-defined layout
         ViewGroup layout = (ViewGroup) findViewById(R.id.routeLayout);
         layout.addView(seekBar);
+
+        if (!currentShift.isClosed()){
+
+            updateTask = new AsyncTask() {
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    while (true) {
+                        try {
+                            if (isCancelled()) break;
+                            TimeUnit.SECONDS.sleep(4);
+                            publishProgress();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            break;
+                        }
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onProgressUpdate(Object[] values) {
+                    //super.onProgressUpdate(values);
+                    Log.d(LOG_TAG,"Updating map");
+                    try {
+                        seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
+                        ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByPeriod(rangeStart.getTime(), Calendar.getInstance().getTime()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        updateTask.cancel(true);
+                    }
+                }
+            };
+            updateTask.execute();
+         }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (updateTask!=null) updateTask.cancel(true);
     }
 
     @Override

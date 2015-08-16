@@ -119,9 +119,14 @@ public class FirstScreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (MainActivity.currentShift == null){
-                    Toast.makeText(activity, "Не выбрана текущая смена!", Toast.LENGTH_SHORT).show();
-                    return;
+                    MainActivity.currentShift = ShiftsStorage.getLastShift();
+                    if (MainActivity.currentShift == null) {
+                        Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
                 }
+
                 startActivity(new Intent(activity, RouteActivity.class));
                 Log.d(LOG_TAG, "открываю карту маршрута смены");
             }
