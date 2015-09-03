@@ -17,13 +17,15 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import tt.richTaxist.Bricks.DF_NumberInput;
 import tt.richTaxist.DB.ShiftsStorage;
 
 /**
  * Created by Tau on 27.06.2015.
  */
-public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, DF_NumberInput.EditNameDialogListener {
+public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener, DF_NumberInput.EditNameDialogListener {
     private Shift currentShift;
     DatePickerDialog.OnDateSetListener dateSetListener;
     TimePickerDialog.OnTimeSetListener timeSetListener;
@@ -268,16 +270,17 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime.setText(getStringTimeFromCal(shiftStart));
         buttonShiftEndTime.setText(getStringTimeFromCal(shiftEnd));
 
-        st_revenueOfficial. setText(String.valueOf(currentShift.revenueOfficial));
-        st_revenueCash.     setText(String.valueOf(currentShift.revenueCash));
-        st_revenueCard.     setText(String.valueOf(currentShift.revenueCard));
-        st_revenueBonus.    setText(String.valueOf(currentShift.revenueBonus));
-        st_petrol.          setText(String.valueOf(currentShift.petrol));
-        st_toTheCashier.    setText(String.valueOf(currentShift.toTheCashier));
-        st_salaryOfficial.  setText(String.valueOf(currentShift.salaryOfficial));
-        st_salaryPlusBonus. setText(String.valueOf(currentShift.salaryPlusBonus));
+        st_revenueOfficial. setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueOfficial));
+        st_revenueOfficial. setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueOfficial));
+        st_revenueCash.     setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueCash));
+        st_revenueCard.     setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueCard));
+        st_revenueBonus.    setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueBonus));
+        st_petrol.          setText(String.format(Locale.GERMANY, "%,d", currentShift.petrol));
+        st_toTheCashier.    setText(String.format(Locale.GERMANY, "%,d", currentShift.toTheCashier));
+        st_salaryOfficial.  setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryOfficial));
+        st_salaryPlusBonus. setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryPlusBonus));
         st_workHoursSpent.  setText(String.valueOf(currentShift.workHoursSpent));
-        st_salaryPerHour.   setText(String.valueOf(currentShift.salaryPerHour));
+        st_salaryPerHour.   setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryPerHour));
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
 

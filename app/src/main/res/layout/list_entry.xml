@@ -17,7 +17,7 @@
         android:layout_row="0" android:layout_column="1"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_gravity="start"
-        android:textSize="25dp" />
+        android:textSize="25sp" />
 
     <TextView
         android:text="@string/entryTextExampleAdditional"

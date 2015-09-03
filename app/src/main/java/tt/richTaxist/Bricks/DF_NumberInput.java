@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import tt.richTaxist.R;
 
 public class DF_NumberInput extends DialogFragment implements TextView.OnEditorActionListener {
@@ -25,7 +24,21 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
         View rootView = inflater.inflate(R.layout.fragment_dialog_number_input, container);
         superActivity = getActivity();
         mEditText = (EditText) rootView.findViewById(R.id.editTextName);
-        getDialog().setTitle("Введите число");
+//        getDialog().setTitle("Введите фактический\nчек за бензин");
+
+        rootView.findViewById(R.id.btnOk).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onEditorAction(null, EditorInfo.IME_ACTION_DONE, null);
+            }
+        });
+
+        rootView.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getDialog().dismiss();
+            }
+        });
 
         // Show soft keyboard automatically
         mEditText.requestFocus();
@@ -35,7 +48,7 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
         return rootView;
     }
 
-   @Override
+    @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (EditorInfo.IME_ACTION_DONE == actionId) {
             // Return input text to activity
@@ -44,7 +57,7 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
             } catch (NumberFormatException e){
                 Toast.makeText(superActivity, "только целое число, пожалуйста", Toast.LENGTH_SHORT).show();
             }
-            this.dismiss();
+            getDialog().dismiss();
             return true;
         }
         return false;

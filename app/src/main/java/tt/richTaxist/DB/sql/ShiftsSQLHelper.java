@@ -136,6 +136,9 @@ public class ShiftsSQLHelper extends SQLHelper {
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
         // Select All Query
+        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+//                + BEGIN_SHIFT + "BETWEEN '" + dateFormat.format(fromDate) + "' and '" + dateFormat.format(toDate)
+//                + "' ORDER BY " + BEGIN_SHIFT + " " + sortMethod;
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + BEGIN_SHIFT + ">='" + dateFormat.format(fromDate) + "' AND "
                 + BEGIN_SHIFT + "<='" + dateFormat.format(toDate)
@@ -148,6 +151,7 @@ public class ShiftsSQLHelper extends SQLHelper {
             do shiftsStorage.add(loadShiftFromCursor(cursor));
             while (cursor.moveToNext());
         }
+        //TODO: добавить cursor.close для всех случаев также для Orders и Locations
         return shiftsStorage;
     }
 
@@ -188,6 +192,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
+        //TODO: в курсоре единственная запись и луп излишен
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do shift = loadShiftFromCursor(cursor);
@@ -218,6 +223,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         shift.beginShift            = beginShift;
         shift.endShift              = endShift;
 
+        //TODO: shift.revenueOfficial = cursor.getInt(cursor.getColumnIndex(REVENUE_OFFICIAL));
         shift.revenueOfficial       = cursor.getInt(4);
         shift.revenueCash           = cursor.getInt(5);
         shift.revenueCard           = cursor.getInt(6);

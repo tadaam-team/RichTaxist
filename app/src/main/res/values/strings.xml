@@ -4,12 +4,15 @@
     <string name="settingsAndExtras">Настройки\nи доп.возможности</string>
     <string name="mainMenu">Главное меню</string>
     <string name="openLastShift">Вернуться\nк последней смене</string>
-    <string name="openShift">Открыть сохраненную смену</string>
+    <string name="openShift">Открыть\nсохраненную смену</string>
     <string name="newShiftFromMenu">Новая смена</string>
     <string name="newShift">Новая\nсмена</string>
     <string name="showOrdersList">Список заказов</string>
     <string name="shiftTotals">Итоги смены</string>
     <string name="routeMap">Карта\nмаршрута</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel">Отмена</string>
 
     <string name="contribute">Похвалить\ntadaam-team</string>
     <string name="exportShifts">Экспорт и импорт\nсмен</string>
@@ -23,8 +26,8 @@
     <string name="mainScreenName">Заказ</string>
     <string name="clearForm">Очистить форму</string>
     <string name="arrivalDateTime">Подача</string>
-    <string name="date">дата</string>
-    <string name="time">время</string>
+    <string name="date">Дата</string>
+    <string name="time">Время</string>
     <string name="costInputHint">введите\nцену</string>
 
     <string name="payType">Тип оплаты</string>
@@ -55,6 +58,8 @@
     <string name="exitToMainMenu">Главное\nменю</string>
     <string name="shiftIsOpen">Смена\nоткрыта</string>
     <string name="shiftIsClosed">Смена\nзакрыта</string>
+    <string name="zero">0</string>
+    <string name="petrolInputMsg">Введите фактический\nчек за бензин</string>
 
     <string name="grandTotalsScreenName">Итоги по\nзарплате</string>
     <string name="rangeStart">Первая смена</string>

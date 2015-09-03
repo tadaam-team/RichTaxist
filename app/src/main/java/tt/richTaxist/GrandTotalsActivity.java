@@ -15,6 +15,7 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import tt.richTaxist.DB.OrdersStorage;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.gps.RangeSeekBar;
@@ -365,15 +366,15 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
         buttonRangeEndTime.  setText(getStringTimeFromCal(rangeEnd));
 
-        gt_revenueOfficial. setText(String.valueOf(revenueOfficial));
-        gt_revenueCash.     setText(String.valueOf(revenueCash));
-        gt_revenueCard.     setText(String.valueOf(revenueCard));
-        gt_revenueBonus.    setText(String.valueOf(revenueBonus));
-        gt_petrol.          setText(String.valueOf(petrol));
-        gt_toTheCashier.    setText(String.valueOf(toTheCashier));
-        gt_salaryOfficial.  setText(String.valueOf(salaryOfficial));
-        gt_salaryPlusBonus. setText(String.valueOf(salaryPlusBonus));
+        gt_revenueOfficial. setText(String.format(Locale.GERMANY, "%,d", revenueOfficial));
+        gt_revenueCash.     setText(String.format(Locale.GERMANY, "%,d", revenueCash));
+        gt_revenueCard.     setText(String.format(Locale.GERMANY, "%,d", revenueCard));
+        gt_revenueBonus.    setText(String.format(Locale.GERMANY, "%,d", revenueBonus));
+        gt_petrol.          setText(String.format(Locale.GERMANY, "%,d", petrol));
+        gt_toTheCashier.    setText(String.format(Locale.GERMANY, "%,d", toTheCashier));
+        gt_salaryOfficial.  setText(String.format(Locale.GERMANY, "%,d", salaryOfficial));
+        gt_salaryPlusBonus. setText(String.format(Locale.GERMANY, "%,d", salaryPlusBonus));
         gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
-        gt_salaryPerHour.   setText(String.valueOf(salaryPerHour));
+        gt_salaryPerHour.   setText(String.format(Locale.GERMANY, "%,d", salaryPerHour));
     }
 }

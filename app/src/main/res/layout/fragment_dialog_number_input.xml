@@ -6,10 +6,11 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="новое значение:" />
+        android:text="@string/petrolInputMsg"
+        android:id="@+id/textView"
+        android:layout_gravity="center_horizontal"/>
 
     <EditText
         android:id="@+id/editTextName"
@@ -18,5 +19,23 @@
         android:imeOptions="actionDone"
         android:inputType="numberDecimal">
     </EditText>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <Button
+            style="@style/ButtonBordered"
+            android:layout_width="92dp" android:layout_height="60dp"
+            android:text="@string/ok"
+            android:id="@+id/btnOk"
+            android:onClick="onOkClick"/>
+        <Button
+            style="@style/ButtonBordered"
+            android:layout_width="92dp" android:layout_height="60dp"
+            android:text="@string/cancel"
+            android:id="@+id/btnCancel"
+            android:onClick="onCancelClick"/>
+    </LinearLayout>
 
 </LinearLayout>

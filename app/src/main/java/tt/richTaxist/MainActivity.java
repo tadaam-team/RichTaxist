@@ -34,7 +34,8 @@ import tt.richTaxist.DB.OrdersStorageList;
  * Created by Tau on 08.06.2015.
  */
 
-public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, F_CustomDatePicker.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener, F_CustomDatePicker.OnFragmentInteractionListener{
     private static final String LOG_TAG = "ChatActivity";
     public static Context context;
     public final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
@@ -97,19 +98,19 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
         timePickerPlaceHolder = (LinearLayout) findViewById(R.id.timePickerPlaceHolder);
-        timeInput = (EditText) findViewById(R.id.timeInput);
-        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
-        View.OnKeyListener okl = new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // сохраняем текст, введенный до нажатия Enter в переменную
-                    parseTimeInput();
-                    return true;
-                }
-                return false;
-            }
-        };
-        timeInput.setOnKeyListener(okl);
+//        timeInput = (EditText) findViewById(R.id.timeInput);
+//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//        View.OnKeyListener okl = new View.OnKeyListener() {
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if (event.getAction() == KeyEvent.ACTION_DOWN && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+//                    // сохраняем текст, введенный до нажатия Enter в переменную
+//                    parseTimeInput();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        };
+//        timeInput.setOnKeyListener(okl);
         refreshInputStyle();//плохо, но в процессе обновления создается timePicker при необходимости
 
 
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         arrivalDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
         arrivalDateTime.set(Calendar.MINUTE, minute);
         timeButton.setText(getStringTimeFromCal(arrivalDateTime));
-        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
     }
 
     //TODO подумать над переносом в сторож
@@ -168,91 +169,91 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
-    private void parseTimeInput(){
-        String newTime = timeInput.getText().toString();
-        newTime = newTime.replace(":","");
-        newTime = newTime.replace(",","");
-        newTime = newTime.replace(".","");
-
-        String newMinutes = "";
-        String newHours = "";
-
-        switch(newTime.length()){
-            case 4:
-                newHours += newTime.charAt(0);
-                newHours += newTime.charAt(1);
-                arrivalDateTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(newHours));
-                newMinutes += newTime.charAt(2);
-                newMinutes += newTime.charAt(3);
-                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
-                break;
-            case 3:
-                newHours += newTime.charAt(0);
-                arrivalDateTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(newHours));
-                newMinutes += newTime.charAt(1);
-                newMinutes += newTime.charAt(2);
-                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
-                break;
-            case 2:
-                arrivalDateTime.set(Calendar.HOUR_OF_DAY, 0);
-                newMinutes += newTime.charAt(0);
-                newMinutes += newTime.charAt(1);
-                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
-                break;
-            case 1:
-                arrivalDateTime.set(Calendar.HOUR_OF_DAY, 0);
-                newMinutes += newTime.charAt(0);
-                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
-                break;
-            default:
-                Toast.makeText(getApplicationContext(), "только цифры, пожалуйста", Toast.LENGTH_SHORT).show();
-                break;
-        }
-
-        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
-    }
+//    private void parseTimeInput(){
+//        String newTime = timeInput.getText().toString();
+//        newTime = newTime.replace(":","");
+//        newTime = newTime.replace(",","");
+//        newTime = newTime.replace(".","");
+//
+//        String newMinutes = "";
+//        String newHours = "";
+//
+//        switch(newTime.length()){
+//            case 4:
+//                newHours += newTime.charAt(0);
+//                newHours += newTime.charAt(1);
+//                arrivalDateTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(newHours));
+//                newMinutes += newTime.charAt(2);
+//                newMinutes += newTime.charAt(3);
+//                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
+//                break;
+//            case 3:
+//                newHours += newTime.charAt(0);
+//                arrivalDateTime.set(Calendar.HOUR_OF_DAY, Integer.parseInt(newHours));
+//                newMinutes += newTime.charAt(1);
+//                newMinutes += newTime.charAt(2);
+//                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
+//                break;
+//            case 2:
+//                arrivalDateTime.set(Calendar.HOUR_OF_DAY, 0);
+//                newMinutes += newTime.charAt(0);
+//                newMinutes += newTime.charAt(1);
+//                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
+//                break;
+//            case 1:
+//                arrivalDateTime.set(Calendar.HOUR_OF_DAY, 0);
+//                newMinutes += newTime.charAt(0);
+//                arrivalDateTime.set(Calendar.MINUTE, Integer.parseInt(newMinutes));
+//                break;
+//            default:
+//                Toast.makeText(getApplicationContext(), "только цифры, пожалуйста", Toast.LENGTH_SHORT).show();
+//                break;
+//        }
+//
+//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//    }
 
     //TODO перейти от setVisibility к диспетчеру фрагментов
     public static void refreshInputStyle(){
-        if (dateButton != null) {
-            switch (Storage.typeOfDateInput){
-                case BUTTON:
+//        if (dateButton != null) {
+//            switch (Storage.typeOfDateInput){
+//                case BUTTON:
 //                    Toast.makeText(context, "date widgets are not ready", Toast.LENGTH_SHORT).show();
 //                    dateButton.setVisibility(View.VISIBLE);
 //                    datePickerPlaceHolder.setVisibility(View.GONE);
-                    break;
-                case SPINNER:
-                    Toast.makeText(context, "date widgets are not ready", Toast.LENGTH_SHORT).show();
+//                    break;
+//                case SPINNER:
+//                    Toast.makeText(context, "date widgets are not ready", Toast.LENGTH_SHORT).show();
 //                    dateButton.setVisibility(View.GONE);
 //                    datePickerPlaceHolder.setVisibility(View.VISIBLE);
-                    break;
-                case TEXT_INPUT:
-                    Toast.makeText(context, "date widgets are not ready", Toast.LENGTH_SHORT).show();
+//                    break;
+//                case TEXT_INPUT:
+//                    Toast.makeText(context, "date widgets are not ready", Toast.LENGTH_SHORT).show();
 //                    dateButton.setVisibility(View.GONE);
 //                    datePickerPlaceHolder.setVisibility(View.GONE);
-                    break;
-            }
-        }
+//                    break;
+//            }
+//        }
 
-        if (timeButton != null && timeInput != null && timePickerPlaceHolder != null) {
-            switch (Storage.typeOfTimeInput) {
-                case BUTTON:
-                    timeButton.setVisibility(View.VISIBLE);
-                    timePickerPlaceHolder.setVisibility(View.GONE);
-                    timeInput.setVisibility(View.GONE);
-                    break;
-                case SPINNER:
-                    timeButton.setVisibility(View.GONE);
-                    createAndInsertTimePicker();
-                    timeInput.setVisibility(View.GONE);
-                    break;
-                case TEXT_INPUT:
-                    timeButton.setVisibility(View.GONE);
-                    timePickerPlaceHolder.setVisibility(View.GONE);
-                    timeInput.setVisibility(View.VISIBLE);
-                    break;
-            }
-        }
+//        if (timeButton != null && timeInput != null && timePickerPlaceHolder != null) {
+//            switch (Storage.typeOfTimeInput) {
+//                case BUTTON:
+//                    timeButton.setVisibility(View.VISIBLE);
+//                    timePickerPlaceHolder.setVisibility(View.GONE);
+//                    timeInput.setVisibility(View.GONE);
+//                    break;
+//                case SPINNER:
+//                    timeButton.setVisibility(View.GONE);
+//                    createAndInsertTimePicker();
+//                    timeInput.setVisibility(View.GONE);
+//                    break;
+//                case TEXT_INPUT:
+//                    timeButton.setVisibility(View.GONE);
+//                    timePickerPlaceHolder.setVisibility(View.GONE);
+//                    timeInput.setVisibility(View.VISIBLE);
+//                    break;
+//            }
+//        }
     }
 
 
@@ -269,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 arrivalDateTime.set(Calendar.MINUTE, minute);
                 //не нравится мне, что тут приходится присваивать значение и timeInput тоже, но пока не будет диспетчера фрагментов, работем так
                 timeButton.setText(getStringTimeFromCal(arrivalDateTime));
-                timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//                timeInput.setText(getStringTimeFromCal(arrivalDateTime));
             }
         };
         timePicker.setOnTimeChangedListener(timeChangedListener);
@@ -337,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             timePicker.setCurrentHour(arrivalDateTime.get(Calendar.HOUR_OF_DAY));
             timePicker.setCurrentMinute(arrivalDateTime.get(Calendar.MINUTE));
         }
-        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
 
         if (receivedOrder != null) {
             priceUI.setText(Integer.toString(receivedOrder.price));

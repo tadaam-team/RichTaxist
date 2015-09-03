@@ -100,6 +100,8 @@ public class OrdersSQLHelper extends SQLHelper {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
         // Select All Query
+        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+//        + ARRIVAL_DATE_TIME + " BETWEEN '" + dateFormat.format(fromDate) + "' and '" + dateFormat.format(toDate) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "' AND "
                 + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "'";

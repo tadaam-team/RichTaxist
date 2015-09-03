@@ -10,6 +10,7 @@
     </style>
 
 <!--style params starting with "layout_" don't work by default. you need to add {style="@style/ButtonBordered"} to each widget-->
+<!--4=92;  3=124;  2=188;  1=380-->
     <style name="ButtonBordered" parent="android:style/Widget.Button">
         <item name="android:background">@drawable/button_selector</item>
         <item name="android:textColor">@color/text_color</item>

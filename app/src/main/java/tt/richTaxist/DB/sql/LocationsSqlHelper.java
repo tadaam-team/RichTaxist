@@ -4,11 +4,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import tt.richTaxist.Shift;
 import tt.richTaxist.gps.Coordinates;
 
@@ -39,6 +37,9 @@ public class LocationsSqlHelper extends SQLHelper {
         ArrayList<Coordinates> coordinates = new ArrayList<>();
         // Select All Query
         //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
+
+        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+//                + DATE_TIME + " BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + DATE_TIME + "<='" + dateFormat.format(toTime) + "' AND "
                 + DATE_TIME + ">='" + dateFormat.format(fromTime)+"'";
@@ -86,6 +87,8 @@ public class LocationsSqlHelper extends SQLHelper {
         ArrayList<Coordinates> coordinates = new ArrayList<>();
         // Select All Query
         //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
+        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+//                + DATE_TIME + "BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + DATE_TIME + "<='" + dateFormat.format(toTime) + "' AND "
                 + DATE_TIME + ">='" + dateFormat.format(fromTime) + "'";

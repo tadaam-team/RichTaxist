@@ -159,6 +159,7 @@ public class SignInActivity extends AppCompatActivity {
         Storage.resetSettings();
         Storage.saveSettings(context);
         showLogInORLogOut(true, false);
+        //TODO: база не должна быть доступна, если залогинился другой юзер
     }
 
 

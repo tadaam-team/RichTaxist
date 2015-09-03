@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-
 import tt.richTaxist.Bricks.DF_ListInput;
 
 
@@ -111,7 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Storage.instance.saveSettings(context);
+        Storage.saveSettings(context);
         if (MainActivity.currentShift != null) MainActivity.refreshInputStyle();
     }
 }
