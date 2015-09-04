@@ -61,18 +61,64 @@ public class FirstScreenActivity extends AppCompatActivity {
             authorize(this);
         }
 
+        setOnClickListeners();
+
+
+//        Узнаем IP-адрес устройства
+        WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInf = wifiMan.getConnectionInfo();
+        int ipAddress = wifiInf.getIpAddress();
+        Storage.IP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress % 8 & 0xff), (ipAddress % 16 & 0xff), (ipAddress % 24 & 0xff));
+
+////        Узнаем модель смартфона
+        Storage.phoneModel = android.os.Build.MODEL;
+//        Узнаем версию Android
+        Storage.androidVersion = android.os.Build.VERSION.RELEASE;
+//        Узнаем имя оператора сотовой связи
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        Storage.operatorName = manager.getNetworkOperatorName();
+
+//        Узнаем размер экрана
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Storage.screenWidth = dm.widthPixels;
+        Storage.screenHeight = dm.heightPixels;
+        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+        double screenInches = Math.sqrt(x + y);
+        Storage.screenDiagonal = (Math.rint(screenInches * 10) / 10);//returns the double value that is closest in value to the argument and is equal to a mathematical integer
+
+//    public double screenDiagonal() {
+//        DisplayMetrics dm = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(dm);
+//        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
+//        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
+//        double screenInches = Math.sqrt(x + y); Log.d("debug", "Screen inches : " + screenInches);
+//
+//        return truncate(screenInches, 1);
+//    }
+//    public static double truncate(double c, int n){
+//        int d = (int) Math.pow(10, n);
+//        double r = (Math.rint(c*d)/d);
+//        return r;
+//    }
+        Storage.batteryCapacity = getBatteryCapacity();
+        Storage.batteryLevel = getBatteryLevel();
+    }
+
+    private void setOnClickListeners(){
         findViewById(R.id.buttonOpenLastShift).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.currentShift = ShiftsStorage.getLastShift();
-                if (MainActivity.currentShift == null) {
+                if (ShiftsStorage.getLastShift() == null)
                     Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
-                    return;
+                else {
+                    MainActivity.currentShift = ShiftsStorage.getLastShift();
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
+                    startActivity(new Intent(activity, ShiftTotalsActivity.class));
+                    Log.d(LOG_TAG, "открываю последнюю сохраненную смену");
+                    finish();
                 }
-                MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
-                startActivity(new Intent(activity, ShiftTotalsActivity.class));
-                Log.d(LOG_TAG, "открываю последнюю сохраненную смену");
-                finish();
             }
         });
         findViewById(R.id.buttonNewShift).setOnClickListener(new View.OnClickListener() {
@@ -88,10 +134,14 @@ public class FirstScreenActivity extends AppCompatActivity {
         findViewById(R.id.buttonOpenShift).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.shiftsStorage.clear();
-                MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
-                startActivity(new Intent(activity, ShiftsListActivity.class));
-                Log.d(LOG_TAG, "открываю список сохраненных смен");
+                if (ShiftsStorage.getLastShift() == null)
+                    Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
+                else {
+                    MainActivity.shiftsStorage.clear();
+                    MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
+                    startActivity(new Intent(activity, ShiftsListActivity.class));
+                    Log.d(LOG_TAG, "открываю список сохраненных смен");
+                }
             }
         });
         findViewById(R.id.buttonSettings).setOnClickListener(new View.OnClickListener() {
@@ -145,48 +195,6 @@ public class FirstScreenActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "открываю диалог выхода");
             }
         });
-
-
-//        Узнаем IP-адрес устройства
-        WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInf = wifiMan.getConnectionInfo();
-        int ipAddress = wifiInf.getIpAddress();
-        Storage.IP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress % 8 & 0xff), (ipAddress % 16 & 0xff), (ipAddress % 24 & 0xff));
-
-////        Узнаем модель смартфона
-        Storage.phoneModel = android.os.Build.MODEL;
-//        Узнаем версию Android
-        Storage.androidVersion = android.os.Build.VERSION.RELEASE;
-//        Узнаем имя оператора сотовой связи
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        Storage.operatorName = manager.getNetworkOperatorName();
-
-//        Узнаем размер экрана
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Storage.screenWidth = dm.widthPixels;
-        Storage.screenHeight = dm.heightPixels;
-        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
-        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
-        double screenInches = Math.sqrt(x + y);
-        Storage.screenDiagonal = (Math.rint(screenInches * 10) / 10);//returns the double value that is closest in value to the argument and is equal to a mathematical integer
-
-//    public double screenDiagonal() {
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
-//        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
-//        double screenInches = Math.sqrt(x + y); Log.d("debug", "Screen inches : " + screenInches);
-//
-//        return truncate(screenInches, 1);
-//    }
-//    public static double truncate(double c, int n){
-//        int d = (int) Math.pow(10, n);
-//        double r = (Math.rint(c*d)/d);
-//        return r;
-//    }
-        Storage.batteryCapacity = getBatteryCapacity();
-        Storage.batteryLevel = getBatteryLevel();
     }
 
 

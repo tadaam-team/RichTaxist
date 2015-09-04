@@ -36,7 +36,7 @@ public class LocationsSqlHelper extends SQLHelper {
 
         ArrayList<Coordinates> coordinates = new ArrayList<>();
         // Select All Query
-        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
+        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT_ID+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
 
         //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
 //                + DATE_TIME + " BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
@@ -73,7 +73,7 @@ public class LocationsSqlHelper extends SQLHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        //cv.put(SHIFT,dateFormat.format(shift.shiftID));
+        //cv.put(SHIFT_ID,dateFormat.format(shift.shiftID));
         cv.put(LON, coordinates.getLon());
         cv.put(LAT, coordinates.getLat());
         cv.put(DATE_TIME, dateFormat.format(new Date()));
@@ -86,7 +86,7 @@ public class LocationsSqlHelper extends SQLHelper {
     public List<Coordinates> getLocationsByPeriod(Date fromTime, Date toTime) {
         ArrayList<Coordinates> coordinates = new ArrayList<>();
         // Select All Query
-        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
+        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT_ID+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
         //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
 //                + DATE_TIME + "BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "

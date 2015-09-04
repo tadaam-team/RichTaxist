@@ -17,7 +17,8 @@ public class OrdersStorageList extends ArrayList<Order> {
     public OrdersStorageList() {    }
     public void fillTodayOrders() {
         clear(false);
-        addAll(OrdersStorage.getOrders(new Date()));
+        Date today = new Date();
+        addAll(OrdersStorage.getOrders(today, today));
     }
     public void fillOrdersByShift(Shift shift) {
         clear(false);

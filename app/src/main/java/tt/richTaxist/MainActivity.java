@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,10 +49,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private static Button timeButton;
     private static CustomTimePicker timePicker;
     private static LinearLayout timePickerPlaceHolder;
-    private static EditText timeInput;
+//    private static EditText timeInput;
 
     private static RadioGroup typeOfPaymentUI;
-    private static EditText priceUI;
+    private static EditText priceUI, noteUI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
         typeOfPaymentUI = (RadioGroup) findViewById(R.id.payTypeRadioGroup);
         priceUI = (EditText) findViewById(R.id.price);
+        noteUI  = (EditText) findViewById(R.id.note);
         findViewById(R.id.buttonAddNew).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     TypeOfPayment getRadioState(){
         switch (typeOfPaymentUI.getCheckedRadioButtonId()){
-            case R.id.choiceCache:  return TypeOfPayment.CASH;
+            case R.id.choiceCash:  return TypeOfPayment.CASH;
             case R.id.choiceCard:   return TypeOfPayment.CARD;
             case R.id.choiceBonus:  return TypeOfPayment.TIP;
             default:                throw new IllegalArgumentException();//"ошибка обработки типа оплаты";
@@ -324,34 +324,34 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     }
 
     //этот метод получает заказ из листа, когда юзер делает свайп влево и обнуляет поля ввода, если переданный заказ == null
-    //TODO время поступает в мейн искаженным
-    //TODO интервалы времени должны работать только для спиннера
     public static void refreshWidgets(Order receivedOrder){
-        if (receivedOrder != null) arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
-        else arrivalDateTime = Calendar.getInstance();
-
-        dateButton.setText(getStringDateFromCal(arrivalDateTime));
-//        datePicker.init(arrivalDateTime.get(Calendar.YEAR), arrivalDateTime.get(Calendar.MONTH) + 1, arrivalDateTime.get(Calendar.DAY_OF_MONTH), null);
-//        dateInput.setText(getStringDateFromCal(arrivalDateTime));
-        timeButton.setText(getStringTimeFromCal(arrivalDateTime));
-        if (timePicker != null) {
-            timePicker.setCurrentHour(arrivalDateTime.get(Calendar.HOUR_OF_DAY));
-            timePicker.setCurrentMinute(arrivalDateTime.get(Calendar.MINUTE));
-        }
-//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
-
         if (receivedOrder != null) {
-            priceUI.setText(Integer.toString(receivedOrder.price));
+            arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
+            priceUI.setText(String.valueOf(receivedOrder.price));
             switch (receivedOrder.typeOfPayment) {
-                case CASH:  typeOfPaymentUI.check(R.id.choiceCache); break;
+                case CASH:  typeOfPaymentUI.check(R.id.choiceCash); break;
                 case CARD:  typeOfPaymentUI.check(R.id.choiceCard);  break;
-                case TIP: typeOfPaymentUI.check(R.id.choiceBonus); break;
+                case TIP:   typeOfPaymentUI.check(R.id.choiceBonus); break;
                 default:    typeOfPaymentUI.clearCheck();
             }
+            noteUI.setText(receivedOrder.note);
         } else{
+            arrivalDateTime = Calendar.getInstance();
             priceUI.setText("");
-            typeOfPaymentUI.check(R.id.choiceCache);
+            typeOfPaymentUI.check(R.id.choiceCash);
+            noteUI.setText("");
         }
+        dateButton.setText(getStringDateFromCal(arrivalDateTime));
+        timeButton.setText(getStringTimeFromCal(arrivalDateTime));
+
+//        datePicker.init(arrivalDateTime.get(Calendar.YEAR), arrivalDateTime.get(Calendar.MONTH) + 1, arrivalDateTime.get(Calendar.DAY_OF_MONTH), null);
+//        dateInput.setText(getStringDateFromCal(arrivalDateTime));
+//        if (timePicker != null) {
+//            timePicker.setCurrentHour(arrivalDateTime.get(Calendar.HOUR_OF_DAY));
+//            timePicker.setCurrentMinute(arrivalDateTime.get(Calendar.MINUTE));
+//        }
+//        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+
     }
 
    //выполняется после возврата из OrderActivity
@@ -362,9 +362,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             int price;
             try { price = Integer.parseInt(priceUI.getText().toString());
             } catch (NumberFormatException e) {
+                Log.d(LOG_TAG, "NumberFormatException caught while parsing price");
                 price = 0;
             }
-            Order newOrder = new Order(arrivalDateTime.getTime(), getRadioState(), price, currentShift);
+            String note;
+            try { note = noteUI.getText().toString();
+            } catch (Exception e) {
+                Log.d(LOG_TAG, "Exception caught while parsing note");
+                note = "";
+            }
+            Order newOrder = new Order(arrivalDateTime.getTime(), getRadioState(), price, currentShift, note);
             refreshWidgets(null);
             ordersStorage.add(newOrder);//единственная точка добавления заказа
             Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();

@@ -29,6 +29,7 @@
     <string name="date">Дата</string>
     <string name="time">Время</string>
     <string name="costInputHint">введите\nцену</string>
+    <string name="noteInputHint">введите\nзаметку</string>
 
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">наличные</string>

@@ -22,19 +22,21 @@ import tt.richTaxist.TypeOfPayment;
 public class OrdersSQLHelper extends SQLHelper {
     private static final String LOG_TAG = "OrdersSQLHelper";
     static final String TABLE_NAME = "orders";
-    static final String TYPE_OF_PAYMENT = "typeOfPayment";
-    static final String PRICE = "price";
-    static final String SHIFT = "shift";
     static final String ARRIVAL_DATE_TIME = "arrivalDateTime";
+    static final String PRICE = "price";
+    static final String TYPE_OF_PAYMENT = "typeOfPayment";
+    static final String SHIFT_ID = "shiftID";
     static final String DISTANCE = "distance";
     static final String TRAVEL_TIME = "travelTime";
+    static final String NOTE = "note";
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
-            + TYPE_OF_PAYMENT + " TINYINT, "
             + ARRIVAL_DATE_TIME + " DATETIME, "
             + PRICE + " INT, "
-            + SHIFT + " INT, "
+            + TYPE_OF_PAYMENT + " TINYINT, "
+            + SHIFT_ID + " INT, "
             + DISTANCE + " INT, "
-            + TRAVEL_TIME + " LONGINT)";
+            + TRAVEL_TIME + " LONGINT,"
+            + NOTE + " TEXT)";
 
     public OrdersSQLHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -46,54 +48,22 @@ public class OrdersSQLHelper extends SQLHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) { super.onUpgrade(sqLiteDatabase, i, i1); }
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVer, int newVer) { super.onUpgrade(sqLiteDatabase, oldVer, newVer); }
 
     public boolean commit(Order order){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(PRICE, order.price);
         cv.put(ARRIVAL_DATE_TIME, dateFormat.format(order.arrivalDateTime));
+        cv.put(PRICE, order.price);
         cv.put(TYPE_OF_PAYMENT, order.typeOfPayment.id);
-        cv.put(SHIFT, order.shift.shiftID);
+        cv.put(SHIFT_ID, order.shift.shiftID);
+        cv.put(DISTANCE, order.shift.shiftID);
+        cv.put(TRAVEL_TIME, order.shift.shiftID);
+        cv.put(NOTE, order.note);
 
         long result = db.insert(OrdersSQLHelper.TABLE_NAME, null, cv);
         db.close();
         return result != -1;
-    }
-
-    public int remove(Order order){
-        SQLiteDatabase db = getWritableDatabase();
-        int result = db.delete(TABLE_NAME, PRICE        + " = ?"
-                        + " AND " + ARRIVAL_DATE_TIME   + " = ?"
-                        + " AND " + TYPE_OF_PAYMENT     + " = ?"
-                        + " AND " + SHIFT               + " = ?",
-                new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                        String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
-        db.close();
-        return result;
-    }
-
-    public void deleteOrdersByShift(Shift shift) {
-        SQLiteDatabase db = getWritableDatabase();
-        // Select All Query
-        int result = db.delete(TABLE_NAME, SHIFT + " = ?", new String[]{String.valueOf(shift.shiftID)});
-        db.close();
-    }
-
-    public int remove(List<Order> orders){
-        SQLiteDatabase db = getWritableDatabase();
-        int result = 0;
-        for (int i = 0; i < orders.size(); i++) {
-            Order order =  orders.get(i);
-            result += db.delete(TABLE_NAME, PRICE           + " = ?"
-                            + " AND " + ARRIVAL_DATE_TIME   + " = ?"
-                            + " AND " + TYPE_OF_PAYMENT     + " = ?"
-                            + " AND " + SHIFT               + " = ?",
-                    new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                            String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
-        }
-        db.close();
-        return result;
     }
 
     public OrdersStorageList getOrders(Date fromDate, Date toDate) {
@@ -120,7 +90,7 @@ public class OrdersSQLHelper extends SQLHelper {
     public OrdersStorageList getOrdersByShift(Shift shift) {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
 
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -137,7 +107,7 @@ public class OrdersSQLHelper extends SQLHelper {
     public boolean hasShiftOrders(Shift shift) {
 //        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         boolean result = cursor.getCount() > 0;
@@ -150,7 +120,7 @@ public class OrdersSQLHelper extends SQLHelper {
 //        OrdersStorageList ordersStorage = new OrdersStorageList(false);
         // Select All Query
         String selectQuery = "SELECT typeOfPayment, SUM(price) FROM " + TABLE_NAME +
-                " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "' GROUP BY typeOfPayment";
+                " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "' GROUP BY typeOfPayment";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         Log.d(LOG_TAG, "cursor.getColumnCount(): " + String.valueOf(cursor.getColumnCount()));
@@ -173,7 +143,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
         // Select All Query
         String selectQuery = "SELECT SUM(distance), SUM(travelTime) FROM " + TABLE_NAME +
-                " WHERE " + SHIFT + "='" + String.valueOf(shift.shiftID) + "'";
+                " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -194,14 +164,51 @@ public class OrdersSQLHelper extends SQLHelper {
     private Order loadOrderFromCursor(Cursor cursor) {
         Date arrivalDateTime = null;
         try {
-            arrivalDateTime = dateFormat.parse(cursor.getString(2));
+            arrivalDateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
         } catch (ParseException e) { e.printStackTrace(); }
-        TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(1));
-        int price = cursor.getInt(3);
-        int shiftID = cursor.getInt(4);
-        int distance = cursor.getInt(5);
-        long travelTime = cursor.getLong(6);
+        int price = cursor.getInt(cursor.getColumnIndex(PRICE));
+        TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
+        int shiftID = cursor.getInt(cursor.getColumnIndex(SHIFT_ID));
+        int distance = cursor.getInt(cursor.getColumnIndex(DISTANCE));
+        long travelTime = cursor.getLong(cursor.getColumnIndex(TRAVEL_TIME));
+        String note = cursor.getString(cursor.getColumnIndex(NOTE));
 
-        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), distance, travelTime);
+        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), distance, travelTime, note);
     }
+
+    public int remove(Order order){
+        SQLiteDatabase db = getWritableDatabase();
+        int result = db.delete(TABLE_NAME, ARRIVAL_DATE_TIME + " = ?"
+                        + " AND " + PRICE + " = ?"
+                        + " AND " + TYPE_OF_PAYMENT + " = ?"
+                        + " AND " + SHIFT_ID + " = ?",
+                new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
+                        String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
+        db.close();
+        return result;
+    }
+
+    public int remove(List<Order> orders){
+        SQLiteDatabase db = getWritableDatabase();
+        int result = 0;
+        for (int i = 0; i < orders.size(); i++) {
+            Order order =  orders.get(i);
+            result += db.delete(TABLE_NAME, PRICE           + " = ?"
+                            + " AND " + ARRIVAL_DATE_TIME   + " = ?"
+                            + " AND " + TYPE_OF_PAYMENT     + " = ?"
+                            + " AND " + SHIFT_ID + " = ?",
+                    new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
+                            String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
+        }
+        db.close();
+        return result;
+    }
+
+    public void deleteOrdersByShift(Shift shift) {
+        SQLiteDatabase db = getWritableDatabase();
+        // Select All Query
+        int result = db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        db.close();
+    }
+
 }
