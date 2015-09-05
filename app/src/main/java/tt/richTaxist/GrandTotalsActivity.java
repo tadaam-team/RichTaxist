@@ -1,5 +1,6 @@
 package tt.richTaxist;
 
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import tt.richTaxist.gps.RangeSeekBar;
 
 
 public class GrandTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    static Context context;
     DatePickerDialog.OnDateSetListener dateSetListener;
     TimePickerDialog.OnTimeSetListener timeSetListener;
     String LOG_TAG = "GrandTotalsActivity";
@@ -45,7 +47,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grand_totals);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        context = getApplicationContext();
+        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_grand_totals));
         dateSetListener = GrandTotalsActivity.this;
         timeSetListener = GrandTotalsActivity.this;
 
@@ -354,7 +358,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 rangeEnd.set(Calendar.MINUTE, minute);
                 seekBar.setSelectedMaxValue(rangeEnd.getTimeInMillis());
                 break;
-            default: Toast.makeText(getApplicationContext(), "ошибка ввода", Toast.LENGTH_SHORT).show(); break;
+            default: Toast.makeText(context, "ошибка ввода", Toast.LENGTH_SHORT).show(); break;
         }
         calculateGrandTotals();
         refreshWidgets();

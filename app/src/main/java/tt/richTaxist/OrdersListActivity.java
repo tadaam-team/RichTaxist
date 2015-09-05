@@ -25,8 +25,8 @@ public class OrdersListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //TODO: совместить лист заказов с MainActivity, если позволяет место
         if (Storage.showListHint) {
             Toast listHint = Toast.makeText(OrdersListActivity.this, R.string.listHint, Toast.LENGTH_SHORT);
             listHint.setGravity(Gravity.TOP, 0, 0);
@@ -89,6 +89,9 @@ public class OrdersListActivity extends ListActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            //TODO: вызов этого метода здесь не корректен, т.к. мы назначаем размер списку каждый раз, когда добавляем в него очередную строку
+            //однако я пока не вижу, как получить ссылку на нужный ViewGroup вне метода getView
+            Storage.measureScreenWidth(context, parent);
             Order order = getItem(position);
 
             if (convertView == null) {
@@ -105,7 +108,7 @@ public class OrdersListActivity extends ListActivity {
             TextView textViewAdditional = (TextView) convertView.findViewById(R.id.entryTextViewAdditional);
             textViewAdditional.setText(String.format("цена = %d, тип оплаты = %s", order.price, order.typeOfPayment.toString()));
 
-            //назначим картинку каждой строке списка
+            //назначим картинку обрабатываемой строке списка
             ImageView imageView = (ImageView) convertView.findViewById(R.id.entryIcon);
             if (TypeOfPayment.CASH.equals(order.typeOfPayment))  imageView.setImageResource(R.drawable.ic_cash);
             if (TypeOfPayment.CARD.equals(order.typeOfPayment))  imageView.setImageResource(R.drawable.ic_card);

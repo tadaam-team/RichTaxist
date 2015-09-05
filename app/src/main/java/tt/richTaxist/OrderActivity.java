@@ -2,16 +2,17 @@ package tt.richTaxist;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import tt.richTaxist.gps.GPSService;
  */
 public class OrderActivity extends AppCompatActivity{
     private static final String LOG_TAG = "Order activity";
+    static Context context;
     private int distance;
     private long travelTime;
     private Date startTime;
@@ -45,7 +47,10 @@ public class OrderActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        context = getApplicationContext();
+        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_order));
+
         distance = 0;
         travelTime = 0;
         coordinatesList = new ArrayList<>();

@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.parse.LogInCallback;
@@ -39,13 +39,21 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         context = getApplicationContext();
+        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_sign_in));
 
         initiateWidgets();
         mProgress.setVisibility(View.INVISIBLE);
         if (Storage.currentUser != null) showLogInORLogOut(false, true);
         else showLogInORLogOut(true, false);
+        //TODO: убрать клавиатуру при входе на экран
+//        View focused = getCurrentFocus();
+//        if (focused != null) {
+//            focused.clearFocus();
+//            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//            imm.hideSoftInputFromWindow(null, InputMethodManager.HIDE_NOT_ALWAYS);
+//        }
     }
 
     private void initiateWidgets() {

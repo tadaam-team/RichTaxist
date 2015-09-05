@@ -3,16 +3,15 @@ package tt.richTaxist;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -33,10 +32,12 @@ public class FirstScreenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_screen);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity = FirstScreenActivity.this;
         context = getApplicationContext();
-        MainActivity.context = getApplicationContext();
+        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_first_screen));
+        //TODO: выяснить, зачем такое назначение ссылки
+        MainActivity.context = context;
         GPSHelper.startService(MainActivity.context);
 
         Storage.init(this);
@@ -78,33 +79,10 @@ public class FirstScreenActivity extends AppCompatActivity {
         TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         Storage.operatorName = manager.getNetworkOperatorName();
 
-//        Узнаем размер экрана
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        Storage.screenWidth = dm.widthPixels;
-        Storage.screenHeight = dm.heightPixels;
-        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
-        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
-        double screenInches = Math.sqrt(x + y);
-        Storage.screenDiagonal = (Math.rint(screenInches * 10) / 10);//returns the double value that is closest in value to the argument and is equal to a mathematical integer
-
-//    public double screenDiagonal() {
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//        double x = Math.pow(dm.widthPixels / dm.xdpi, 2);
-//        double y = Math.pow(dm.heightPixels / dm.ydpi, 2);
-//        double screenInches = Math.sqrt(x + y); Log.d("debug", "Screen inches : " + screenInches);
-//
-//        return truncate(screenInches, 1);
-//    }
-//    public static double truncate(double c, int n){
-//        int d = (int) Math.pow(10, n);
-//        double r = (Math.rint(c*d)/d);
-//        return r;
-//    }
         Storage.batteryCapacity = getBatteryCapacity();
         Storage.batteryLevel = getBatteryLevel();
     }
+
 
     private void setOnClickListeners(){
         findViewById(R.id.buttonOpenLastShift).setOnClickListener(new View.OnClickListener() {

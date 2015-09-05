@@ -2,150 +2,157 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent" android:layout_height="match_parent"
     tools:context=".SignInActivity"
-    android:id="@+id/gla"
+    android:id="@+id/activity_sign_in"
     android:orientation="vertical">
 
-    <TableLayout
-        android:id="@+id/laNotSigned"
-        android:layout_width="match_parent" android:layout_height="wrap_content">
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/userName" style="@style/Text"
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_weight="1"/>
-            <EditText
-                android:id="@+id/editUserName" style="@style/Text"
-                android:inputType="text"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="40"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/password" style="@style/Text"
-                android:id="@+id/tvPassword"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_weight="1"/>
-            <EditText
-                android:id="@+id/editPassword" style="@style/Text"
-                android:inputType="textPassword"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="40"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/email" style="@style/Text"
-                android:id="@+id/tvEmail"
-                android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_weight="1"/>
-            <EditText
-                android:id="@+id/editEmail" style="@style/Text"
-                android:inputType="textEmailAddress"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="40"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <Button
-                android:text="@string/signUp" style="@style/ButtonBordered"
-                android:id="@+id/buttonSignUp"
-                android:layout_width="0dp" android:layout_height="80dp"
-                android:onClick="onSignUpClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <Button
-                android:id="@+id/buttonLogIn" style="@style/ButtonBordered"
-                android:layout_width="0dp" android:layout_height="80dp"
-                android:text="@string/logIn"
-                android:onClick="onLoginClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
-        android:id="@+id/laSigned"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/buttonClaimChangeDevice" style="@style/ButtonBordered"
-            android:layout_width="0dp" android:layout_height="80dp"
-            android:layout_column="0"
-            android:text="@string/claimChangeDevice"
-            android:onClick="onClaimChangeDeviceClick"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-        <Button
-            android:id="@+id/buttonContribute" style="@style/ButtonBordered"
-            android:layout_width="0dp" android:layout_height="80dp"
-            android:layout_column="1"
-            android:text="@string/contribute"
-            android:onClick="onContributeClick"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-        <Button
-            android:id="@+id/buttonLogOut" style="@style/ButtonBordered"
-            android:layout_width="0dp" android:layout_height="80dp"
-            android:layout_column="2"
-            android:text="@string/logOut"
-            android:onClick="onLogoutClick"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/laInfo"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="2dp">
-        <TextView
-            android:text="@string/signUpDefault" style="@style/Text"
-            android:id="@+id/textViewUser_Secret"
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:enabled="false"
-            android:paddingBottom="20dp" />
-        <CheckBox
-            android:text="@string/userActive"
-            android:id="@+id/cbUserActive"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:enabled="false"
-            android:button="@drawable/checkbox_selector"/>
-        <CheckBox
-            android:text="@string/emailVerified"
-            android:id="@+id/cbEmailVerified"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:enabled="false"
-            android:button="@drawable/checkbox_selector"/>
-        <CheckBox
-            android:text="@string/IMEICorrect"
-            android:id="@+id/cbIMEICorrect"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:enabled="false"
-            android:button="@drawable/checkbox_selector"/>
-        <CheckBox
-            android:text="@string/premiumUser"
-            android:id="@+id/cbPremiumUser"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:enabled="false"
-            android:button="@drawable/checkbox_selector"/>
-    </LinearLayout>
+            android:orientation="vertical">
+            <TableLayout
+                android:id="@+id/laNotSigned"
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TableRow
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/userName" style="@style/Text"
+                        android:id="@+id/tvUsername"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_weight="1"/>
+                    <EditText
+                        android:id="@+id/editUserName" style="@style/Text"
+                        android:inputType="text"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="40"/>
+                </TableRow>
 
-    <ProgressBar
-        style="@android:style/Widget.Holo.ProgressBar"
-        android:id="@+id/view_progress"
-        android:layout_width="match_parent" android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal" />
+                <TableRow
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/password" style="@style/Text"
+                        android:id="@+id/tvPassword"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_weight="1"/>
+                    <EditText
+                        android:id="@+id/editPassword" style="@style/Text"
+                        android:inputType="textPassword"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="40"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <TextView
+                        android:text="@string/email" style="@style/Text"
+                        android:id="@+id/tvEmail"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical|right"
+                        android:layout_weight="1"/>
+                    <EditText
+                        android:id="@+id/editEmail" style="@style/Text"
+                        android:inputType="textEmailAddress"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="40"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <Button
+                        android:text="@string/signUp" style="@style/ButtonBordered"
+                        android:id="@+id/buttonSignUp"
+                        android:layout_width="0dp" android:layout_height="80dp"
+                        android:onClick="onSignUpClick"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"/>
+                    <Button
+                        android:id="@+id/buttonLogIn" style="@style/ButtonBordered"
+                        android:layout_width="0dp" android:layout_height="80dp"
+                        android:text="@string/logIn"
+                        android:onClick="onLoginClick"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"/>
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/laSigned"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/buttonClaimChangeDevice" style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_column="0"
+                    android:text="@string/claimChangeDevice"
+                    android:onClick="onClaimChangeDeviceClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:id="@+id/buttonContribute" style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_column="1"
+                    android:text="@string/contribute"
+                    android:onClick="onContributeClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:id="@+id/buttonLogOut" style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_column="2"
+                    android:text="@string/logOut"
+                    android:onClick="onLogoutClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/laInfo"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="2dp">
+                <TextView
+                    android:text="@string/signUpDefault" style="@style/Text"
+                    android:id="@+id/textViewUser_Secret"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:enabled="false"
+                    android:paddingBottom="20dp" />
+                <CheckBox
+                    android:text="@string/userActive"
+                    android:id="@+id/cbUserActive"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:button="@drawable/checkbox_selector"/>
+                <CheckBox
+                    android:text="@string/emailVerified"
+                    android:id="@+id/cbEmailVerified"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:button="@drawable/checkbox_selector"/>
+                <CheckBox
+                    android:text="@string/IMEICorrect"
+                    android:id="@+id/cbIMEICorrect"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:button="@drawable/checkbox_selector"/>
+                <CheckBox
+                    android:text="@string/premiumUser"
+                    android:id="@+id/cbPremiumUser"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:enabled="false"
+                    android:button="@drawable/checkbox_selector"/>
+            </LinearLayout>
+
+            <ProgressBar
+                style="@android:style/Widget.Holo.ProgressBar"
+                android:id="@+id/view_progress"
+                android:layout_width="match_parent" android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

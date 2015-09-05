@@ -31,7 +31,8 @@ public class ShiftsListActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //TODO: совместить лист смен с FirstScreenActivity, если позволяет место
         if (Storage.showListHint) {
             Toast listHint = Toast.makeText(ShiftsListActivity.this, R.string.listHint, Toast.LENGTH_SHORT);
             listHint.setGravity(Gravity.TOP, 0, 0);
@@ -94,6 +95,9 @@ public class ShiftsListActivity extends ListActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            //TODO: вызов этого метода здесь не корректен, т.к. мы назначаем размер списку каждый раз, когда добавляем в него очередную строку
+            //однако я пока не вижу, как получить ссылку на нужный ViewGroup вне метода getView
+            Storage.measureScreenWidth(context, parent);
             Shift shift = getItem(position);
 
             if (convertView == null) {

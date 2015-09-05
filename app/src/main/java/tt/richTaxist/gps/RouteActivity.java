@@ -2,7 +2,7 @@ package tt.richTaxist.gps;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.pm.ActivityInfo;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -19,8 +19,10 @@ import tt.richTaxist.DB.LocationsStorage;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Shift;
+import tt.richTaxist.Storage;
 
 public class RouteActivity extends FragmentActivity {
+    static Context context;
     private static final String LOG_TAG = "Route activity";
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Fragment mapFragment;
@@ -31,7 +33,9 @@ public class RouteActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.gps_activity_route);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        context = getApplicationContext();
+        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.gps_activity_route));
         setUpMapIfNeeded();
 
         mapFragment = GPSHelper.getMapFragment();
@@ -68,7 +72,7 @@ public class RouteActivity extends FragmentActivity {
         });
 
         // add RangeSeekBar to pre-defined layout
-        ViewGroup layout = (ViewGroup) findViewById(R.id.routeLayout);
+        ViewGroup layout = (ViewGroup) findViewById(R.id.gps_activity_route);
         layout.addView(seekBar);
 
         if (!currentShift.isClosed()){

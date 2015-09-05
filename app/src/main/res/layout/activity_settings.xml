@@ -1,170 +1,168 @@
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SettingsActivity">
+    tools:context=".SettingsActivity"
+    android:id="@+id/activity_settings">
 
-    <TableLayout
+    <ScrollView
         android:layout_width="match_parent" android:layout_height="wrap_content">
 
-        <TableRow
+        <TableLayout
             android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/showListHint"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <ToggleButton
-                android:id="@+id/tbShowListHint"
-                style="@style/ToggleButtonBordered"
-                android:textOff="@string/show"
-                android:textOn="@string/dontShow"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:onClick="onTBListHintClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/listsSortOrder"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <ToggleButton
-                android:id="@+id/tbListsSortOrder"
-                style="@style/ToggleButtonBordered"
-                android:textOff="@string/youngIsOnTop"
-                android:textOn="@string/youngIsNotOnTop"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:onClick="onTBListsSortOrderClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/showListHint"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <ToggleButton
+                    android:id="@+id/tbShowListHint"
+                    style="@style/ToggleButtonBordered"
+                    android:textOff="@string/show"
+                    android:textOn="@string/dontShow"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:onClick="onTBListHintClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/timePickClicks"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <ToggleButton
-                android:id="@+id/tbTimePickClicks"
-                style="@style/ToggleButtonBordered"
-                android:textOff="@string/singleTapTimePick"
-                android:textOn="@string/acknowledgedTimePick"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:onClick="onTBTimePickClicksClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/listsSortOrder"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <ToggleButton
+                    android:id="@+id/tbListsSortOrder"
+                    style="@style/ToggleButtonBordered"
+                    android:textOff="@string/youngIsOnTop"
+                    android:textOn="@string/youngIsNotOnTop"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:onClick="onTBListsSortOrderClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/extraFunctions"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="20dp"
-                android:textStyle="italic"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/timePickClicks"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <ToggleButton
+                    android:id="@+id/tbTimePickClicks"
+                    style="@style/ToggleButtonBordered"
+                    android:textOff="@string/singleTapTimePick"
+                    android:textOn="@string/acknowledgedTimePick"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:onClick="onTBTimePickClicksClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <Button
-                android:text="@string/exportShifts"
-                style="@style/ButtonBordered"
-                android:id="@+id/buttonExportShifts"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:background="#6dff0000"
-                android:onClick="onExportImportShiftsClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <Button
-                android:text="@string/socials"
-                style="@style/ButtonBordered"
-                android:id="@+id/buttonSocials"
-                android:layout_width="0dp" android:layout_height="60dp"
-                android:background="#6dff0000"
-                android:onClick="onSocialsClick"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/extraFunctions"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:layout_marginTop="20dp"
+                    android:textStyle="italic"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/viewOfDatePicker"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <Button
-                android:id="@+id/btnDate"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/ButtonBordered"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <Button
+                    android:text="@string/exportShifts"
+                    style="@style/ButtonBordered"
+                    android:id="@+id/buttonExportShifts"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:background="#6dff0000"
+                    android:onClick="onExportImportShiftsClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:text="@string/socials"
+                    style="@style/ButtonBordered"
+                    android:id="@+id/buttonSocials"
+                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:background="#6dff0000"
+                    android:onClick="onSocialsClick"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/viewOfTimePicker"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <Button
-                android:id="@+id/btnTime"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/ButtonBordered"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/viewOfDatePicker"
+                    android:visibility="invisible"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:id="@+id/btnDate"
+                    android:visibility="invisible"
+                    style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
-        <TableRow
-            android:layout_width="match_parent" android:layout_height="wrap_content">
-            <TextView
-                android:text="@string/timePickerInterval"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/Text"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:gravity="center_vertical|start"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-            <Button
-                android:id="@+id/btnTimePickerInterval"
-                android:editable="false"
-                android:visibility="invisible"
-                style="@style/ButtonBordered"
-                android:layout_width="0dp" android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_gravity="center_vertical"/>
-        </TableRow>
-    </TableLayout>
-</ScrollView>
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/viewOfTimePicker"
+                    android:visibility="invisible"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:id="@+id/btnTime"
+                    android:visibility="invisible"
+                    style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
 
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/timePickerInterval"
+                    android:visibility="invisible"
+                    style="@style/Text"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:gravity="center_vertical|start"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+                <Button
+                    android:id="@+id/btnTimePickerInterval"
+                    android:visibility="invisible"
+                    style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+</LinearLayout>

@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.Toast;
 import com.parse.ParseUser;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -42,9 +45,6 @@ public class Storage {
     public static String phoneModel = "";
     public static String androidVersion = "";
     public static String operatorName = "";
-    public static double screenWidth = 0.0;
-    public static double screenHeight = 0.0;
-    public static double screenDiagonal = 0.0;
     public static double batteryCapacity = 0.0;
     public static int batteryLevel = 0;
 
@@ -63,6 +63,21 @@ public class Storage {
         Log.d(LOG_TAG, "Constructor");
         loadSettingsFromFile();
         Log.d(LOG_TAG, "Created");
+    }
+
+    //обрежет используемую область экрана до 720pix если текущая ширина экрана больше 8 см
+    //временная мера чтобы не писать отдельные лэйауты для планшетов
+    public static void measureScreenWidth(Context context, ViewGroup layout){
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        double screenWidthInches = metrics.widthPixels / metrics.xdpi;
+        screenWidthInches = RoundResult(screenWidthInches, 2);
+        double screenWidthSm = RoundResult(screenWidthInches * 2.54, 2);
+        Toast.makeText(context, "screenWidthSm: " + String.valueOf(screenWidthSm), Toast.LENGTH_LONG).show();
+        Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
+        if (screenWidthSm > 8.0 && layout != null) {
+            ViewGroup.LayoutParams params = layout.getLayoutParams();
+            params.width = 720;
+        }
     }
 
     //два метода ниже нужны для отправки в Parse и получения из него, т.к. enum он не понимает
@@ -160,6 +175,18 @@ public class Storage {
         showListHint = true;
         youngIsOnTop = true;
         singleTapTimePick = false;
+    }
+
+//работает только с числом десятичных знаков 0-5
+    public static double RoundResult (double value, int decimalSigns) {
+        if (decimalSigns < 0 || decimalSigns > 5) {
+            Log.d(LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
+            if (decimalSigns < 0) decimalSigns = 0;
+            if (decimalSigns > 5) decimalSigns = 5;
+        }
+        double multiplier = Math.pow(10.0, (double) decimalSigns);//всегда .0
+        long numerator  = Math.round(value * multiplier);
+        return numerator / multiplier;
     }
 
     static void openQuitDialog(final AppCompatActivity currentActivity) {

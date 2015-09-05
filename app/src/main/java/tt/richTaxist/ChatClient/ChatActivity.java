@@ -1,18 +1,21 @@
 package tt.richTaxist.ChatClient;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import java.util.ArrayList;
 import tt.richTaxist.R;
+import tt.richTaxist.Storage;
 
 
 public class ChatActivity extends Activity {
+	static Context context;
 	private ArrayList<String> arrayList;
 	private ChatAdapter mAdapter;
 	private Client mClient;
@@ -20,8 +23,10 @@ public class ChatActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.chat_client);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		setContentView(R.layout.activity_chat_client);
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		context = getApplicationContext();
+		Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_chat_client));
 		arrayList = new ArrayList<>();
 
 		final EditText editText = (EditText) findViewById(R.id.editText);

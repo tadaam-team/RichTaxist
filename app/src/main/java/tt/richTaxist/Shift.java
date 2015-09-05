@@ -18,9 +18,8 @@ public class Shift {
     public int revenueCash, revenueCard, revenueOfficial, petrol;
     public boolean petrolFilledByHands;
     public int toTheCashier, salaryOfficial, revenueBonus, salaryPlusBonus;
-    public float workHoursSpent;
-    public int salaryPerHour;
-    public int distance;
+    public double workHoursSpent;
+    public int salaryPerHour, distance;
     public long travelTime;
     private static final String LOG_TAG = "ShiftClass";
 
@@ -91,9 +90,9 @@ public class Shift {
         salaryPlusBonus = salaryOfficial + revenueBonus;
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
-        workHoursSpent = (float) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
-        workHoursSpent = RoundResult(workHoursSpent, 2);
-        salaryPerHour  = Math.round(salaryPlusBonus / workHoursSpent);
+        workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
+        workHoursSpent = Storage.RoundResult(workHoursSpent, 2);
+        salaryPerHour  = (int) Math.round(salaryPlusBonus / workHoursSpent);
         ShiftsStorage.update(this);
     }
 
