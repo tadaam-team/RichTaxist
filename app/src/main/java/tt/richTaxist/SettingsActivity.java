@@ -113,6 +113,6 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     public void onBackPressed() {
         super.onBackPressed();
         Storage.saveSettings(context);
-        if (MainActivity.currentShift != null) MainActivity.refreshInputStyle();
+//        if (MainActivity.currentShift != null) MainActivity.refreshInputStyle();
     }
 }

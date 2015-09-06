@@ -70,13 +70,15 @@ public class Storage {
     public static void measureScreenWidth(Context context, ViewGroup layout){
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         double screenWidthInches = metrics.widthPixels / metrics.xdpi;
-        screenWidthInches = RoundResult(screenWidthInches, 2);
-        double screenWidthSm = RoundResult(screenWidthInches * 2.54, 2);
-        Toast.makeText(context, "screenWidthSm: " + String.valueOf(screenWidthSm), Toast.LENGTH_LONG).show();
+        screenWidthInches = RoundResult(screenWidthInches, 3);
+        double screenWidthSm = RoundResult(screenWidthInches * 2.54, 3);
         Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
-        if (screenWidthSm > 8.0 && layout != null) {
+        if (screenWidthSm > 5.715 && layout != null) {// 720/320*2.54=5.715
+//            Toast.makeText(context, "screenWidthSm: " + String.valueOf(screenWidthSm), Toast.LENGTH_SHORT).show();
             ViewGroup.LayoutParams params = layout.getLayoutParams();
-            params.width = 720;
+            int maxWidth = (int) Math.round(5.715 / 2.54 * metrics.xdpi);
+            Log.d(LOG_TAG, "maxWidth: " + String.valueOf(maxWidth));
+            params.width = maxWidth;
         }
     }
 

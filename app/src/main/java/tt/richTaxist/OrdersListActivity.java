@@ -2,7 +2,6 @@ package tt.richTaxist;
 
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;

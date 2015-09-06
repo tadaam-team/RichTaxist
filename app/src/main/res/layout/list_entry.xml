@@ -5,7 +5,7 @@
 
     <ImageView
         android:id="@+id/entryIcon"
-        android:layout_width="40dp" android:layout_height="40dp"
+        android:layout_width="30dp" android:layout_height="30dp"
         android:layout_row="0" android:layout_column="0"
         android:layout_rowSpan="2"
         android:layout_margin="10dp" />
@@ -13,11 +13,10 @@
     <TextView
         android:text="@string/entryTextExampleMain"
         android:id="@+id/entryTextViewMain"
-        android:layout_width="wrap_content" android:layout_height="40dp"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_row="0" android:layout_column="1"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_gravity="start"
-        android:textSize="25sp" />
+        android:textStyle="bold"/>
 
     <TextView
         android:text="@string/entryTextExampleAdditional"

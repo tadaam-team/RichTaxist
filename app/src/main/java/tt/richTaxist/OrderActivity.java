@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -92,10 +91,10 @@ public class OrderActivity extends AppCompatActivity{
         buttonCloseOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View p1) {
-                Intent intent = new Intent();
-                intent.putExtra(Order.PARAM_DISTANCE, distance);
-                intent.putExtra(Order.PARAM_TRAVEL_TIME, travelTime);
-                setResult(RESULT_OK, intent);//RESULT_CANCELED если закрываем аппаратным возвратом
+                Intent response = new Intent();
+                response.putExtra(Order.PARAM_DISTANCE, distance);
+                response.putExtra(Order.PARAM_TRAVEL_TIME, travelTime);
+                setResult(RESULT_OK, response);//RESULT_CANCELED если закрываем аппаратным возвратом
                 finish();
             }
         });

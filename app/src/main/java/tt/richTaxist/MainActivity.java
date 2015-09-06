@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,7 +36,8 @@ import tt.richTaxist.DB.OrdersStorageList;
  */
 
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener, F_CustomDatePicker.OnFragmentInteractionListener{
+        TimePickerDialog.OnTimeSetListener, F_CustomDatePicker.OnFragmentInteractionListener,
+        OrderFragment.OnOrderFragmentInteractionListener, OrderListFragment.OnOrderListFragmentInteractionListener {
     private static final String LOG_TAG = "ChatActivity";
     public static Context context;
     public final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
@@ -48,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     private static Calendar arrivalDateTime;
     private static Button dateButton;
     private static Button timeButton;
-    private static CustomTimePicker timePicker;
-    private static LinearLayout timePickerPlaceHolder;
+//    private static CustomTimePicker timePicker;
+//    private static LinearLayout timePickerPlaceHolder;
 //    private static EditText timeInput;
-
+    public static ArrayAdapter mAdapter;
     private static RadioGroup typeOfPaymentUI;
     private static EditText priceUI, noteUI;
 
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 timePD.show(getSupportFragmentManager(), "timepicker");
             }
         });
-        timePickerPlaceHolder = (LinearLayout) findViewById(R.id.timePickerPlaceHolder);
+//        timePickerPlaceHolder = (LinearLayout) findViewById(R.id.timePickerPlaceHolder);
 //        timeInput = (EditText) findViewById(R.id.timeInput);
 //        timeInput.setText(getStringTimeFromCal(arrivalDateTime));
 //        View.OnKeyListener okl = new View.OnKeyListener() {
@@ -111,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 //            }
 //        };
 //        timeInput.setOnKeyListener(okl);
-        refreshInputStyle();//плохо, но в процессе обновления создается timePicker при необходимости
+//        refreshInputStyle();//плохо, но в процессе обновления создается timePicker при необходимости
 
 
         typeOfPaymentUI = (RadioGroup) findViewById(R.id.payTypeRadioGroup);
@@ -134,6 +136,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onOrderFragmentInteraction(Uri uri){
+
+    }
+
+    @Override
+    public void onOrderListFragmentInteraction(String id){
 
     }
 
@@ -215,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 //    }
 
     //TODO перейти от setVisibility к диспетчеру фрагментов
-    public static void refreshInputStyle(){
+//    public static void refreshInputStyle(){
 //        if (dateButton != null) {
 //            switch (Storage.typeOfDateInput){
 //                case BUTTON:
@@ -255,31 +267,31 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
 //                    break;
 //            }
 //        }
-    }
+//    }
 
 
     //приходится каждый раз создавать новый timePicker когда юзер заходит в настройки из Заказа чтобы обновились виджеты и интервалы спиннера
-    private static void createAndInsertTimePicker(){
-        timePicker = new CustomTimePicker(context);
-        timePicker.setIs24HourView(true);
-        timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));//timePicker: 1:00 --> 13:00
-        //вызывается после завершения ввода времени через спиннер
-        TimePicker.OnTimeChangedListener timeChangedListener = new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                arrivalDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                arrivalDateTime.set(Calendar.MINUTE, minute);
-                //не нравится мне, что тут приходится присваивать значение и timeInput тоже, но пока не будет диспетчера фрагментов, работем так
-                timeButton.setText(getStringTimeFromCal(arrivalDateTime));
-//                timeInput.setText(getStringTimeFromCal(arrivalDateTime));
-            }
-        };
-        timePicker.setOnTimeChangedListener(timeChangedListener);
-//        int sizeDP = (int) (120 * getResources().getDisplayMetrics().density + 0.5f);
-//        timePicker.setMinimumHeight(sizeDP);//не работает. сейчас стоит костыль предустановленной высоты лейаута-плейсхолдера
-        timePickerPlaceHolder.removeAllViews();
-        timePickerPlaceHolder.addView(timePicker);
-    }
+//    private static void createAndInsertTimePicker(){
+//        timePicker = new CustomTimePicker(context);
+//        timePicker.setIs24HourView(true);
+//        timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));//timePicker: 1:00 --> 13:00
+//        //вызывается после завершения ввода времени через спиннер
+//        TimePicker.OnTimeChangedListener timeChangedListener = new TimePicker.OnTimeChangedListener() {
+//            @Override
+//            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+//                arrivalDateTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+//                arrivalDateTime.set(Calendar.MINUTE, minute);
+//                //не нравится мне, что тут приходится присваивать значение и timeInput тоже, но пока не будет диспетчера фрагментов, работем так
+//                timeButton.setText(getStringTimeFromCal(arrivalDateTime));
+////                timeInput.setText(getStringTimeFromCal(arrivalDateTime));
+//            }
+//        };
+//        timePicker.setOnTimeChangedListener(timeChangedListener);
+////        int sizeDP = (int) (120 * getResources().getDisplayMetrics().density + 0.5f);
+////        timePicker.setMinimumHeight(sizeDP);//не работает. сейчас стоит костыль предустановленной высоты лейаута-плейсхолдера
+//        timePickerPlaceHolder.removeAllViews();
+//        timePickerPlaceHolder.addView(timePicker);
+//    }
 
     static void sortOrdersStorage(){
         Log.d(LOG_TAG, "youngIsOnTop: " + Storage.youngIsOnTop);
@@ -375,6 +387,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             Order newOrder = new Order(arrivalDateTime.getTime(), getRadioState(), price, currentShift, note);
             refreshWidgets(null);
             ordersStorage.add(newOrder);//единственная точка добавления заказа
+            if (mAdapter != null) mAdapter.notifyDataSetChanged();
             Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
             currentShift.calculateShiftTotals(0);
         }
@@ -390,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         int id = item.getItemId();
         switch (id){
             case R.id.action_show_orders_list:
+                //TODO: клик по этой кнопке должен показывать фрагмент, а не старую активити
                 startActivity(new Intent(context, OrdersListActivity.class));
                 return true;
 

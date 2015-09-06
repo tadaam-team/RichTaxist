@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <fragment
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="tt.richTaxist.OrderListFragment"
+        android:id="@+id/fragment4"
+        tools:layout="@layout/fragment_order_list"
+        android:layout_weight="1"/>
+
+    <fragment
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:name="tt.richTaxist.OrderFragment"
+        android:id="@+id/fragment3"
+        tools:layout="@layout/fragment_order"
+        android:layout_weight="2"/>
+
+</LinearLayout>
