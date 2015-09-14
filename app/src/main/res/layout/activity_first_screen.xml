@@ -2,88 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     tools:context=".FirstScreenActivity"
-    android:id="@+id/activity_first_screen">
-    <ScrollView
-        android:layout_width="match_parent" android:layout_height="match_parent">
-        <TableLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content">
+    android:layout_gravity="end"
+    android:id="@+id/container_first_screen">
 
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button
-                    android:text="@string/openLastShift" style="@style/ButtonBordered"
-                    android:id="@+id/buttonOpenLastShift"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button
-                    android:text="@string/newShift" style="@style/ButtonBordered"
-                    android:id="@+id/buttonNewShift"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-                <Button
-                    android:text="@string/openShift" style="@style/ButtonBordered"
-                    android:id="@+id/buttonOpenShift"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button
-                    android:text="@string/settingsAndExtras" style="@style/ButtonBordered"
-                    android:id="@+id/buttonSettings"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-                <Button
-                    android:text="@string/signIn" style="@style/ButtonBordered"
-                    android:id="@+id/buttonSignIn"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button
-                    android:text="@string/chat" style="@style/ButtonBordered"
-                    android:id="@+id/buttonChat"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-                <Button
-                    android:text="@string/routeMap" style="@style/ButtonBordered"
-                    android:id="@+id/buttonRoute"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <Button
-                    android:text="@string/grandTotalsScreenName" style="@style/ButtonBordered"
-                    android:id="@+id/buttonGrandTotals"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-                <Button
-                    android:text="@string/exit" style="@style/ButtonBordered"
-                    android:id="@+id/buttonExit"
-                    android:layout_width="0dp" android:layout_height="80dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-        </TableLayout>
-    </ScrollView>
 </LinearLayout>

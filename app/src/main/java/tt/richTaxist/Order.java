@@ -2,6 +2,7 @@ package tt.richTaxist;
 
 import java.util.Calendar;
 import java.util.Date;
+import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -52,8 +53,10 @@ public class Order {
     public String toString() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
-        return String.format("время подачи = %02d.%02d.%02d %02d:%02d, стоимость = %d, тип оплаты = %s\n",
+        String text = String.format("подача: %02d.%02d.%02d %02d:%02d,\nцена: %d, тип оплаты: %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString());
+        if (!"".equals(note)) text += String.format(",\nзаметка: %s", note);
+        return text;
     }
 }

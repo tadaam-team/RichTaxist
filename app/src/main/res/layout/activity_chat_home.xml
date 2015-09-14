@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/activity_chat_home">
+    android:id="@+id/activity_chat_home"
+    android:layout_gravity="end">
 
-    <TextView android:text="@string/ipInputHint"
+    <TextView
+        android:text="@string/ipInputHint"
         style="@style/Text"
         android:layout_width="200dp" android:layout_height="wrap_content"/>
 
@@ -17,7 +20,8 @@
         <requestFocus />
     </EditText>
 
-    <Button android:text="@string/enterChat"
+    <Button
+        android:text="@string/enterChat"
         style="@style/ButtonBordered"
         android:id="@+id/chat_login"
         android:layout_width="200dp" android:layout_height="80dp"/>

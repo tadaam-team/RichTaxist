@@ -14,7 +14,7 @@ import tt.richTaxist.DB.OrdersStorageList;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
-import tt.richTaxist.TypeOfPayment;
+import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -70,11 +70,9 @@ public class OrdersSQLHelper extends SQLHelper {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
         // Select All Query
-        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-//        + ARRIVAL_DATE_TIME + " BETWEEN '" + dateFormat.format(fromDate) + "' and '" + dateFormat.format(toDate) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "' AND "
-                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "'";
+                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "' AND "
+                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -128,9 +126,9 @@ public class OrdersSQLHelper extends SQLHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(0));
-                int sum = cursor.getInt(1);
-                result.put(typeOfPayment, sum);
+                TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
+                int revenueOfSuchType = cursor.getInt(1);
+                result.put(typeOfPayment, revenueOfSuchType);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -150,8 +148,8 @@ public class OrdersSQLHelper extends SQLHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-                result.put(Order.PARAM_DISTANCE, cursor.getInt(0));
-                result.put(Order.PARAM_TRAVEL_TIME, cursor.getInt(1));
+                result.put(Order.PARAM_DISTANCE, cursor.getInt(cursor.getColumnIndex(DISTANCE)));
+                result.put(Order.PARAM_TRAVEL_TIME, cursor.getInt(cursor.getColumnIndex(TRAVEL_TIME)));
             } while (cursor.moveToNext());
         }
         return result;
@@ -163,8 +161,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
     private Order loadOrderFromCursor(Cursor cursor) {
         Date arrivalDateTime = null;
-        try {
-            arrivalDateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
+        try { arrivalDateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
         } catch (ParseException e) { e.printStackTrace(); }
         int price = cursor.getInt(cursor.getColumnIndex(PRICE));
         TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
@@ -178,12 +175,14 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public int remove(Order order){
         SQLiteDatabase db = getWritableDatabase();
+        String[] tag = new String[]{dateFormat.format(order.arrivalDateTime),
+                String.valueOf(order.price),
+                String.valueOf(order.typeOfPayment.id),
+                String.valueOf(order.shift.shiftID)};
         int result = db.delete(TABLE_NAME, ARRIVAL_DATE_TIME + " = ?"
-                        + " AND " + PRICE + " = ?"
-                        + " AND " + TYPE_OF_PAYMENT + " = ?"
-                        + " AND " + SHIFT_ID + " = ?",
-                new String[]{String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                        String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
+                + " AND " + PRICE + " = ?"
+                + " AND " + TYPE_OF_PAYMENT + " = ?"
+                + " AND " + SHIFT_ID + " = ?", tag);
         db.close();
         return result;
     }
@@ -193,12 +192,14 @@ public class OrdersSQLHelper extends SQLHelper {
         int result = 0;
         for (int i = 0; i < orders.size(); i++) {
             Order order =  orders.get(i);
-            result += db.delete(TABLE_NAME, PRICE           + " = ?"
-                            + " AND " + ARRIVAL_DATE_TIME   + " = ?"
-                            + " AND " + TYPE_OF_PAYMENT     + " = ?"
-                            + " AND " + SHIFT_ID + " = ?",
-                    new String[] { String.valueOf(order.price), dateFormat.format(order.arrivalDateTime),
-                            String.valueOf(order.typeOfPayment.id), String.valueOf(order.shift.shiftID)});
+            String[] tag = new String[]{dateFormat.format(order.arrivalDateTime),
+                    String.valueOf(order.price),
+                    String.valueOf(order.typeOfPayment.id),
+                    String.valueOf(order.shift.shiftID)};
+            result += db.delete(TABLE_NAME, ARRIVAL_DATE_TIME + " = ?"
+                    + " AND " + PRICE + " = ?"
+                    + " AND " + TYPE_OF_PAYMENT + " = ?"
+                    + " AND " + SHIFT_ID + " = ?", tag);
         }
         db.close();
         return result;
@@ -206,9 +207,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public void deleteOrdersByShift(Shift shift) {
         SQLiteDatabase db = getWritableDatabase();
-        // Select All Query
-        int result = db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
         db.close();
     }
-
 }

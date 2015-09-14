@@ -5,7 +5,8 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ShiftTotalsActivity"
-    android:id="@+id/activity_shift_totals">
+    android:id="@+id/activity_shift_totals"
+    android:layout_gravity="end">
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -70,14 +71,14 @@
                 <TextView
                     android:text="@string/revenueOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_revenueOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -91,14 +92,14 @@
                 <TextView
                     android:text="@string/revenueCash"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_revenueCash"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -112,14 +113,14 @@
                 <TextView
                     android:text="@string/revenueCard"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_revenueCard"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -133,14 +134,14 @@
                 <TextView
                     android:text="@string/petrol"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <Button
                     android:id="@+id/st_petrol"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical|end"
                     android:paddingEnd="5dp"
                     android:paddingLeft="5dp"
@@ -156,14 +157,14 @@
                 <TextView
                     android:text="@string/toTheCashier"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_toTheCashier"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -177,20 +178,22 @@
                 <TextView
                     android:text="@string/salaryOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_salaryOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@android:color/holo_green_dark"
+                    android:textStyle="bold"/>
             </TableRow>
 
             <TableRow
@@ -198,14 +201,14 @@
                 <TextView
                     android:text="@string/revenueBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_revenueBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -219,14 +222,14 @@
                 <TextView
                     android:text="@string/salaryPlusBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_salaryPlusBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -240,14 +243,14 @@
                 <TextView
                     android:text="@string/workHoursSpent"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_workHoursSpent"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"
@@ -261,14 +264,14 @@
                 <TextView
                     android:text="@string/salaryPerHour"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/st_salaryPerHour"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:inputType="numberDecimal"
                     android:gravity="end"
                     android:enabled="false"

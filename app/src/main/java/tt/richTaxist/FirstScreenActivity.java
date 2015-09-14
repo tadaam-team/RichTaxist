@@ -1,17 +1,14 @@
 package tt.richTaxist;
 
+import android.content.res.Configuration;
+import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.BatteryManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -20,27 +17,35 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import tt.richTaxist.ChatClient.ChatLoginActivity;
 import tt.richTaxist.DB.ShiftsStorage;
-import tt.richTaxist.gps.GPSHelper;
+import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.gps.RouteActivity;
 
-public class FirstScreenActivity extends AppCompatActivity {
+public class FirstScreenActivity extends AppCompatActivity implements
+        FirstScreenFragment.OnFirstScreenFragmentInteractionListener{
     static AppCompatActivity activity;
     static Context context;
     private static final String LOG_TAG = "FirstScreenActivity";
+    private FragmentManager fragmentManager;
+    private FirstScreenFragment fragment1;
+    private ShiftsListFragment fragment2;
+    private ActivityState activityState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_screen);
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         activity = FirstScreenActivity.this;
         context = getApplicationContext();
-        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_first_screen));
+//        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.fragment1));
         //TODO: выяснить, зачем такое назначение ссылки
         MainActivity.context = context;
-        GPSHelper.startService(MainActivity.context);
+        //TODO: GPSHelper работает не штатно и поэтому был отключен
+//        GPSHelper.startService(MainActivity.context);
 
+        MainActivity.shiftsStorage.clear();
+        MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
         Storage.init(this);
+        Storage.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         try {
             Parse.initialize(this, "PF47pDUAtRLyPmuFEh607NmCOA4NxMHKAODTsAqy", "kax79lUpsVC0S3BN0rBPqvvkqPce4rVtBvNy8d0D");
@@ -48,11 +53,7 @@ public class FirstScreenActivity extends AppCompatActivity {
             ParseUser.enableAutomaticUser();
         }catch (RuntimeException e){Log.d(LOG_TAG, "Parse already launched");}
 
-//        boolean isAnonymous = ParseAnonymousUtils.isLinked(ParseUser.getCurrentUser());
-        //Такая проверка может пригодиться, чтобы показать или скрыть кнопку для входа или регистрации.
-
-
-        TelephonyManager tm = (TelephonyManager) getSystemService(this.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         Storage.deviceIMEI = tm.getDeviceId();
         Log.d(LOG_TAG, "IMEI: " + Storage.deviceIMEI);
 
@@ -62,32 +63,30 @@ public class FirstScreenActivity extends AppCompatActivity {
             authorize(this);
         }
 
-        setOnClickListeners();
-
-
-//        Узнаем IP-адрес устройства
-        WifiManager wifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInf = wifiMan.getConnectionInfo();
-        int ipAddress = wifiInf.getIpAddress();
-        Storage.IP = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress % 8 & 0xff), (ipAddress % 16 & 0xff), (ipAddress % 24 & 0xff));
-
-////        Узнаем модель смартфона
-        Storage.phoneModel = android.os.Build.MODEL;
-//        Узнаем версию Android
-        Storage.androidVersion = android.os.Build.VERSION.RELEASE;
-//        Узнаем имя оператора сотовой связи
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        Storage.operatorName = manager.getNetworkOperatorName();
-
-        Storage.batteryCapacity = getBatteryCapacity();
-        Storage.batteryLevel = getBatteryLevel();
+        //фрагментная логика
+        fragmentManager = getSupportFragmentManager();
+        if (savedInstanceState == null) {
+            fragment2 = new ShiftsListFragment();
+            fragment1 = new FirstScreenFragment();
+            FragmentTransaction transactionInitial = fragmentManager.beginTransaction();
+            transactionInitial.add(R.id.container_first_screen, fragment2, "fragment2");
+            transactionInitial.add(R.id.container_first_screen, fragment1, "fragment1");
+            transactionInitial.commit();
+        }
+        else {
+            int activityStateID = savedInstanceState.getInt("activityState", ActivityState.LAND_2_1.id);
+            activityState = ActivityState.getById(activityStateID);
+            fragment1 = (FirstScreenFragment) fragmentManager.findFragmentByTag("fragment1");
+            fragment2 = (ShiftsListFragment) fragmentManager.findFragmentByTag("fragment2");
+        }
+        activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
     }
 
 
-    private void setOnClickListeners(){
-        findViewById(R.id.buttonOpenLastShift).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onButtonSelected(int buttonIndex){
+        switch (buttonIndex){
+            case R.id.btnOpenLastShift:
                 if (ShiftsStorage.getLastShift() == null)
                     Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
                 else {
@@ -97,55 +96,43 @@ public class FirstScreenActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "открываю последнюю сохраненную смену");
                     finish();
                 }
-            }
-        });
-        findViewById(R.id.buttonNewShift).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnNewShift:
                 MainActivity.currentShift = new Shift();
                 MainActivity.ordersStorage.clear(false);
                 startActivity(new Intent(activity, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
                 Log.d(LOG_TAG, "открываю новую смену");
                 finish();
-            }
-        });
-        findViewById(R.id.buttonOpenShift).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnOpenShift:
+                //Обработчик нажатия кнопки "Список смен"
                 if (ShiftsStorage.getLastShift() == null)
-                    Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 else {
-                    MainActivity.shiftsStorage.clear();
-                    MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
-                    startActivity(new Intent(activity, ShiftsListActivity.class));
-                    Log.d(LOG_TAG, "открываю список сохраненных смен");
+                    if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
+                    else activityState = ActivityState.PORT_2;
+                    activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
                 }
-            }
-        });
-        findViewById(R.id.buttonSettings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnSettings:
                 startActivity(new Intent(activity, SettingsActivity.class));
                 Log.d(LOG_TAG, "открываю настройки");
-            }
-        });
-        findViewById(R.id.buttonSignIn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnSignIn:
                 startActivity(new Intent(activity, SignInActivity.class));
                 Log.d(LOG_TAG, "открываю экран учетных записей");
-            }
-        });
-        findViewById(R.id.buttonChat).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnChat:
                 startActivity(new Intent(activity, ChatLoginActivity.class));
                 Log.d(LOG_TAG, "открываю чат");
-            }
-        });
-        findViewById(R.id.buttonRoute).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnRoute:
                 if (MainActivity.currentShift == null){
                     MainActivity.currentShift = ShiftsStorage.getLastShift();
                     if (MainActivity.currentShift == null) {
@@ -154,58 +141,29 @@ public class FirstScreenActivity extends AppCompatActivity {
                     }
                     MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
                 }
-
                 startActivity(new Intent(activity, RouteActivity.class));
                 Log.d(LOG_TAG, "открываю карту маршрута смены");
-            }
-        });
-        findViewById(R.id.buttonGrandTotals).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+
+            case R.id.btnGrandTotals:
                 startActivity(new Intent(activity, GrandTotalsActivity.class));
                 Log.d(LOG_TAG, "открываю итоги по зарплате");
-            }
-        });
-        findViewById(R.id.buttonExit).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Storage.openQuitDialog(activity);
-                Log.d(LOG_TAG, "открываю диалог выхода");
-            }
-        });
+                break;
+
+            case R.id.btnExit:
+                onBackPressed();
+                break;
+
+            default:
+                Toast.makeText(getApplicationContext(), "кнопка не определена", Toast.LENGTH_LONG).show();
+                break;
+        }
     }
 
-
-//        Узнаем емкость аккумулятора
-    public Double getBatteryCapacity(){
-        Object powerProfile = null;
-        Double batteryCapacity = 0.0;
-        final String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
-
-        try{
-            powerProfile = Class.forName(POWER_PROFILE_CLASS)
-                    .getConstructor(Context.class).newInstance(this);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        try{
-            batteryCapacity = (Double) Class.forName(POWER_PROFILE_CLASS)
-                    .getMethod("getAveragePower", java.lang.String.class)
-                    .invoke(powerProfile, "battery.capacity");
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-        return batteryCapacity;
-    }
-
-//        Узнаем уровень заряда аккумулятора
-    public int getBatteryLevel(){
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
-        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-        return (int) ((level/(float) scale)* 100.0f);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("activityState", activityState.id);
     }
 
     //пока не могу найти способ не задваивать метод авторизации
@@ -223,16 +181,14 @@ public class FirstScreenActivity extends AppCompatActivity {
                 }
             }
         };
-        if (Storage.username != null && !Storage.username.equals("")) ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
+        if (Storage.username != null && !Storage.username.equals(""))
+            ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
     }
 
 
     private boolean verifyUser(ParseUser user) {
         //пользователь авторизован. загрузим его сохраненные настройки из облака
         Log.d(LOG_TAG, "user logged in");
-//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
-
-
         Storage.currentUser         = user;
         Storage.showListHint        = user.getBoolean("showListHint");
         Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
@@ -249,7 +205,6 @@ public class FirstScreenActivity extends AppCompatActivity {
             return false;
         }
         Log.d(LOG_TAG, "email verified");
-//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
         //пользователь авторизован и почта подтверждена--------------------------------------------
 
 
@@ -259,7 +214,6 @@ public class FirstScreenActivity extends AppCompatActivity {
             return false;
         }
         Log.d(LOG_TAG, "user is premium");
-//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
         //пользователь авторизован, почта подтверждена и есть подписка-----------------------------
 
 
@@ -289,7 +243,6 @@ public class FirstScreenActivity extends AppCompatActivity {
             return false;
         }
         Log.d(LOG_TAG, "IMEI check passed");
-//        try{Thread.sleep(200);}catch(InterruptedException e){/*NOP*/};
         //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
 
 
@@ -300,6 +253,17 @@ public class FirstScreenActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Storage.openQuitDialog(this);
+        switch (activityState){
+            case LAND_2:
+                activityState = ActivityState.LAND_2_1;
+                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                break;
+            case PORT_2:
+                activityState = ActivityState.PORT_1;
+                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                break;
+            default:
+                Storage.openQuitDialog(this);
+        }
     }
 }

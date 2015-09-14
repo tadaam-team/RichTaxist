@@ -1,7 +1,6 @@
 package tt.richTaxist;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import tt.richTaxist.Bricks.DF_ListInput;
+import tt.richTaxist.Enums.TypeOfInput;
 
 
 public class SettingsActivity extends AppCompatActivity implements DF_ListInput.ListInputDialogListener {
@@ -22,55 +22,22 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         context = getApplicationContext();
         Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_settings));
 
         //транслируем сохраненное состояние настроек в виджеты при открытии
-        final Button buttonDate = (Button) findViewById(R.id.btnDate);
-        buttonDate.setText(Storage.typeOfInputToString(Storage.typeOfDateInput, context));
-        buttonDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Storage.typeOfDateInput == TypeOfInput.BUTTON) {
-                    Storage.typeOfDateInput = TypeOfInput.SPINNER;
-                    buttonDate.setText(Storage.typeOfInputToString(Storage.typeOfDateInput, context));
-                } else
-                if (Storage.typeOfDateInput == TypeOfInput.SPINNER) {
-                    Storage.typeOfDateInput = TypeOfInput.TEXT_INPUT;
-                    buttonDate.setText(Storage.typeOfInputToString(Storage.typeOfDateInput, context));
-                } else
-                if (Storage.typeOfDateInput == TypeOfInput.TEXT_INPUT) {
-                    Storage.typeOfDateInput = TypeOfInput.BUTTON;
-                    buttonDate.setText(Storage.typeOfInputToString(Storage.typeOfDateInput, context));
-                }
-                Log.d(LOG_TAG, "Storage.typeOfDateInput: " + String.valueOf(Storage.typeOfDateInput));
-            }
-        });
+        ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Storage.showListHint);
+        ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Storage.youngIsOnTop);
+        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.singleTapTimePick);
 
-        final Button buttonTime = (Button) findViewById(R.id.btnTime);
-        buttonTime.setText(Storage.typeOfInputToString(Storage.typeOfTimeInput, context));
-        buttonTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Storage.typeOfTimeInput == TypeOfInput.BUTTON) {
-                    Storage.typeOfTimeInput = TypeOfInput.SPINNER;
-                    buttonTime.setText(Storage.typeOfInputToString(Storage.typeOfTimeInput, context));
-                    btnTimePickerInterval.setEnabled(true);
-                } else
-                if (Storage.typeOfTimeInput == TypeOfInput.SPINNER) {
-                    Storage.typeOfTimeInput = TypeOfInput.TEXT_INPUT;
-                    buttonTime.setText(Storage.typeOfInputToString(Storage.typeOfTimeInput, context));
-                    btnTimePickerInterval.setEnabled(false);
-                } else
-                if (Storage.typeOfTimeInput == TypeOfInput.TEXT_INPUT) {
-                    Storage.typeOfTimeInput = TypeOfInput.BUTTON;
-                    buttonTime.setText(Storage.typeOfInputToString(Storage.typeOfTimeInput, context));
-                    btnTimePickerInterval.setEnabled(false);
-                }
-                Log.d(LOG_TAG, "Storage.typeOfTimeInput: " + String.valueOf(Storage.typeOfTimeInput));
-            }
-        });
+        ToggleButton buttonDate = (ToggleButton) findViewById(R.id.btnDate);
+        //TODO: переделать на равенство индексов
+        if (TypeOfInput.BUTTON.toString().equals(Storage.typeOfDateInput.toString())) buttonDate.setChecked(false);
+        else buttonDate.setChecked(true);
+
+        ToggleButton buttonTime = (ToggleButton) findViewById(R.id.btnTime);
+        if (TypeOfInput.BUTTON.toString().equals(Storage.typeOfTimeInput.toString())) buttonTime.setChecked(false);
+        else buttonTime.setChecked(true);
 
         btnTimePickerInterval = (Button) findViewById(R.id.btnTimePickerInterval);
         if (Storage.typeOfTimeInput == TypeOfInput.SPINNER) btnTimePickerInterval.setEnabled(true);
@@ -84,9 +51,6 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
             }
         });
 
-        ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Storage.showListHint);
-        ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Storage.youngIsOnTop);
-        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.singleTapTimePick);
     }
 
     @Override
@@ -98,10 +62,22 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     //важно помнить, что дефолт ToggleButton.isChecked() это false. текст false это textOff
     //имена переменных же, как и их предпочтительные значения наоборот предполагают true
     //также сбивает с толку предпросмотр XML, показывающий textOff
-    //чтобы устранить это противоречие к опросу TB и его инициализации добавлен !
+    //чтобы устранить это противоречие к опросу ToggleButton и его инициализации добавлен !
     public void onTBListHintClick(View button)       { Storage.showListHint         = !((ToggleButton) button).isChecked(); }
     public void onTBListsSortOrderClick(View button) { Storage.youngIsOnTop         = !((ToggleButton) button).isChecked(); }
     public void onTBTimePickClicksClick(View button) { Storage.singleTapTimePick    = !((ToggleButton) button).isChecked(); }
+
+    public void onTBDateInputClick(View button) {
+        if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
+        else Storage.typeOfDateInput = TypeOfInput.SPINNER;
+        Log.d(LOG_TAG, "Storage.typeOfDateInput: " + String.valueOf(Storage.typeOfDateInput));
+    }
+
+    public void onTBTimeInputClick(View button) {
+        if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
+        else Storage.typeOfDateInput = TypeOfInput.SPINNER;
+        Log.d(LOG_TAG, "Storage.typeOfTimeInput: " + String.valueOf(Storage.typeOfTimeInput));
+    }
 
     public void onExportImportShiftsClick(View p1) {
         Toast.makeText(this, "когда-нибудь это будет открывать окно экспорта", Toast.LENGTH_SHORT).show();

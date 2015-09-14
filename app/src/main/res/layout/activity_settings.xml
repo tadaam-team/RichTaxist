@@ -4,7 +4,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".SettingsActivity"
-    android:id="@+id/activity_settings">
+    android:id="@+id/activity_settings"
+    android:layout_gravity="end">
 
     <ScrollView
         android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -117,13 +118,16 @@
                     android:gravity="center_vertical|start"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
-                <Button
+                <ToggleButton
                     android:id="@+id/btnDate"
                     android:visibility="invisible"
                     style="@style/ButtonBordered"
+                    android:textOff="@string/spinner"
+                    android:textOn="@string/button"
                     android:layout_width="0dp" android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:onClick="onTBDateInputClick"/>
             </TableRow>
 
             <TableRow
@@ -136,13 +140,16 @@
                     android:gravity="center_vertical|start"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
-                <Button
+                <ToggleButton
                     android:id="@+id/btnTime"
                     android:visibility="invisible"
                     style="@style/ButtonBordered"
+                    android:textOff="@string/spinner"
+                    android:textOn="@string/button"
                     android:layout_width="0dp" android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_gravity="center_vertical"
+                    android:onClick="onTBTimeInputClick"/>
             </TableRow>
 
             <TableRow

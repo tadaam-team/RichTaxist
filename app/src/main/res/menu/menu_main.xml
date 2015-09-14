@@ -5,7 +5,7 @@
 
     <item
         android:id="@+id/action_show_orders_list"
-        android:title="@string/showOrdersList"
+        android:title="@string/ordersList"
         android:orderInCategory="100"
         app:showAsAction="ifRoom|withText" />
     <item
@@ -16,24 +16,24 @@
 
 
     <item
-        android:id="@+id/action_new_shift"
-        android:title="@string/newShiftFromMenu"
-        android:orderInCategory="400"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_chat"
         android:title="@string/chat"
-        android:orderInCategory="500"
+        android:orderInCategory="300"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_shift_totals"
         android:title="@string/shiftTotals"
-        android:orderInCategory="600"
+        android:orderInCategory="400"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_grand_totals"
+        android:title="@string/grandTotalsScreenName"
+        android:orderInCategory="500"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
-        android:title="@string/settingsFromMenu"
-        android:orderInCategory="700"
+        android:title="@string/settings"
+        android:orderInCategory="600"
         app:showAsAction="never"/>
 
 </menu>

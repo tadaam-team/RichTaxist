@@ -7,7 +7,7 @@ import tt.richTaxist.DB.sql.OrdersSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
-import tt.richTaxist.TypeOfPayment;
+import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
  * Created by AlexShredder on 29.06.2015.

@@ -289,7 +289,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
 
-    //TODO в это окно надо передавать автора и возвращаться в него. авторов м.б. три: FirstScreenActivity, ShiftsListActivity, MainActivity
+    //TODO в это окно надо передавать автора и возвращаться в него. авторов м.б. два: FirstScreenActivity, MainActivity
     @Override
     public void onBackPressed() {
         Storage.openQuitDialog(this);

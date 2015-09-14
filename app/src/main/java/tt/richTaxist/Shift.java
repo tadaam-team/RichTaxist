@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Map;
 import tt.richTaxist.DB.OrdersStorage;
 import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -42,9 +43,10 @@ public class Shift {
     public String toString() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(beginShift);
-        return String.format("дата начала = %02d.%02d.%02d %02d:%02d,\nвыручка офиц. = %d,\nсдать в кассу = %d,\nбензин = %d, закрыта? = %s",
-                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR) % 100,
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), revenueOfficial, toTheCashier, petrol, this.isClosed()?"да":"нет");
+        return String.format("дата начала: %02d.%02d %02d:%02d,\nвыручка офиц.: %d,\nсдать в кассу: %d,\nбензин: %d, закрыта? %s",
+                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                revenueOfficial, toTheCashier, petrol, this.isClosed()?"да":"нет");
     }
 
     public void closeShift() {
@@ -94,12 +96,5 @@ public class Shift {
         workHoursSpent = Storage.RoundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryPlusBonus / workHoursSpent);
         ShiftsStorage.update(this);
-    }
-
-
-    float RoundResult (float value, int decimalSigns) {
-        int multiplier = (int) Math.pow(10.0, (double) decimalSigns);
-        int numerator = Math.round(value * multiplier);
-        return (float) numerator / multiplier;
     }
 }

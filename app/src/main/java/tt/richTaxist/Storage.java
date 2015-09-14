@@ -3,6 +3,9 @@ package tt.richTaxist;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,6 +18,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
+import tt.richTaxist.Enums.ActivityState;
+import tt.richTaxist.Enums.TypeOfInput;
 import tt.richTaxist.gps.GPSHelper;
 
 /**
@@ -47,6 +52,7 @@ public class Storage {
     public static String operatorName = "";
     public static double batteryCapacity = 0.0;
     public static int batteryLevel = 0;
+    public static boolean deviceIsInLandscape;
 
     private static final String LOG_TAG = "Storage";
     public static Storage instance;
@@ -73,21 +79,80 @@ public class Storage {
         screenWidthInches = RoundResult(screenWidthInches, 3);
         double screenWidthSm = RoundResult(screenWidthInches * 2.54, 3);
         Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
-        if (screenWidthSm > 5.715 && layout != null) {// 720/320*2.54=5.715
+        if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
 //            Toast.makeText(context, "screenWidthSm: " + String.valueOf(screenWidthSm), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "metrics.xdpi: " + String.valueOf(metrics.xdpi), Toast.LENGTH_SHORT).show();
             ViewGroup.LayoutParams params = layout.getLayoutParams();
-            int maxWidth = (int) Math.round(5.715 / 2.54 * metrics.xdpi);
+            int maxWidth = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
             Log.d(LOG_TAG, "maxWidth: " + String.valueOf(maxWidth));
             params.width = maxWidth;
         }
     }
 
+
+    public static ActivityState manageFragments(FragmentManager fragmentManager, ActivityState activityState,
+                                                Fragment fragment1, Fragment fragment2){
+        if (Storage.deviceIsInLandscape) {
+            if (activityState == null) activityState = ActivityState.LAND_2_1;//точка входа ландшафт
+            else if (activityState == ActivityState.PORT_1) activityState = ActivityState.LAND_2_1;
+        }
+        else {
+            if (activityState == null) activityState = ActivityState.PORT_1;//точка входа портрет
+            else if (activityState == ActivityState.LAND_2_1) activityState = ActivityState.PORT_1;
+        }
+
+        FragmentTransaction transaction;
+
+        //очистим экран от возможно содержащихся фрагментов
+//        boolean f1IsHere = fragmentManager.findFragmentByTag("fragment1") != null;
+//        boolean f2IsHere = fragmentManager.findFragmentByTag("fragment2") != null;
+        transaction = fragmentManager.beginTransaction();
+        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                .hide(fragment1)
+                .hide(fragment2)
+                .commit();
+
+        Log.d(LOG_TAG, "activityState: " + String.valueOf(activityState));
+        switch (activityState){
+            case LAND_2_1:
+                //на входе сюда гарантированно нет ни одного подключенного фрагмента
+                transaction = fragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .show(fragment2)
+                        .show(fragment1)
+                        .commit();
+                break;
+
+            case LAND_2:
+                transaction = fragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .show(fragment2)
+                        .commit();
+                break;
+
+            case PORT_1:
+                transaction = fragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .show(fragment1)
+                        .commit();
+                break;
+
+            case PORT_2:
+                transaction = fragmentManager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .show(fragment2)
+                        .commit();
+                break;
+        }
+        return activityState;
+    }
+
+    //TODO: это должно быть внутри класса enum
     //два метода ниже нужны для отправки в Parse и получения из него, т.к. enum он не понимает
     public static String typeOfInputToString(TypeOfInput typeOfInput, Context context) {
         switch (typeOfInput){
             case BUTTON: return context.getString(R.string.button);
             case SPINNER: return context.getString(R.string.spinner);
-            case TEXT_INPUT: return context.getString(R.string.textInput);
             default:
                 Log.d(LOG_TAG, "ошибка перевода enum в String");
                 return context.getString(R.string.button);
@@ -97,8 +162,7 @@ public class Storage {
     public static TypeOfInput stringToTypeOfInput(String string, Context context) {
         if      (context.getString(R.string.button).equals(string))    return TypeOfInput.BUTTON;
         else if (context.getString(R.string.spinner).equals(string))   return TypeOfInput.SPINNER;
-        else if (context.getString(R.string.textInput).equals(string)) return TypeOfInput.TEXT_INPUT;
-        else Log.d(LOG_TAG, "ошибка перевода String в enum");           return TypeOfInput.BUTTON;
+        else Log.d(LOG_TAG, "ошибка перевода String в enum"); return TypeOfInput.BUTTON;
     }
 
     public static void saveSettings(Context context){//to cloud and file
@@ -179,7 +243,7 @@ public class Storage {
         singleTapTimePick = false;
     }
 
-//работает только с числом десятичных знаков 0-5
+    //работает только с числом десятичных знаков 0-5
     public static double RoundResult (double value, int decimalSigns) {
         if (decimalSigns < 0 || decimalSigns > 5) {
             Log.d(LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));

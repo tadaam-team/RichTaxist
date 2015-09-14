@@ -4,7 +4,8 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     tools:context=".GrandTotalsActivity"
     android:orientation="vertical"
-    android:id="@+id/activity_grand_totals">
+    android:id="@+id/activity_grand_totals"
+    android:layout_gravity="end">
 
     <LinearLayout
         android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -69,13 +70,13 @@
                 <TextView
                     android:text="@string/revenueOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1"
+                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_revenueOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp" android:layout_weight="1"
+                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -87,14 +88,14 @@
                 <TextView
                     android:text="@string/revenueCash"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_revenueCash"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -107,14 +108,14 @@
                 <TextView
                     android:text="@string/revenueCard"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_revenueCard"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -129,14 +130,14 @@
                 <TextView
                     android:text="@string/petrol"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_petrol"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -149,14 +150,14 @@
                 <TextView
                     android:text="@string/handedToTheCashier"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_toTheCashier"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -170,14 +171,14 @@
                 <TextView
                     android:text="@string/salaryOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_salaryOfficial"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:textStyle="bold"
@@ -192,14 +193,14 @@
                 <TextView
                     android:text="@string/revenueBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_revenueBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -212,14 +213,14 @@
                 <TextView
                     android:text="@string/salaryPlusBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_salaryPlusBonus"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -232,14 +233,14 @@
                 <TextView
                     android:text="@string/workHoursSpent"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_workHoursSpent"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
@@ -252,14 +253,14 @@
                 <TextView
                     android:text="@string/salaryPerHour"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:layout_gravity="center_vertical"/>
                 <EditText
                     android:id="@+id/gt_salaryPerHour"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="40dp"
+                    android:layout_width="0dp" android:layout_height="match_parent"
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"

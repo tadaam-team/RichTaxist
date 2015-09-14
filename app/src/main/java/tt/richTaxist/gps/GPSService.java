@@ -62,19 +62,19 @@ public class GPSService extends Service {
 
         @Override
         protected void finalize() throws Throwable {
-            Log.d(LOG_TAG,"on finalize Service thread");
+            Log.d(LOG_TAG, "on finalize Service thread");
             locationManager.removeUpdates(locationListener);
             super.finalize();
         }
 
         private void sendLocation(){
 
-            if (lastLocation==null){
+            if (lastLocation == null){
                 Log.d(LOG_TAG,"curLoc = null");
                 return;
             }
 
-            if (pi!=null) {
+            if (pi != null) {
                 Log.d(LOG_TAG, "create intent 4 sending");
                 Intent intent = new Intent();
                 intent.putExtra(GPSHelper.PARAM_DISTANCE, distance);
@@ -88,7 +88,7 @@ public class GPSService extends Service {
                     Log.d(LOG_TAG, e.getMessage());
                 }
             }else{
-                Log.d(LOG_TAG, "pi == null ");
+                Log.d(LOG_TAG, "pi == null");
             }
             try {
                 LocationsStorage.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
@@ -101,10 +101,9 @@ public class GPSService extends Service {
         }
         @Override
         public void run() {
-            Toast.makeText(GPSService.this,"gps servive: run",Toast.LENGTH_SHORT).show();
+            Toast.makeText(GPSService.this, "gps servive: run", Toast.LENGTH_SHORT).show();
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    1000 * 1, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000 * 1, 10, locationListener);
             distance = 0;
             lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             sendLocation();
@@ -121,12 +120,13 @@ public class GPSService extends Service {
 
             @Override
             public void onLocationChanged(Location location) {
-                Log.d(LOG_TAG,"on loc change");
-                if(lastLocation==null) lastLocation = location;
+                Log.d(LOG_TAG, "on loc change");
+                if(lastLocation == null) lastLocation = location;
                 float[] result = new float[1];
-                Location.distanceBetween(lastLocation.getLatitude(),lastLocation.getLongitude(),location.getLatitude(),location.getLongitude(),result);
+                Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
+                        location.getLatitude(), location.getLongitude(), result);
                 lastLocation = location;
-                distance+=result[0];
+                distance += result[0];
 
                 sendLocation();
                 Toast.makeText(GPSService.this, "gps servive: change location", Toast.LENGTH_SHORT).show();
@@ -150,15 +150,15 @@ public class GPSService extends Service {
             @Override
             public void onStatusChanged(String provider, int status, Bundle extras) {
 
-                String caption="???";
+                String caption = "???";
                 switch (status){
-                    case 0: caption="out of service"; break;
-                    case 1: caption="temporarily_unavailable"; break;
-                    case 2: caption="ok"; break;
+                    case 0: caption = "out of service"; break;
+                    case 1: caption = "temporarily_unavailable"; break;
+                    case 2: caption = "ok"; break;
                 }
                 if (provider.equals(LocationManager.GPS_PROVIDER)) {
 
-                    Toast.makeText(GPSService.this,"gps status: "+ caption,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(GPSService.this, "gps status: "+ caption, Toast.LENGTH_SHORT).show();
                 }
             }
         };

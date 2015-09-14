@@ -1,12 +1,14 @@
-package tt.richTaxist;
+package tt.richTaxist.Enums;
+
+import tt.richTaxist.MainActivity;
+import tt.richTaxist.R;
 
 /**
  * Created by Tau on 31.07.2015.
  */
 public enum TypeOfInput {
-    BUTTON (0, R.string.button),
-    SPINNER (1, R.string.spinner),
-    TEXT_INPUT (2, R.string.textInput);
+    BUTTON  (0, R.string.button),
+    SPINNER (1, R.string.spinner);
 
     public final int id;
     private final int captionId;
@@ -18,7 +20,7 @@ public enum TypeOfInput {
 
     public static TypeOfInput getById(int id){
         for (TypeOfInput x: TypeOfInput.values()){
-            if (x.id==id) return x;
+            if (x.id == id) return x;
         }
         throw new IllegalArgumentException();
     }

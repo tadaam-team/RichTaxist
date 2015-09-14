@@ -3,17 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:gravity="center_horizontal"
-    android:id="@+id/activity_main">
+    android:id="@+id/container_main"
+    android:layout_gravity="end">
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:name="tt.richTaxist.OrderFragment"
-        android:id="@+id/fragment"
-        android:layout_gravity="center_horizontal"
-        tools:layout="@layout/fragment_order"
-        android:layout_weight="1"/>
+
 </LinearLayout>
 

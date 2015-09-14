@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class SQLHelper extends SQLiteOpenHelper {
     static final String DB_NAME = "taxiDB";
-    static final int DB_VERSION = 22;
+    static final int DB_VERSION = 23;
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
     private static final String LOG_TAG = "SQLHelper";
 
@@ -53,33 +53,4 @@ public class SQLHelper extends SQLiteOpenHelper {
             onCreate(db);
 //        }
     }
-
-//    Date getStartOfDay(Date day) {
-//        return getStartOfDay(day, Calendar.getInstance());
-//    }
-//
-//    private Date getStartOfDay(Date day, Calendar cal) {
-//        if (day == null) day = new Date();
-//        cal.setTime(day);
-//        cal.set(Calendar.HOUR_OF_DAY, cal.getMinimum(Calendar.HOUR_OF_DAY));
-//        cal.set(Calendar.MINUTE, cal.getMinimum(Calendar.MINUTE));
-//        cal.set(Calendar.SECOND, cal.getMinimum(Calendar.SECOND));
-//        cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
-//        return cal.getTime();
-//    }
-//
-//    Date getEndOfDay(Date day) {
-//        return getEndOfDay(day, Calendar.getInstance());
-//    }
-//
-//    private Date getEndOfDay(Date day, Calendar cal) {
-//        if (day == null)
-//            day = new Date();
-//        cal.setTime(day);
-//        cal.set(Calendar.HOUR_OF_DAY, cal.getMaximum(Calendar.HOUR_OF_DAY));
-//        cal.set(Calendar.MINUTE, cal.getMaximum(Calendar.MINUTE));
-//        cal.set(Calendar.SECOND, cal.getMaximum(Calendar.SECOND));
-//        cal.set(Calendar.MILLISECOND, cal.getMaximum(Calendar.MILLISECOND));
-//        return cal.getTime();
-//    }
 }

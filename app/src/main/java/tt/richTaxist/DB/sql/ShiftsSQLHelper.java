@@ -135,10 +135,6 @@ public class ShiftsSQLHelper extends SQLHelper {
         ArrayList<Shift> shiftsStorage = new ArrayList<>();
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
-        // Select All Query
-        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-//                + BEGIN_SHIFT + "BETWEEN '" + dateFormat.format(fromDate) + "' and '" + dateFormat.format(toDate)
-//                + "' ORDER BY " + BEGIN_SHIFT + " " + sortMethod;
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + BEGIN_SHIFT + ">='" + dateFormat.format(fromDate) + "' AND "
                 + BEGIN_SHIFT + "<='" + dateFormat.format(toDate)
@@ -172,12 +168,11 @@ public class ShiftsSQLHelper extends SQLHelper {
 
     public Shift getLastShift() {
         Shift shift = null;
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // looping through all rows and adding to list
+        // в курсоре единственная запись и луп излишен
         if (cursor.moveToFirst()) {
             do shift = loadShiftFromCursor(cursor);
             while (cursor.moveToNext());
@@ -187,13 +182,11 @@ public class ShiftsSQLHelper extends SQLHelper {
 
     public Shift getShiftByID(int shiftID) {
         Shift shift = null;
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        //TODO: в курсоре единственная запись и луп излишен
-        // looping through all rows and adding to list
+        // в курсоре единственная запись и луп излишен
         if (cursor.moveToFirst()) {
             do shift = loadShiftFromCursor(cursor);
             while (cursor.moveToNext());
@@ -210,11 +203,12 @@ public class ShiftsSQLHelper extends SQLHelper {
     private Shift loadShiftFromCursor(Cursor cursor){
         Date beginShift = null;
         Date endShift   = null;
-        int shiftID     = 0;
+        int shiftID     = cursor.getInt(cursor.getColumnIndex(SHIFT_ID));
+
         try {
-            shiftID    = cursor.getInt(1);
-            beginShift = dateFormat.parse(cursor.getString(2));
-            if (cursor.getString(3) != null) endShift = dateFormat.parse(cursor.getString(3));
+            beginShift = dateFormat.parse(cursor.getString(cursor.getColumnIndex(BEGIN_SHIFT)));
+            if (cursor.getString(cursor.getColumnIndex(END_SHIFT)) != null)
+                endShift = dateFormat.parse(cursor.getString(cursor.getColumnIndex(END_SHIFT)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -223,20 +217,19 @@ public class ShiftsSQLHelper extends SQLHelper {
         shift.beginShift            = beginShift;
         shift.endShift              = endShift;
 
-        //TODO: shift.revenueOfficial = cursor.getInt(cursor.getColumnIndex(REVENUE_OFFICIAL));
-        shift.revenueOfficial       = cursor.getInt(4);
-        shift.revenueCash           = cursor.getInt(5);
-        shift.revenueCard           = cursor.getInt(6);
-        shift.petrol                = cursor.getInt(7);
-        shift.petrolFilledByHands   = cursor.getInt(8) != 0;
-        shift.toTheCashier          = cursor.getInt(9);
-        shift.salaryOfficial        = cursor.getInt(10);
-        shift.revenueBonus          = cursor.getInt(11);
-        shift.salaryPlusBonus       = cursor.getInt(12);
-        shift.workHoursSpent        = cursor.getInt(13);
-        shift.salaryPerHour         = cursor.getInt(14);
-        shift.distance              = cursor.getInt(15);
-        shift.travelTime            = cursor.getInt(16);
+        shift.revenueOfficial       = cursor.getInt(cursor.getColumnIndex(REVENUE_OFFICIAL));
+        shift.revenueCash           = cursor.getInt(cursor.getColumnIndex(REVENUE_CASH));
+        shift.revenueCard           = cursor.getInt(cursor.getColumnIndex(REVENUE_CARD));
+        shift.petrol                = cursor.getInt(cursor.getColumnIndex(PETROL));
+        shift.petrolFilledByHands   = cursor.getInt(cursor.getColumnIndex(PETROL_FILLED_BY_HANDS)) != 0;
+        shift.toTheCashier          = cursor.getInt(cursor.getColumnIndex(TO_THE_CASHIER));
+        shift.salaryOfficial        = cursor.getInt(cursor.getColumnIndex(SALARY_OFFICIAL));
+        shift.revenueBonus          = cursor.getInt(cursor.getColumnIndex(REVENUE_BONUS));
+        shift.salaryPlusBonus       = cursor.getInt(cursor.getColumnIndex(SALARY_PLUS_BONUS));
+        shift.workHoursSpent        = cursor.getInt(cursor.getColumnIndex(WORK_HOURS_SPENT));
+        shift.salaryPerHour         = cursor.getInt(cursor.getColumnIndex(SALARY_PER_HOUR));
+        shift.distance              = cursor.getInt(cursor.getColumnIndex(DISTANCE));
+        shift.travelTime            = cursor.getInt(cursor.getColumnIndex(TRAVEL_TIME));
 
         return shift;
     }

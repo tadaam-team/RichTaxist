@@ -24,7 +24,6 @@ public class ChatActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_client);
-//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		context = getApplicationContext();
 		Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_chat_client));
 		arrayList = new ArrayList<>();

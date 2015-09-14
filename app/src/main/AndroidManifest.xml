@@ -22,7 +22,7 @@
         android:label="@string/appName"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".FirstScreenActivity"
+            android:name="tt.richTaxist.FirstScreenActivity"
             android:label="@string/appName" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,16 +40,15 @@
             android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
-            android:name=".OrdersListActivity"
-            android:label="@string/showOrdersList" >
-        </activity>
-        <activity
-            android:name=".ShiftsListActivity"
-            android:label="@string/openShift" >
+            android:name=".GrandTotalsActivity"
+            android:label="@string/grandTotalsScreenName">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tt.richTaxist.FirstScreenActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/settingsFromMenu" >
+            android:label="@string/settings" >
         </activity>
 
         <activity
@@ -68,7 +67,6 @@
             android:name=".SignInActivity"
             android:label="@string/signIn" >
         </activity>
-
         <activity
             android:name=".ChatClient.ChatLoginActivity"
             android:label="@string/chat" >
@@ -91,15 +89,5 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/googleMapsKey" />
-
-        <activity
-            android:name=".GrandTotalsActivity"
-            android:label="@string/grandTotalsScreenName"
-            android:parentActivityName=".FirstScreenActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="tt.richTaxist.FirstScreenActivity" />
-        </activity>
     </application>
-
 </manifest>

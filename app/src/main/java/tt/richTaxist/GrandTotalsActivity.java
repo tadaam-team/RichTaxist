@@ -381,4 +381,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
         gt_salaryPerHour.   setText(String.format(Locale.GERMANY, "%,d", salaryPerHour));
     }
+//TODO: если пользователь войдет сюда из мэйнактивити, то сможет выйти из программы без подтверждения
+//    @Override
+//    public void onBackPressed() {
+//        Storage.openQuitDialog(this);
+//    }
 }

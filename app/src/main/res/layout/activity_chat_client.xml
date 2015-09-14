@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:id="@+id/activity_chat_client">
+    android:id="@+id/activity_chat_client"
+    android:layout_gravity="end">
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
@@ -28,8 +29,8 @@
             android:layout_weight="1"/>
 
         <Button
-            android:layout_width="100dp"
-            android:layout_height="60dp"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
             android:id="@+id/send_button"
             android:layout_gravity="center_vertical"
             android:text="отправить" />

@@ -15,13 +15,11 @@ import tt.richTaxist.gps.Coordinates;
  */
 public class LocationsSqlHelper extends SQLHelper {
     static final String TABLE_NAME = "path";
-    static final String SHIFT = "shift";
     static final String DATE_TIME = "dateTime";
     static final String LON = "lon";
     static final String LAT = "lat";
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
             + DATE_TIME + " DATETIME, "
-            + SHIFT + " DATETIME, "
             + LON + " FLOAT, "
             + LAT + " FLOAT)";
 
@@ -35,14 +33,9 @@ public class LocationsSqlHelper extends SQLHelper {
         if (toTime == null) toTime = new Date();
 
         ArrayList<Coordinates> coordinates = new ArrayList<>();
-        // Select All Query
-        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT_ID+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
-
-        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-//                + DATE_TIME + " BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + DATE_TIME + "<='" + dateFormat.format(toTime) + "' AND "
-                + DATE_TIME + ">='" + dateFormat.format(fromTime)+"'";
+                + DATE_TIME + ">='" + dateFormat.format(fromTime) + "' AND "
+                + DATE_TIME + "<='" + dateFormat.format(toTime) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -73,7 +66,6 @@ public class LocationsSqlHelper extends SQLHelper {
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
-        //cv.put(SHIFT_ID,dateFormat.format(shift.shiftID));
         cv.put(LON, coordinates.getLon());
         cv.put(LAT, coordinates.getLat());
         cv.put(DATE_TIME, dateFormat.format(new Date()));
@@ -85,13 +77,9 @@ public class LocationsSqlHelper extends SQLHelper {
 
     public List<Coordinates> getLocationsByPeriod(Date fromTime, Date toTime) {
         ArrayList<Coordinates> coordinates = new ArrayList<>();
-        // Select All Query
-        //String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "+SHIFT_ID+"='"+dateFormat.format(shift.shiftID)+"' AND "+DATE_TIME+"<='"+dateFormat.format(toTime)+"' AND "+DATE_TIME+">='"+dateFormat.format(fromTime)+"'";
-        //TODO: String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-//                + DATE_TIME + "BETWEEN '" + dateFormat.format(fromTime) + "' and '" + dateFormat.format(toTime) + "'";
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + DATE_TIME + "<='" + dateFormat.format(toTime) + "' AND "
-                + DATE_TIME + ">='" + dateFormat.format(fromTime) + "'";
+                + DATE_TIME + ">='" + dateFormat.format(fromTime) + "' AND "
+                + DATE_TIME + "<='" + dateFormat.format(toTime) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

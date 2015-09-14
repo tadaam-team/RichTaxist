@@ -1,23 +1,24 @@
 <resources>
     <string name="appName">Богатый таксист</string>
-    <string name="settingsFromMenu">Настройки программы</string>
-    <string name="settingsAndExtras">Настройки\nи доп.возможности</string>
+    <string name="settings">Настройки</string>
     <string name="mainMenu">Главное меню</string>
     <string name="openLastShift">Вернуться\nк последней смене</string>
-    <string name="openShift">Открыть\nсохраненную смену</string>
-    <string name="newShiftFromMenu">Новая смена</string>
-    <string name="newShift">Новая\nсмена</string>
-    <string name="showOrdersList">Список заказов</string>
+    <string name="shiftsList">Список смен</string>
+    <string name="newShift">Новая смена</string>
+    <string name="ordersList">Список заказов</string>
     <string name="shiftTotals">Итоги смены</string>
-    <string name="routeMap">Карта\nмаршрута</string>
+    <string name="routeMap">Карта маршрута</string>
+    <string name="noShiftsMSG">нет сохранённых смен</string>
+    <string name="noOrdersMSG">нет сохранённых заказов</string>
+
 
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
 
-    <string name="contribute">Похвалить\ntadaam-team</string>
+    <string name="contribute">Сказать спасибо</string>
     <string name="exportShifts">Экспорт и импорт\nсмен</string>
     <string name="socials">tadaam-team\nв соцсетях</string>
-    <string name="chat">Водительский\nчат</string>
+    <string name="chat">Водительский чат</string>
     <string name="ipInputHint">Введите IP:</string>
     <string name="enterChat">Войти в чат</string>
     <string name="exit">Закрыть\nпрограмму</string>
@@ -32,9 +33,14 @@
     <string name="noteInputHint">заметка</string>
 
     <string name="payType">Тип оплаты</string>
-    <string name="payTypeCash">наличные</string>
+    <string name="payTypeCash">нал</string>
     <string name="payTypeCard">безнал</string>
     <string name="payTypeTip">чаевые</string>
+
+    <string name="activityStateLAND_2_1">ландшафт с двумя фрагментами</string>
+    <string name="activityStateLAND_2">ландшафт только со списком</string>
+    <string name="activityStatePORT_1">портрет только с главным фрагментом</string>
+    <string name="activityStatePORT_2">портрет только со списком</string>
 
 
     <string name="entryTextExampleMain">пример основного текста</string>
@@ -62,7 +68,7 @@
     <string name="zero">0</string>
     <string name="petrolInputMsg">Введите фактический\nчек за бензин</string>
 
-    <string name="grandTotalsScreenName">Итоги по\nзарплате</string>
+    <string name="grandTotalsScreenName">Заработано</string>
     <string name="rangeStart">Первая смена</string>
     <string name="rangeEnd">Последняя смена</string>
     <string name="handedToTheCashier">Сдано кассу</string>
@@ -71,10 +77,9 @@
     <string name="viewOfDatePicker">Способ ввода дат</string>
     <string name="button">кнопка</string>
     <string name="spinner">спиннер</string>
-    <string name="textInput">поле ввода</string>
     <string name="timePickerInterval">Шаг спиннера минут</string>
-    <string name="showListHint">Подсказка по работе со списками</string>
-    <string name="listHint">взмах влево = редактировать. вправо = удалить</string>
+    <string name="showListHint">Подсказка для списков</string>
+    <string name="listHint">взмах влево = править\nвправо = удалить</string>
     <string name="show">показывать</string>
     <string name="dontShow">не показывать</string>
     <string name="listsSortOrder">Сортировка списков</string>
@@ -92,20 +97,17 @@
     <string name="closeOrder">Закрыть заказ</string>
     <string name="openMap">Открыть карту</string>
 
-    <string name="signIn">Учетные\nзаписи</string>
-    <string name="userName">логин</string>
+    <string name="signIn">Учетные записи</string>
+    <string name="username">логин</string>
     <string name="password">пароль</string>
     <string name="email">почта</string>
     <string name="signUp">Новый\nводитель</string>
-    <string name="logIn">Войти\n</string>
+    <string name="logIn">Войти</string>
     <string name="claimChangeDevice">Сменить\nустройство</string>
-    <string name="logOut">Выйти\n</string>
+    <string name="logOut">Выйти</string>
     <string name="signUpDefault">Здравствуйте, пользователь</string>
     <string name="userActive">- пользователь зарегистрирован</string>
     <string name="emailVerified">- почта подтверждена</string>
     <string name="IMEICorrect">- IMEI прошел проверку</string>
     <string name="premiumUser">- премиум подписка подключена</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
