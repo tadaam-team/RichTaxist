@@ -112,9 +112,10 @@ public class MapPathActivity extends Fragment implements OnMyLocationListener, M
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.gps_yandex_path, null);
+//        View rootView = inflater.inflate(R.layout.gps_yandex_path, null);
+        View rootView = inflater.inflate(R.layout.gps_yandex_path, container, false);
 
-        final MapView mapView = (MapView) v.findViewById(R.id.map);
+        final MapView mapView = (MapView) rootView.findViewById(R.id.map);
         mapView.showBuiltInScreenButtons(true);
 
         mMapController = mapView.getMapController();
@@ -122,7 +123,7 @@ public class MapPathActivity extends Fragment implements OnMyLocationListener, M
          //add listener
         //mMapController.getOverlayManager().getMyLocation().addMyLocationListener(this);
         showPath(lastCoordsList);
-        return v;
+        return rootView;
     }
 
     @Override

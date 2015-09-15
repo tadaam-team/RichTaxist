@@ -6,8 +6,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import com.google.android.gms.maps.SupportMapFragment;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
@@ -43,27 +43,27 @@ public class RouteActivity extends FragmentActivity {
         if (currentShift.isClosed()) rangeEnd.setTime(currentShift.endShift);
 
         ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByShift(currentShift));
+        final TextView tvRangeStart = (TextView) findViewById(R.id.tvRangeStart);
+        final TextView tvRangeEnd   = (TextView) findViewById(R.id.tvRangeEnd);
+        tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
+        tvRangeEnd  .setText(getStringDateTimeFromCal(rangeEnd));
 
         final RangeSeekBar<Long> seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), RouteActivity.this);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Long>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
                 // handle changed range values
-                //TODO добавить окошки для введенных дат
-                if (updateTask!=null) updateTask.cancel(true);
+                if (updateTask != null) updateTask.cancel(true);
                 rangeStart.setTimeInMillis(minValue);
                 rangeEnd.setTimeInMillis(maxValue);
-                String msg1 = String.format("%02d.%02d.%02d %02d:%02d", rangeStart.get(Calendar.DAY_OF_MONTH), rangeStart.get(Calendar.MONTH) + 1, rangeStart.get(Calendar.YEAR) % 100,
-                        rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE));
-                String msg2 = String.format("%02d.%02d.%02d %02d:%02d", rangeEnd.get(Calendar.DAY_OF_MONTH), rangeEnd.get(Calendar.MONTH) + 1, rangeEnd.get(Calendar.YEAR) % 100,
-                        rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE));
-                Toast.makeText(RouteActivity.this, "MIN = " + msg1 + ",\nMAX = " + msg2, Toast.LENGTH_LONG).show();
+                tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
+                tvRangeEnd.setText(getStringDateTimeFromCal(rangeEnd));
                 ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
             }
         });
 
         // add RangeSeekBar to pre-defined layout
-        ViewGroup layout = (ViewGroup) findViewById(R.id.gps_activity_route);
+        FrameLayout layout = (FrameLayout) findViewById(R.id.seekBarPlaceHolderInRouteActivity);
         layout.addView(seekBar);
 
         if (!currentShift.isClosed()){
@@ -98,8 +98,13 @@ public class RouteActivity extends FragmentActivity {
                 }
             };
             updateTask.execute();
-         }
+        }
+    }
 
+    private String getStringDateTimeFromCal(Calendar cal){
+        return String.format("%02d.%02d.%02d %02d:%02d", cal.get(Calendar.DAY_OF_MONTH),
+                cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100,
+                cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
     @Override

@@ -29,9 +29,10 @@ public class Storage {
     public static TypeOfInput typeOfDateInput = TypeOfInput.BUTTON;
     public static TypeOfInput typeOfTimeInput = TypeOfInput.BUTTON;
     public static int timePickerStep = 10;
-    public static Boolean showListHint = true;
+    public static Boolean showListHint = true;//все булевы, переключаемые через tb должны в дефолте быть true
     public static Boolean youngIsOnTop = true;
-    public static Boolean singleTapTimePick = false;
+    public static Boolean twoTapTimePick = true;
+    public static Boolean hideTaxometer = true;
 
     public static ParseUser currentUser;
     public static String username = "";
@@ -46,12 +47,6 @@ public class Storage {
     public static long sessionLength = 0;
 
     public static String IP = "";
-    //ниже пока не используемая информация
-    public static String phoneModel = "";
-    public static String androidVersion = "";
-    public static String operatorName = "";
-    public static double batteryCapacity = 0.0;
-    public static int batteryLevel = 0;
     public static boolean deviceIsInLandscape;
 
     private static final String LOG_TAG = "Storage";
@@ -80,8 +75,6 @@ public class Storage {
         double screenWidthSm = RoundResult(screenWidthInches * 2.54, 3);
         Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
         if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
-//            Toast.makeText(context, "screenWidthSm: " + String.valueOf(screenWidthSm), Toast.LENGTH_SHORT).show();
-            Toast.makeText(context, "metrics.xdpi: " + String.valueOf(metrics.xdpi), Toast.LENGTH_SHORT).show();
             ViewGroup.LayoutParams params = layout.getLayoutParams();
             int maxWidth = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
             Log.d(LOG_TAG, "maxWidth: " + String.valueOf(maxWidth));
@@ -168,15 +161,16 @@ public class Storage {
     public static void saveSettings(Context context){//to cloud and file
         Log.d(LOG_TAG, "saving settings to cloud");
         if (currentUser != null) {
+            currentUser.put("premiumUser", premiumUser);
+            currentUser.put("userHasAccess", userHasAccess);
+            //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
             currentUser.put("typeOfDateInput", typeOfInputToString(typeOfDateInput, context));
             currentUser.put("typeOfTimeInput", typeOfInputToString(typeOfTimeInput, context));
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("showListHint", showListHint);
-            currentUser.put("premiumUser", premiumUser);
-            currentUser.put("userHasAccess", userHasAccess);
-            //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
             currentUser.put("youngIsOnTop", youngIsOnTop);
-            currentUser.put("singleTapTimePick", singleTapTimePick);
+            currentUser.put("twoTapTimePick", twoTapTimePick);
+            currentUser.put("hideTaxometer", hideTaxometer);
             currentUser.saveInBackground();
         }
 
@@ -240,7 +234,7 @@ public class Storage {
         timePickerStep = 10;
         showListHint = true;
         youngIsOnTop = true;
-        singleTapTimePick = false;
+        twoTapTimePick = false;
     }
 
     //работает только с числом десятичных знаков 0-5

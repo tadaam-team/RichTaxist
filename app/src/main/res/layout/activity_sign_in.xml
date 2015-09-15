@@ -6,7 +6,7 @@
     tools:context=".SignInActivity"
     android:id="@+id/activity_sign_in"
     android:orientation="vertical"
-    android:layout_gravity="end">
+    android:layout_gravity="center">
 
     <ScrollView
         android:layout_width="match_parent" android:layout_height="match_parent">

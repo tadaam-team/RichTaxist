@@ -3,7 +3,6 @@ package tt.richTaxist;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -28,19 +27,19 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
         //транслируем сохраненное состояние настроек в виджеты при открытии
         ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Storage.showListHint);
         ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Storage.youngIsOnTop);
-        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.singleTapTimePick);
+        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.twoTapTimePick);
+        ((ToggleButton) findViewById(R.id.tbHideTaxometer)) .setChecked(!Storage.hideTaxometer);
 
         ToggleButton buttonDate = (ToggleButton) findViewById(R.id.btnDate);
-        //TODO: переделать на равенство индексов
-        if (TypeOfInput.BUTTON.toString().equals(Storage.typeOfDateInput.toString())) buttonDate.setChecked(false);
+        if (Storage.typeOfDateInput.id == TypeOfInput.BUTTON.id) buttonDate.setChecked(false);
         else buttonDate.setChecked(true);
 
         ToggleButton buttonTime = (ToggleButton) findViewById(R.id.btnTime);
-        if (TypeOfInput.BUTTON.toString().equals(Storage.typeOfTimeInput.toString())) buttonTime.setChecked(false);
+        if (Storage.typeOfTimeInput.id == TypeOfInput.BUTTON.id) buttonTime.setChecked(false);
         else buttonTime.setChecked(true);
 
         btnTimePickerInterval = (Button) findViewById(R.id.btnTimePickerInterval);
-        if (Storage.typeOfTimeInput == TypeOfInput.SPINNER) btnTimePickerInterval.setEnabled(true);
+        if (Storage.typeOfTimeInput.id == TypeOfInput.SPINNER.id) btnTimePickerInterval.setEnabled(true);
         else btnTimePickerInterval.setEnabled(false);
         btnTimePickerInterval.setText(String.valueOf(Storage.timePickerStep));
         btnTimePickerInterval.setOnClickListener(new View.OnClickListener() {
@@ -63,20 +62,19 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     //имена переменных же, как и их предпочтительные значения наоборот предполагают true
     //также сбивает с толку предпросмотр XML, показывающий textOff
     //чтобы устранить это противоречие к опросу ToggleButton и его инициализации добавлен !
-    public void onTBListHintClick(View button)       { Storage.showListHint         = !((ToggleButton) button).isChecked(); }
-    public void onTBListsSortOrderClick(View button) { Storage.youngIsOnTop         = !((ToggleButton) button).isChecked(); }
-    public void onTBTimePickClicksClick(View button) { Storage.singleTapTimePick    = !((ToggleButton) button).isChecked(); }
+    public void onTBListHintClick(View button)       { Storage.showListHint     = !((ToggleButton) button).isChecked(); }
+    public void onTBListsSortOrderClick(View button) { Storage.youngIsOnTop     = !((ToggleButton) button).isChecked(); }
+    public void onTBTimePickClicksClick(View button) { Storage.twoTapTimePick   = !((ToggleButton) button).isChecked(); }
+    public void onTBHideTaxometerClick(View button)  { Storage.hideTaxometer    = !((ToggleButton) button).isChecked(); }
 
     public void onTBDateInputClick(View button) {
         if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
         else Storage.typeOfDateInput = TypeOfInput.SPINNER;
-        Log.d(LOG_TAG, "Storage.typeOfDateInput: " + String.valueOf(Storage.typeOfDateInput));
     }
 
     public void onTBTimeInputClick(View button) {
         if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
         else Storage.typeOfDateInput = TypeOfInput.SPINNER;
-        Log.d(LOG_TAG, "Storage.typeOfTimeInput: " + String.valueOf(Storage.typeOfTimeInput));
     }
 
     public void onExportImportShiftsClick(View p1) {
@@ -89,6 +87,14 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
     public void onBackPressed() {
         super.onBackPressed();
         Storage.saveSettings(context);
-//        if (MainActivity.currentShift != null) MainActivity.refreshInputStyle();
+        if (MainActivity.currentShift != null) {
+            OrderFragment fragment1 = (OrderFragment) MainActivity.fragmentManager.findFragmentByTag("fragment1");
+            if (fragment1 != null) fragment1.refreshWidgets(null);
+
+            MainActivity.sortOrdersStorage();
+            if (MainActivity.orderAdapterMA != null) MainActivity.orderAdapterMA.notifyDataSetChanged();
+            MainActivity.sortShiftsStorage();
+        }
+        if (FirstScreenActivity.shiftAdapterMA != null) FirstScreenActivity.shiftAdapterMA.notifyDataSetChanged();
     }
 }

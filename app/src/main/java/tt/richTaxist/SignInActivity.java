@@ -5,13 +5,11 @@ package tt.richTaxist;
  */
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -262,7 +260,7 @@ public class SignInActivity extends AppCompatActivity {
         Storage.currentUser         = user;
         Storage.showListHint        = user.getBoolean("showListHint");
         Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
-        Storage.singleTapTimePick   = user.getBoolean("singleTapTimePick");
+        Storage.twoTapTimePick      = user.getBoolean("twoTapTimePick");
         Storage.premiumUser         = user.getBoolean("premiumUser");
         Storage.emailVerified       = user.getBoolean("emailVerified");
 

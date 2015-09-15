@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -28,16 +27,17 @@ import tt.richTaxist.DB.ShiftsStorage;
  */
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.EditNameDialogListener {
-    static Context context;
+    private static Context context;
     private Shift currentShift;
-    DatePickerDialog.OnDateSetListener dateSetListener;
-    TimePickerDialog.OnTimeSetListener timeSetListener;
-    Calendar shiftStart, shiftEnd;
-    String clickedButtonID;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private TimePickerDialog.OnTimeSetListener timeSetListener;
+    private Calendar shiftStart, shiftEnd;
+    private String clickedButtonID;
+    private String author;
 
-    Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, buttonContinueShift;
-    EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryPlusBonus, st_workHoursSpent, st_salaryPerHour;
-    ToggleButton buttonShiftIsClosed;
+    private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, buttonContinueShift;
+    private EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryPlusBonus, st_workHoursSpent, st_salaryPerHour;
+    private ToggleButton buttonShiftIsClosed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +69,17 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         }
         createButtons(shiftStart, shiftEnd);
         refreshWidgets();
+        if (getIntent() != null) author = getIntent().getStringExtra("author");
+        else author = "";
+    }
+
+    public void onButtonExitToMainMenuClick(View button) {
+        startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
+        finish();
     }
 
     public void onContinueShiftClick(View v) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
-        Toast.makeText(getApplicationContext(), "продолжим смену", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
     }
 
@@ -87,7 +93,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener, rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
-                startDatePD.setYearRange(2015, 2017);
+                startDatePD.setYearRange(2015, 2020);
                 startDatePD.setCloseOnSingleTapDay(true);
                 startDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonShiftStartDate";
@@ -96,9 +102,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), false, false);
+                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
-                startTimePD.setCloseOnSingleTapMinute(Storage.singleTapTimePick);
+                startTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 startTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonShiftStartTime";
             }
@@ -108,7 +114,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener, rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
-                endDatePD.setYearRange(2015, 2017);
+                endDatePD.setYearRange(2015, 2020);
                 endDatePD.setCloseOnSingleTapDay(true);
                 endDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonShiftEndDate";
@@ -117,9 +123,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), false, false);
+                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
-                endTimePD.setCloseOnSingleTapMinute(Storage.singleTapTimePick);
+                endTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 endTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonShiftEndTime";
             }
@@ -196,11 +202,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         currentShift.calculateShiftTotals(0);
         refreshWidgets();
         ShiftsStorage.update(currentShift);
-    }
-
-    public void onButtonExitToMainMenuClick(View button) {
-        startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-        finish();
     }
 
     public void onButtonShiftIsClosedClick(View button) {
@@ -289,9 +290,14 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
 
-    //TODO в это окно надо передавать автора и возвращаться в него. авторов м.б. два: FirstScreenActivity, MainActivity
     @Override
     public void onBackPressed() {
-        Storage.openQuitDialog(this);
+        if (author.equals("FirstScreenActivity")) {
+            startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
+        }
+        else if (author.equals("MainActivity")) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        }
+        finish();
     }
 }

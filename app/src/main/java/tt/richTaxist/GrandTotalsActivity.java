@@ -1,7 +1,6 @@
 package tt.richTaxist;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -23,24 +22,24 @@ import tt.richTaxist.gps.RangeSeekBar;
 
 
 public class GrandTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
-    static Context context;
-    DatePickerDialog.OnDateSetListener dateSetListener;
-    TimePickerDialog.OnTimeSetListener timeSetListener;
-    String LOG_TAG = "GrandTotalsActivity";
-    Calendar rangeStart, rangeEnd;
-    ArrayList<Shift> shifts;
+    private static Context context;
+    private DatePickerDialog.OnDateSetListener dateSetListener;
+    private TimePickerDialog.OnTimeSetListener timeSetListener;
+    private String LOG_TAG = "GrandTotalsActivity";
+    private Calendar rangeStart, rangeEnd;
+    private ArrayList<Shift> shifts;
 
-    Button buttonRangeStartDate;
-    Button buttonRangeStartTime;
-    Button buttonRangeEndDate;
-    Button buttonRangeEndTime;
-    ViewGroup seekBarPlaceHolder;
-    RangeSeekBar<Long> seekBar;
+    private Button buttonRangeStartDate;
+    private Button buttonRangeStartTime;
+    private Button buttonRangeEndDate;
+    private Button buttonRangeEndTime;
+    private ViewGroup seekBarPlaceHolder;
+    private RangeSeekBar<Long> seekBar;
 
-    String clickedButtonID;
-    int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, salaryPlusBonus, salaryPerHour;
-    float workHoursSpent;
-    EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
+    private String clickedButtonID;
+    private int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, salaryPlusBonus, salaryPerHour;
+    private float workHoursSpent;
+    private EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
             gt_toTheCashier, gt_salaryOfficial, gt_salaryPlusBonus, gt_workHoursSpent, gt_salaryPerHour;
 
     @Override
@@ -99,7 +98,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener, rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
-                startDatePD.setYearRange(2015, 2017);
+                startDatePD.setYearRange(2015, 2020);
                 startDatePD.setCloseOnSingleTapDay(true);
                 startDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeStartDate";
@@ -108,9 +107,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         buttonRangeStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), false, false);
+                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
-                startTimePD.setCloseOnSingleTapMinute(Storage.singleTapTimePick);
+                startTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 startTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeStartTime";
             }
@@ -120,7 +119,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             public void onClick(View v) {
                 DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener, rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
-                endDatePD.setYearRange(2015, 2017);
+                endDatePD.setYearRange(2015, 2020);
                 endDatePD.setCloseOnSingleTapDay(true);
                 endDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeEndDate";
@@ -129,9 +128,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         buttonRangeEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), false, false);
+                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
-                endTimePD.setCloseOnSingleTapMinute(Storage.singleTapTimePick);
+                endTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 endTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeEndTime";
             }
@@ -300,7 +299,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
             salaryPlusBonus += salaryPlusBonusLocal;
             //processPartlyShift не обрабатывает отработку не целой смены, т.к. алгоритм слишком сложен
         }
-        else {/*если в переданном куске нет заказов, то анализировать нечего, как нечего и прибавлять к (возможно) ранее посчитанным числам*/}
+        //если в переданном куске нет заказов, то анализировать нечего, как нечего и прибавлять к (возможно) ранее посчитанным числам
     }
 
     private void logDate (String dateName, Calendar dateToLog){
@@ -381,9 +380,4 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
         gt_salaryPerHour.   setText(String.format(Locale.GERMANY, "%,d", salaryPerHour));
     }
-//TODO: если пользователь войдет сюда из мэйнактивити, то сможет выйти из программы без подтверждения
-//    @Override
-//    public void onBackPressed() {
-//        Storage.openQuitDialog(this);
-//    }
 }

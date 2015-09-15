@@ -41,6 +41,7 @@ public class ShiftsListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shiftAdapter = new ShiftAdapter(mActivity);
+        FirstScreenActivity.shiftAdapterMA = shiftAdapter;
         setListAdapter(shiftAdapter);
         setRetainInstance(true);
         //onDestroy() will not be called (but onDetach() still will be, because the fragment is being detached from its current activity).
@@ -85,7 +86,9 @@ public class ShiftsListFragment extends ListFragment {
                 case RIGHT_TO_LEFT://вывести в поля для редактирования смену, которую смахнули влево
                     MainActivity.currentShift = selectedShift;
                     MainActivity.ordersStorage.fillOrdersByShift(selectedShift);
-                    startActivity(new Intent(mActivity, ShiftTotalsActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+                    Intent intent = new Intent(mActivity, ShiftTotalsActivity.class);
+                    intent.putExtra("author", "FirstScreenActivity");
+                    startActivity(intent);
                     Toast.makeText(mActivity, "выбрана смена для редактирования", Toast.LENGTH_SHORT).show();
                     //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран
                     mActivity.finish();

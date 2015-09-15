@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:id="@+id/activity_chat_home"
-    android:layout_gravity="end">
+    android:layout_gravity="center">
 
     <TextView
         android:text="@string/ipInputHint"

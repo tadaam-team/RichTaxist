@@ -91,7 +91,7 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
                 DatePickerDialog datePD = DatePickerDialog.newInstance(dateSetListener,
                         arrivalDateTime.get(Calendar.YEAR), arrivalDateTime.get(Calendar.MONTH), arrivalDateTime.get(Calendar.DAY_OF_MONTH), false);
                 datePD.setVibrate(false);
-                datePD.setYearRange(2015, 2017);
+                datePD.setYearRange(2015, 2020);
                 datePD.setCloseOnSingleTapDay(true);
                 datePD.show(getChildFragmentManager(), "datepicker");// getFragmentManager() работает точно также
             }
@@ -109,9 +109,9 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
             @Override
             public void onClick(View v) {
                 TimePickerDialog timePD = TimePickerDialog.newInstance(timeSetListener,
-                        arrivalDateTime.get(Calendar.HOUR_OF_DAY), arrivalDateTime.get(Calendar.MINUTE), false, false);
+                        arrivalDateTime.get(Calendar.HOUR_OF_DAY), arrivalDateTime.get(Calendar.MINUTE), true, false);
                 timePD.setVibrate(false);
-                timePD.setCloseOnSingleTapMinute(Storage.singleTapTimePick);
+                timePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 timePD.show(getChildFragmentManager(), "timepicker");// getFragmentManager() работает точно также
             }
         });
@@ -119,10 +119,13 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
 //        timePickerPlaceHolder = (LinearLayout) findViewById(R.id.timePickerPlaceHolder);
 //        refreshInputStyle();//плохо, но в процессе обновления создается timePicker при необходимости
 
-        rootView.findViewById(R.id.buttonAddNew).setOnClickListener(new View.OnClickListener() {
+        Button buttonAddNew = (Button) rootView.findViewById(R.id.buttonAddNew);
+        buttonAddNew.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(mActivity, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
+                if (Storage.hideTaxometer)
+                    startActivityForResult(new Intent(mActivity, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
+                else createNewOrder(0, 0);
             }
         });
         rootView.findViewById(R.id.buttonClearForm).setOnClickListener(new View.OnClickListener() {
@@ -138,8 +141,8 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-            outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
+        super.onSaveInstanceState(outState);
+        outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
     }
 
     TypeOfPayment getRadioState(){
@@ -184,22 +187,33 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GET_DATA_FROM_ORDER_ACTIVITY && resultCode == Activity.RESULT_OK){
-            int price;
-            try { price = Integer.parseInt(priceUI.getText().toString());
-            } catch (NumberFormatException e) {
-                Log.d(LOG_TAG, "NumberFormatException caught while parsing price");
-                price = 0;
-            }
-            String note;
-            try { note = noteUI.getText().toString();
-            } catch (Exception e) {
-                Log.d(LOG_TAG, "Exception caught while parsing note");
-                note = "";
-            }
-            Order newOrder = new Order(arrivalDateTime.getTime(), getRadioState(), price, MainActivity.currentShift, note);
-            ((OnOrderFragmentInteractionListener) mActivity).addOrder(newOrder);
-            refreshWidgets(null);
+            //когда из таксометра мы будем получать результат, createNewOrder() будет получать дополнительные параметры
+            int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
+            long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);;
+            createNewOrder(distance, travelTime);
         }
+    }
+
+    private void createNewOrder(int distance, long travelTime){
+        int price;
+        try { price = Integer.parseInt(priceUI.getText().toString());
+        } catch (NumberFormatException e) {
+            Log.d(LOG_TAG, "NumberFormatException caught while parsing price");
+            price = 0;
+        }
+        String note;
+        try { note = noteUI.getText().toString();
+        } catch (Exception e) {
+            Log.d(LOG_TAG, "Exception caught while parsing note");
+            note = "";
+        }
+        Order newOrder;
+        if (distance == 0 && travelTime == 0)
+            newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note);
+        else
+            newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note, distance, travelTime);
+        ((OnOrderFragmentInteractionListener) mActivity).addOrder(newOrder);
+        refreshWidgets(null);
     }
 
     @Override

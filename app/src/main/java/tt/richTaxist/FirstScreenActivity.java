@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.Parse;
@@ -25,6 +26,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     static AppCompatActivity activity;
     static Context context;
     private static final String LOG_TAG = "FirstScreenActivity";
+    public static ArrayAdapter shiftAdapterMA;
     private FragmentManager fragmentManager;
     private FirstScreenFragment fragment1;
     private ShiftsListFragment fragment2;
@@ -92,7 +94,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 else {
                     MainActivity.currentShift = ShiftsStorage.getLastShift();
                     MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
-                    startActivity(new Intent(activity, ShiftTotalsActivity.class));
+                    Intent intent = new Intent(activity, ShiftTotalsActivity.class);
+                    intent.putExtra("author", "FirstScreenActivity");
+                    startActivity(intent);
                     Log.d(LOG_TAG, "открываю последнюю сохраненную смену");
                     finish();
                 }
@@ -101,7 +105,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnNewShift:
                 MainActivity.currentShift = new Shift();
                 MainActivity.ordersStorage.clear(false);
-                startActivity(new Intent(activity, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+                startActivity(new Intent(activity, MainActivity.class));
                 Log.d(LOG_TAG, "открываю новую смену");
                 finish();
                 break;
@@ -190,11 +194,12 @@ public class FirstScreenActivity extends AppCompatActivity implements
         //пользователь авторизован. загрузим его сохраненные настройки из облака
         Log.d(LOG_TAG, "user logged in");
         Storage.currentUser         = user;
-        Storage.showListHint        = user.getBoolean("showListHint");
-        Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
-        Storage.singleTapTimePick   = user.getBoolean("singleTapTimePick");
         Storage.premiumUser         = user.getBoolean("premiumUser");
         Storage.emailVerified       = user.getBoolean("emailVerified");
+        Storage.showListHint        = user.getBoolean("showListHint");
+        Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
+        Storage.twoTapTimePick = user.getBoolean("twoTapTimePick");
+        Storage.hideTaxometer = user.getBoolean("hideTaxometer");
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {
@@ -232,7 +237,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Log.d(LOG_TAG, "IMEI not null");
         //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
 
-
+        //TODO: оформить это в нетост
         if (!Storage.deviceIMEI.equals(user.getString("IMEI"))) {
             Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
                     "\nВы вошли в систему с другого устройства." +

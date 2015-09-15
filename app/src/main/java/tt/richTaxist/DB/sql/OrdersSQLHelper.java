@@ -166,11 +166,11 @@ public class OrdersSQLHelper extends SQLHelper {
         int price = cursor.getInt(cursor.getColumnIndex(PRICE));
         TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
         int shiftID = cursor.getInt(cursor.getColumnIndex(SHIFT_ID));
+        String note = cursor.getString(cursor.getColumnIndex(NOTE));
         int distance = cursor.getInt(cursor.getColumnIndex(DISTANCE));
         long travelTime = cursor.getLong(cursor.getColumnIndex(TRAVEL_TIME));
-        String note = cursor.getString(cursor.getColumnIndex(NOTE));
 
-        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), distance, travelTime, note);
+        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), note, distance, travelTime);
     }
 
     public int remove(Order order){

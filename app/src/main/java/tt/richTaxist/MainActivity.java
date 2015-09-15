@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements
     final static OrdersStorageList ordersStorage = new OrdersStorageList();
 
     public static ArrayAdapter orderAdapterMA;
-    private FragmentManager fragmentManager;
+    public static FragmentManager fragmentManager;
     private OrderFragment fragment1;
     private OrdersListFragment fragment2;
     private ActivityState activityState;
@@ -97,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     static void sortOrdersStorage(){
-        Log.d(LOG_TAG, "youngIsOnTop: " + Storage.youngIsOnTop);
         for (int i = ordersStorage.size() - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 Date currentDate = ordersStorage.get(j).arrivalDateTime;
@@ -114,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     static void sortShiftsStorage(){
-        Log.d(LOG_TAG, "youngIsOnTop: " + Storage.youngIsOnTop);
         for (int i = shiftsStorage.size() - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 Date currentShiftStart = shiftsStorage.get(j).beginShift;
@@ -167,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
 
             case R.id.action_shift_totals:
-                startActivity(new Intent(context, ShiftTotalsActivity.class));
+                Intent intent = new Intent(context, ShiftTotalsActivity.class);
+                intent.putExtra("author", "MainActivity");
+                startActivity(intent);
                 finish();
                 return true;
 

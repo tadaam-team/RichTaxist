@@ -1,21 +1,9 @@
 package tt.richTaxist.gps;
 
 import android.app.Fragment;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.location.LocationManager;
-import android.location.Location;
-import android.location.LocationProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import tt.richTaxist.OrderActivity;
 import tt.richTaxist.gps.yandex.YandexMaps;
 import tt.richTaxist.gps.yandex.path.MapPathActivity;
 
@@ -36,11 +24,7 @@ public class GPSHelper extends AppCompatActivity {
     public static boolean serviceStarted = false;
     private static MapProvider mapProvider = new YandexMaps();
 
-    private GPSHelper() {
-
-
-    }
-
+    private GPSHelper() { }
 
     public static void setMapProvider(MapProvider mapProvider) {
         GPSHelper.mapProvider = mapProvider;
@@ -49,7 +33,6 @@ public class GPSHelper extends AppCompatActivity {
     public static MapProvider getMapProvider() {
         return mapProvider;
     }
-
 
     public static Coordinates getCoordinates(){
         Coordinates coord = new Coordinates(30,50);
