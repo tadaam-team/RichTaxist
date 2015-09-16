@@ -50,6 +50,10 @@
             android:label="@string/appName" >
         </activity>
         <activity
+            android:name=".gps.google.MapMyLocationChangeActivity"
+            android:label="@string/appName" >
+        </activity>
+        <activity
             android:name=".OrderActivity"
             android:label="@string/mainScreenName" >
         </activity>

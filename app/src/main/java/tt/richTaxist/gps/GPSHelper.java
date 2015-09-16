@@ -4,8 +4,11 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import tt.richTaxist.gps.yandex.YandexMaps;
-import tt.richTaxist.gps.yandex.path.MapPathActivity;
+
+import tt.richTaxist.gps.google.GoogleMaps;
+import tt.richTaxist.gps.google.MapPathActivity;
+//import tt.richTaxist.gps.yandex.YandexMaps;
+//import tt.richTaxist.gps.yandex.path.MapPathActivity;
 
 /**
  * Created by AlexShredder on 06.07.2015.
@@ -22,7 +25,7 @@ public class GPSHelper extends AppCompatActivity {
     public static final int LOCATION_UPDATE = 10;
     private static final String LOG_TAG = "GPSHelper";
     public static boolean serviceStarted = false;
-    private static MapProvider mapProvider = new YandexMaps();
+    private static MapProvider mapProvider = new GoogleMaps();
 
     private GPSHelper() { }
 
