@@ -1,13 +1,9 @@
 package tt.richTaxist.gps.google;
 
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-
 import tt.richTaxist.R;
 
 

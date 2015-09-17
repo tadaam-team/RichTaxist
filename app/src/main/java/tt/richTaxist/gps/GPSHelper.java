@@ -4,11 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-
 import tt.richTaxist.gps.google.GoogleMaps;
 import tt.richTaxist.gps.google.MapPathActivity;
-//import tt.richTaxist.gps.yandex.YandexMaps;
-//import tt.richTaxist.gps.yandex.path.MapPathActivity;
 
 /**
  * Created by AlexShredder on 06.07.2015.
@@ -38,8 +35,7 @@ public class GPSHelper extends AppCompatActivity {
     }
 
     public static Coordinates getCoordinates(){
-        Coordinates coord = new Coordinates(30,50);
-        return coord;
+        return new Coordinates(30,50);
     }
 
     public static Class getLocActivityClass(){

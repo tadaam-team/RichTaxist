@@ -1,6 +1,5 @@
 package tt.richTaxist.gps.google;
 
-
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Resources;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,21 +22,16 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import tt.richTaxist.R;
 import tt.richTaxist.gps.Coordinates;
 import tt.richTaxist.gps.MapFragment;
-
-
 
 public class MapPathActivity extends Fragment implements MapFragment {
     private static final String LOG_TAG = "Google Map fragment";
     GoogleMap mMapController;
     List<Coordinates> lastCoordsList;
-
     LinearLayout mView;
 
     public void showPath(List<Coordinates> coords){
@@ -74,11 +67,8 @@ public class MapPathActivity extends Fragment implements MapFragment {
         Log.d(LOG_TAG, "maxLon " + String.valueOf(maxLon));
 
         mMapController.clear();
-
         mMapController.setMyLocationEnabled(false);
-
         //mMapController.addGroundOverlay(new GroundOverlayOptions());
-
         mMapController.addMarker(new MarkerOptions().position(new LatLng(startLat, startLon)).title(getString(R.string.rangeStart)));
         mMapController.addMarker(new MarkerOptions().position(new LatLng(endLat, endLon)).title(getString(R.string.rangeEnd)));
 
@@ -86,25 +76,22 @@ public class MapPathActivity extends Fragment implements MapFragment {
         mMapController.addPolyline(polylineOptions);
 
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(
-                new LatLngBounds(new LatLng(minLat, minLon), new LatLng(maxLat, maxLon)),
-                100);
+                new LatLngBounds(new LatLng(minLat, minLon), new LatLng(maxLat, maxLon)), 100);
         mMapController.animateCamera(cameraUpdate);
 
         // Add the layer to the map
         /*mMapController.getOverlayManager().addOverlay(mOverlay);
 
         OverlayRect overlayRect = new OverlayRect(mMapController,geoPointList);
-
         mMapController.getOverlayManager().addOverlay(overlayRect);
         mMapController.setZoomToSpan(maxLat - minLat, maxLon - minLon);
         mMapController.setPositionAnimationTo(new GeoPoint((maxLat + minLat) / 2, (maxLon + minLon) / 2));*/
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View rootView = inflater.inflate(R.layout.gps_google_path, container, false);
-
         //final MapView mapView = (MapView) rootView.findViewById(R.id.map);
         //mapView.showBuiltInScreenButtons(true);
         //final MapFragment mapView = (MapFragment) getFragmentManager()
@@ -119,7 +106,6 @@ public class MapPathActivity extends Fragment implements MapFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     private com.google.android.gms.maps.MapFragment getMapFragment() {

@@ -94,7 +94,6 @@
     <string name="extraFunctions">Дополнительные возможности</string>
 
     <string name="routeMapScreenName">Окно маршрута</string>
-    <string name="googleMapsKey">AIzaSyBmUdPfR9jbPxkCbj4seBxpaKp8sXvAkxk</string>
     <string name="travelTime">Время в пути</string>
     <string name="travelDistance">Пробег поездки</string>
     <string name="closeOrder">Закрыть заказ</string>
