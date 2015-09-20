@@ -1,9 +1,17 @@
 package tt.richTaxist.gps.google;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+
 import tt.richTaxist.R;
 
 
@@ -34,6 +42,25 @@ public class MapMyLocationChangeActivity extends FragmentActivity {
 
     private void init() {
         map.setMyLocationEnabled(true);
+        map.getUiSettings().setAllGesturesEnabled(true);
+        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setMyLocationButtonEnabled(true);
+
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                Log.d(LOG_TAG, "onMapLoaded");
+                Location location = map.getMyLocation();
+
+                if (location != null) {
+                    LatLng myLocation = new LatLng(location.getLatitude(),
+                            location.getLongitude());
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation,
+                            14));
+                }
+             }
+        });
+
     }
 
     /*

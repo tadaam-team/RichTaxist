@@ -129,7 +129,7 @@ public class GPSService extends Service {
                 distance += result[0];
 
                 sendLocation();
-                Toast.makeText(GPSService.this, "gps servive: change location", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GPSService.this, "gps servive: change location", Toast.LENGTH_SHORT).show();
 
                 //distanceTextView.setText(String.format("%d km %d m",distance/1000,distance % 1000));
                 //Toast.makeText(OrderActivity.this, "gps status: changed location", Toast.LENGTH_SHORT);
@@ -157,8 +157,8 @@ public class GPSService extends Service {
                     case 2: caption = "ok"; break;
                 }
                 if (provider.equals(LocationManager.GPS_PROVIDER)) {
-
-                    Toast.makeText(GPSService.this, "gps status: "+ caption, Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "gps status: "+ caption);
+                    //Toast.makeText(GPSService.this, "gps status: "+ caption, Toast.LENGTH_SHORT).show();
                 }
             }
         };

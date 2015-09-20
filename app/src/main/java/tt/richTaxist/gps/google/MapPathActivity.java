@@ -37,7 +37,7 @@ public class MapPathActivity extends Fragment implements MapFragment {
     public void showPath(List<Coordinates> coords){
         lastCoordsList = coords;
         if (mMapController == null) return;
-        if (coords.size() == 0) return;
+        if (coords==null || coords.size() == 0) return;
 
         double startLat = coords.get(0).getLat();
         double startLon = coords.get(0).getLon();
@@ -63,11 +63,16 @@ public class MapPathActivity extends Fragment implements MapFragment {
 
         Log.d(LOG_TAG,"minLat " + String.valueOf(minLat));
         Log.d(LOG_TAG,"maxLat " + String.valueOf(maxLat));
-        Log.d(LOG_TAG,"minLon " + String.valueOf(minLon));
+        Log.d(LOG_TAG, "minLon " + String.valueOf(minLon));
         Log.d(LOG_TAG, "maxLon " + String.valueOf(maxLon));
 
         mMapController.clear();
-        mMapController.setMyLocationEnabled(false);
+        mMapController.setMyLocationEnabled(true);
+        mMapController.getUiSettings().setAllGesturesEnabled(true);
+        mMapController.getUiSettings().setZoomControlsEnabled(true);
+        mMapController.getUiSettings().setMyLocationButtonEnabled(true);
+
+
         //mMapController.addGroundOverlay(new GroundOverlayOptions());
         mMapController.addMarker(new MarkerOptions().position(new LatLng(startLat, startLon)).title(getString(R.string.rangeStart)));
         mMapController.addMarker(new MarkerOptions().position(new LatLng(endLat, endLon)).title(getString(R.string.rangeEnd)));
@@ -75,18 +80,19 @@ public class MapPathActivity extends Fragment implements MapFragment {
         PolylineOptions polylineOptions = new PolylineOptions().addAll(geoPointList);
         mMapController.addPolyline(polylineOptions);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(
-                new LatLngBounds(new LatLng(minLat, minLon), new LatLng(maxLat, maxLon)), 100);
-        mMapController.animateCamera(cameraUpdate);
+        final LatLngBounds bounds = new LatLngBounds(new LatLng(minLat, minLon), new LatLng(maxLat, maxLon));
 
-        // Add the layer to the map
-        /*mMapController.getOverlayManager().addOverlay(mOverlay);
+        mMapController.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                Log.d(LOG_TAG,"onMapLoaded");
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(
+                        bounds, 100);
+                mMapController.animateCamera(cameraUpdate);
+            }
+        });
 
-        OverlayRect overlayRect = new OverlayRect(mMapController,geoPointList);
-        mMapController.getOverlayManager().addOverlay(overlayRect);
-        mMapController.setZoomToSpan(maxLat - minLat, maxLon - minLon);
-        mMapController.setPositionAnimationTo(new GeoPoint((maxLat + minLat) / 2, (maxLon + minLon) / 2));*/
-    }
+     }
 
     @Nullable
     @Override

@@ -48,8 +48,8 @@ public class LocationsSqlHelper extends SQLHelper {
     }
 
     private Coordinates loadLocationFromCursor(Cursor cursor) {
-        double lon = cursor.getDouble(3);
-        double lat = cursor.getDouble(4);
+        double lon = cursor.getDouble(cursor.getColumnIndex(LON));
+        double lat = cursor.getDouble(cursor.getColumnIndex(LAT));
         return new Coordinates(lon,lat);
     }
 

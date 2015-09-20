@@ -19,6 +19,7 @@ import com.parse.ParseUser;
 import tt.richTaxist.ChatClient.ChatLoginActivity;
 import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.Enums.ActivityState;
+import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
@@ -41,8 +42,8 @@ public class FirstScreenActivity extends AppCompatActivity implements
 //        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.fragment1));
         //TODO: выяснить, зачем такое назначение ссылки
         MainActivity.context = context;
-        //TODO: GPSHelper работает не штатно и поэтому был отключен
-//        GPSHelper.startService(MainActivity.context);
+
+        GPSHelper.startService(MainActivity.context);
 
         MainActivity.shiftsStorage.clear();
         MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
