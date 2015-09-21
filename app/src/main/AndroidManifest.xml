@@ -19,7 +19,7 @@
         android:label="@string/appName"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="tt.richTaxist.FirstScreenActivity"
+            android:name=".FirstScreenActivity"
             android:label="@string/appName" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

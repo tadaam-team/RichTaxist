@@ -57,12 +57,6 @@ public class OrdersListFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.fragment_orders_list, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
-
-        if (Storage.showListHint) {
-            Toast listHint = Toast.makeText(mActivity, R.string.listHint, Toast.LENGTH_SHORT);
-            listHint.setGravity(Gravity.TOP, 0, 0);
-            listHint.show();
-        }
         MainActivity.sortOrdersStorage();
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);

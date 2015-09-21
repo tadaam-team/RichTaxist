@@ -56,12 +56,6 @@ public class ShiftsListFragment extends ListFragment {
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
 //        Storage.measureScreenWidth(mActivity, (ViewGroup) rootView);
-
-        if (Storage.showListHint) {
-            Toast listHint = Toast.makeText(mActivity, R.string.listHint, Toast.LENGTH_SHORT);
-            listHint.setGravity(Gravity.TOP, 0, 0);
-            listHint.show();
-        }
         MainActivity.sortShiftsStorage();
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);

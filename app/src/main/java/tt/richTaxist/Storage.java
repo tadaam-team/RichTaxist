@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.parse.ParseUser;
@@ -46,12 +47,10 @@ public class Storage {
     // Если плохо, сбрасывать доступ, но так чтобы это отразилось на следующем опросе состояния, а не выкидывать его из платного процесса
     public static long sessionLength = 0;
 
-    public static String IP = "";
     public static boolean deviceIsInLandscape;
-
     private static final String LOG_TAG = "Storage";
     public static Storage instance;
-    private Context context;
+    private static Context context;
 
 
     public static Storage init(Context context){
@@ -96,9 +95,7 @@ public class Storage {
 
         FragmentTransaction transaction;
 
-        //очистим экран от возможно содержащихся фрагментов
-//        boolean f1IsHere = fragmentManager.findFragmentByTag("fragment1") != null;
-//        boolean f2IsHere = fragmentManager.findFragmentByTag("fragment2") != null;
+        //очистим экран
         transaction = fragmentManager.beginTransaction();
         transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                 .hide(fragment1)
@@ -108,12 +105,16 @@ public class Storage {
         Log.d(LOG_TAG, "activityState: " + String.valueOf(activityState));
         switch (activityState){
             case LAND_2_1:
-                //на входе сюда гарантированно нет ни одного подключенного фрагмента
                 transaction = fragmentManager.beginTransaction();
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .show(fragment2)
                         .show(fragment1)
                         .commit();
+                if (Storage.showListHint) {
+                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
+                    listHint.setGravity(Gravity.TOP, 0, 0);
+                    listHint.show();
+                }
                 break;
 
             case LAND_2:
@@ -128,6 +129,11 @@ public class Storage {
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .show(fragment1)
                         .commit();
+                if (Storage.showListHint) {
+                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
+                    listHint.setGravity(Gravity.TOP, 0, 0);
+                    listHint.show();
+                }
                 break;
 
             case PORT_2:
@@ -140,32 +146,14 @@ public class Storage {
         return activityState;
     }
 
-    //TODO: это должно быть внутри класса enum
-    //два метода ниже нужны для отправки в Parse и получения из него, т.к. enum он не понимает
-    public static String typeOfInputToString(TypeOfInput typeOfInput, Context context) {
-        switch (typeOfInput){
-            case BUTTON: return context.getString(R.string.button);
-            case SPINNER: return context.getString(R.string.spinner);
-            default:
-                Log.d(LOG_TAG, "ошибка перевода enum в String");
-                return context.getString(R.string.button);
-        }
-    }
-
-    public static TypeOfInput stringToTypeOfInput(String string, Context context) {
-        if      (context.getString(R.string.button).equals(string))    return TypeOfInput.BUTTON;
-        else if (context.getString(R.string.spinner).equals(string))   return TypeOfInput.SPINNER;
-        else Log.d(LOG_TAG, "ошибка перевода String в enum"); return TypeOfInput.BUTTON;
-    }
-
     public static void saveSettings(Context context){//to cloud and file
         Log.d(LOG_TAG, "saving settings to cloud");
         if (currentUser != null) {
             currentUser.put("premiumUser", premiumUser);
             currentUser.put("userHasAccess", userHasAccess);
             //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
-            currentUser.put("typeOfDateInput", typeOfInputToString(typeOfDateInput, context));
-            currentUser.put("typeOfTimeInput", typeOfInputToString(typeOfTimeInput, context));
+            currentUser.put("typeOfDateInput", typeOfDateInput.toString());
+            currentUser.put("typeOfTimeInput", typeOfTimeInput.toString());
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("showListHint", showListHint);
             currentUser.put("youngIsOnTop", youngIsOnTop);
@@ -209,7 +197,7 @@ public class Storage {
             input = new FileInputStream(path);
             prop.load(input);
             username = prop.getProperty("username");//дефолта быть не должно, т.к. это приведет к ошибке сличения IMEI
-            password         = prop.getProperty("password");
+            password = prop.getProperty("password");
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
@@ -225,16 +213,15 @@ public class Storage {
     }
 
     public static void resetSettings() {
-        emailVerified = false;
-        premiumUser = false;
-        userHasAccess = false;
-
+        emailVerified   = false;
+        premiumUser     = false;
+        userHasAccess   = false;
         typeOfDateInput = TypeOfInput.BUTTON;
         typeOfTimeInput = TypeOfInput.BUTTON;
-        timePickerStep = 10;
-        showListHint = true;
-        youngIsOnTop = true;
-        twoTapTimePick = false;
+        timePickerStep  = 10;
+        showListHint    = true;
+        youngIsOnTop    = true;
+        twoTapTimePick  = false;
     }
 
     //работает только с числом десятичных знаков 0-5

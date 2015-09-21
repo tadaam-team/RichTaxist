@@ -6,8 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
-public class DF_ListInput extends DialogFragment {
-    public DF_ListInput() {}
+public class DF_ChooseFromList extends DialogFragment {
+    public DF_ChooseFromList() {}
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

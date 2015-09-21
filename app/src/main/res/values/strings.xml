@@ -68,6 +68,10 @@
     <string name="zero">0</string>
     <string name="petrolInputMsg">Введите фактический\nчек за бензин</string>
 
+    <string name="companiesEditMsg">Заполните список таксопарков</string>
+    <string name="companyNameHint">название</string>
+    <string name="companyCommissionHint">их %</string>
+
     <string name="grandTotalsScreenName">Заработано</string>
     <string name="rangeStart">Первая смена</string>
     <string name="rangeEnd">Последняя смена</string>
@@ -93,6 +97,7 @@
     <string name="no">нет</string>
     <string name="extraFunctions">Дополнительные возможности</string>
 
+    <string name="google_maps_key">AIzaSyB1ZznQZMNQ_j1FuD9Qm5EBqMnblllNZP8</string>
     <string name="routeMapScreenName">Окно маршрута</string>
     <string name="travelTime">Время в пути</string>
     <string name="travelDistance">Пробег поездки</string>

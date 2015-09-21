@@ -4,7 +4,13 @@ package tt.richTaxist;
  * Created by Tau on 18.07.2015.
  */
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -257,12 +263,12 @@ public class SignInActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "user logged in");
 
 
-        Storage.currentUser         = user;
-        Storage.showListHint        = user.getBoolean("showListHint");
-        Storage.youngIsOnTop        = user.getBoolean("youngIsOnTop");
-        Storage.twoTapTimePick      = user.getBoolean("twoTapTimePick");
-        Storage.premiumUser         = user.getBoolean("premiumUser");
-        Storage.emailVerified       = user.getBoolean("emailVerified");
+        Storage.currentUser     = user;
+        Storage.showListHint    = user.getBoolean("showListHint");
+        Storage.youngIsOnTop    = user.getBoolean("youngIsOnTop");
+        Storage.twoTapTimePick  = user.getBoolean("twoTapTimePick");
+        Storage.premiumUser     = user.getBoolean("premiumUser");
+        Storage.emailVerified   = user.getBoolean("emailVerified");
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {
@@ -278,6 +284,7 @@ public class SignInActivity extends AppCompatActivity {
 
 
         if (!Storage.premiumUser){
+            //если премиум доступа нет, то и нет смысла проверять IMEI
             Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
                     "\nПриятной работы", Toast.LENGTH_LONG).show();
             return false;
@@ -292,8 +299,7 @@ public class SignInActivity extends AppCompatActivity {
             Storage.currentUser.saveInBackground();
             showProgress(false);
             showLogInORLogOut(false, true);
-            Toast.makeText(context,  "Здравствуйте, " + user.getUsername() +
-                    "\nВы привязали это устройство" +
+            Toast.makeText(context, "Вы привязали это устройство" +
                     "\nк своей учетной записи." +
                     "\nПриятной работы", Toast.LENGTH_LONG).show();
 
@@ -305,12 +311,35 @@ public class SignInActivity extends AppCompatActivity {
 
 
         if (!Storage.deviceIMEI.equals(user.getString("IMEI"))) {
-            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
-                    "\nВы вошли в систему с другого устройства." +
+            String header = "Здравствуйте, " + user.getUsername();
+            String msg = "Вы вошли в систему с другого устройства." +
                     "\nСейчас платные опции недоступны." +
                     "\nЧтобы привязать логин к новому устройству" +
                     "\nперейдите в меню \"Учетные записи\"" +
-                    "\nи нажмите \"Сменить устройство\"", Toast.LENGTH_LONG).show();
+                    "\nи нажмите \"Сменить устройство\"";
+
+            //для новых апи показываем длинное сообщение в виде уведомления, для старых апи показываем тост
+            if (Build.VERSION.SDK_INT >= 16){
+                Intent intent = new Intent(context, SignInActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+
+                Notification.Builder builder = new Notification.Builder(context)
+                        .setTicker(header)
+                        .setContentTitle(header)
+                        .setContentText(msg)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.ic_taxi);
+
+                Notification notification = new Notification.BigTextStyle(builder).bigText(msg).build();
+                notification.sound = Uri.parse("android.resource://tt.richTaxist/raw/notification");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                notificationManager.notify(1, notification);
+            } else
+                Toast.makeText(getApplicationContext(), header + msg, Toast.LENGTH_LONG).show();
+
             showProgress(false);
             showLogInORLogOut(false, true);
             return false;

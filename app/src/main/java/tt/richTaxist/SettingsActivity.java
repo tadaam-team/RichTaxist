@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.ToggleButton;
-import tt.richTaxist.Bricks.DF_ListInput;
+import tt.richTaxist.Bricks.DF_ChooseFromList;
 import tt.richTaxist.Enums.TypeOfInput;
 
 
-public class SettingsActivity extends AppCompatActivity implements DF_ListInput.ListInputDialogListener {
+public class SettingsActivity extends AppCompatActivity implements DF_ChooseFromList.ListInputDialogListener {
     Context context;
     protected Button btnTimePickerInterval;
     String LOG_TAG = "SettingsActivity";
@@ -45,8 +45,8 @@ public class SettingsActivity extends AppCompatActivity implements DF_ListInput.
         btnTimePickerInterval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DF_ListInput().show(getSupportFragmentManager(), "DF_ListInput");
-                //fragment_list_input тег - идентификатор диалога в виде строковой константы, по которому можно идентифицировать диалоговое окно, если их будет много в нашем проекте
+                new DF_ChooseFromList().show(getSupportFragmentManager(), "DF_ChooseFromList");
+                //DF_ChooseFromList тег - идентификатор диалога в виде строковой константы, по которому можно идентифицировать диалоговое окно, если их будет много в нашем проекте
             }
         });
 
