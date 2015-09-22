@@ -15,6 +15,10 @@
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
 
+    <string name="companies">Таксопарки</string>
+    <string name="main">осн</string>
+    <string name="companyName">имя таксопарка</string>
+
     <string name="contribute">Сказать спасибо</string>
     <string name="exportShifts">Экспорт и импорт\nсмен</string>
     <string name="socials">tadaam-team\nв соцсетях</string>

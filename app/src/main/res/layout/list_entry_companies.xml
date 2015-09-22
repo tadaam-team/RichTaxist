@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        style="@style/ButtonBordered"
+        android:layout_width="45dp" android:layout_height="45dp"
+        android:text="-"
+        android:id="@+id/delCompany"/>
+
+    <EditText
+        style="@style/Text"
+        android:hint="@string/companyName"
+        android:id="@+id/companyName"
+        android:layout_width="0dp" android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="text"/>
+
+    <RadioButton
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="@string/main"
+        android:id="@+id/rbDefault"
+        android:textSize="15sp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"/>
+</LinearLayout>

@@ -8,7 +8,8 @@
     android:layout_gravity="center">
 
     <ScrollView
-        android:layout_width="match_parent" android:layout_height="wrap_content">
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1">
 
         <TableLayout
             android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -192,4 +193,11 @@
             </TableRow>
         </TableLayout>
     </ScrollView>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:name="tt.richTaxist.CompaniesFragment"
+        android:id="@+id/fragment"
+        tools:layout="@layout/fragment_companies"/>
 </LinearLayout>
