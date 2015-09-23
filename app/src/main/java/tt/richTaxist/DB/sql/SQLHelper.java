@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class SQLHelper extends SQLiteOpenHelper {
     static final String DB_NAME = "taxiDB";
-    static final int DB_VERSION = 23;
+    static final int DB_VERSION = 24;
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
     private static final String LOG_TAG = "SQLHelper";
 
@@ -39,18 +39,18 @@ public class SQLHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(LOG_TAG, "Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
-        //очень странная проверка версии
-//        if (newVersion == 14) {
-//            db.execSQL("DROP TABLE IF EXISTS " + LocationsSqlHelper.TABLE_NAME);
-//            db.execSQL(LocationsSqlHelper.CREATE_TABLE);
-//        }
-//        else {
+
+        if (newVersion == 24 && oldVersion == 23) {
+            db.execSQL("ALTER TABLE "+OrdersSQLHelper.TABLE_NAME+" ADD companyID INT");
+            db.execSQL("ALTER TABLE "+OrdersSQLHelper.TABLE_NAME+" ADD billingID INT");
+        }
+        else {
         //TODO: найти способ сохранять старую базу и импортировать ее в новую при смене DB_VERSION
             db.execSQL("DROP TABLE IF EXISTS " + OrdersSQLHelper.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + ShiftsSQLHelper.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + LocationsSqlHelper.TABLE_NAME);
             // Create tables again
             onCreate(db);
-//        }
+        }
     }
 }

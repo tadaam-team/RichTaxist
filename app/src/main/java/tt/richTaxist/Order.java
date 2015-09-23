@@ -17,6 +17,8 @@ public class Order {
     public String note;
     public int distance;
     public long travelTime;
+    public int companyID;
+    public int billingID;
 
     public Order(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, Shift shift, String note) {
         this.arrivalDateTime = arrivalDateTime;
