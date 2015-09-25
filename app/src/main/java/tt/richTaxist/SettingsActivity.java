@@ -1,6 +1,7 @@
 package tt.richTaxist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -62,39 +63,42 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
     //имена переменных же, как и их предпочтительные значения наоборот предполагают true
     //также сбивает с толку предпросмотр XML, показывающий textOff
     //чтобы устранить это противоречие к опросу ToggleButton и его инициализации добавлен !
-    public void onTBListHintClick(View button)       { Storage.showListHint     = !((ToggleButton) button).isChecked(); }
-    public void onTBListsSortOrderClick(View button) { Storage.youngIsOnTop     = !((ToggleButton) button).isChecked(); }
-    public void onTBTimePickClicksClick(View button) { Storage.twoTapTimePick   = !((ToggleButton) button).isChecked(); }
-    public void onTBHideTaxometerClick(View button)  { Storage.hideTaxometer    = !((ToggleButton) button).isChecked(); }
+    public void onTBListHintClick(View view)       { Storage.showListHint     = !((ToggleButton) view).isChecked(); }
+    public void onTBListsSortOrderClick(View view) { Storage.youngIsOnTop     = !((ToggleButton) view).isChecked(); }
+    public void onTBTimePickClicksClick(View view) { Storage.twoTapTimePick   = !((ToggleButton) view).isChecked(); }
+    public void onTBHideTaxometerClick(View view)  { Storage.hideTaxometer    = !((ToggleButton) view).isChecked(); }
 
-    public void onTBDateInputClick(View button) {
-        if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
+    public void onTBDateInputClick(View view) {
+        if (!((ToggleButton) view).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
         else Storage.typeOfDateInput = TypeOfInput.SPINNER;
     }
 
-    public void onTBTimeInputClick(View button) {
-        if (!((ToggleButton) button).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
+    public void onTBTimeInputClick(View view) {
+        if (!((ToggleButton) view).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
         else Storage.typeOfDateInput = TypeOfInput.SPINNER;
     }
 
+    public void onParksAndBillingsClick(View p1) {
+        startActivity(new Intent(this, Settigs4ParksAndBillingsActivity.class));
+    }
     public void onExportImportShiftsClick(View p1) {
         Toast.makeText(this, "когда-нибудь это будет открывать окно экспорта", Toast.LENGTH_SHORT).show();
     }
     public void onSocialsClick(View p1) {
         Toast.makeText(this, "когда-нибудь это будет вести к ссылкам на наши странички", Toast.LENGTH_SHORT).show();
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Storage.saveSettings(context);
-        if (MainActivity.currentShift != null) {
+        if (MainActivity.currentShift != null && MainActivity.fragmentManager != null) {
             OrderFragment fragment1 = (OrderFragment) MainActivity.fragmentManager.findFragmentByTag("fragment1");
             if (fragment1 != null) fragment1.refreshWidgets(null);
-
             MainActivity.sortOrdersStorage();
             if (MainActivity.orderAdapterMA != null) MainActivity.orderAdapterMA.notifyDataSetChanged();
             MainActivity.sortShiftsStorage();
+            if (FirstScreenActivity.shiftAdapterMA != null) FirstScreenActivity.shiftAdapterMA.notifyDataSetChanged();
         }
-        if (FirstScreenActivity.shiftAdapterMA != null) FirstScreenActivity.shiftAdapterMA.notifyDataSetChanged();
     }
 }

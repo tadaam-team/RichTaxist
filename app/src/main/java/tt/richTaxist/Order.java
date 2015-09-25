@@ -17,18 +17,11 @@ public class Order {
     public String note;
     public int distance;
     public long travelTime;
-    public int companyID;
+    public int taxoparkID;
     public int billingID;
 
-    public Order(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, Shift shift, String note) {
-        this.arrivalDateTime = arrivalDateTime;
-        this.price = price;
-        this.typeOfPayment = typeOfPayment;
-        this.shift = shift;
-        this.note = note;
-    }
-
-    public Order(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, Shift shift, String note, int distance, long travelTime) {
+    public Order(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, Shift shift, String note,
+                 int distance, long travelTime, int taxoparkID, int billingID) {
         this.arrivalDateTime = arrivalDateTime;
         this.price           = price;
         this.typeOfPayment   = typeOfPayment;
@@ -36,6 +29,8 @@ public class Order {
         this.note            = note;
         this.distance        = distance;
         this.travelTime      = travelTime;
+        this.taxoparkID      = taxoparkID;
+        this.billingID       = billingID;
     }
 
     @Override
@@ -55,9 +50,12 @@ public class Order {
     public String toString() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
-        String text = String.format("подача: %02d.%02d.%02d %02d:%02d,\nцена: %d, тип оплаты: %s",
+        String text = String.format("подача: %02d.%02d.%02d %02d:%02d," +
+                        "\nцена: %d, тип оплаты: %s," +
+                        "\nпарк: %s, расчёты: %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString());
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString(),
+                Taxopark.getTaxoparkByID(taxoparkID), Billing.getBillingByID(billingID));
         if (!"".equals(note)) text += String.format(",\nзаметка: %s", note);
         return text;
     }

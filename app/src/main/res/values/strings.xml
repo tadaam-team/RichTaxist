@@ -15,9 +15,15 @@
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
 
-    <string name="companies">Таксопарки</string>
+    <string name="taxoparksAndBillings">Таксопарки и системы</string>
     <string name="main">осн</string>
-    <string name="companyName">имя таксопарка</string>
+    <string name="taxopark">Таксопарк</string>
+    <string name="taxoparks">Таксопарки</string>
+    <string name="taxoparkName">имя таксопарка</string>
+    <string name="billing">Система расчетов</string>
+    <string name="billings">Системы расчетов</string>
+    <string name="billingName">название системы</string>
+    <string name="commission">комиссия</string>
 
     <string name="contribute">Сказать спасибо</string>
     <string name="exportShifts">Экспорт и импорт\nсмен</string>
@@ -121,4 +127,12 @@
     <string name="emailVerified">- почта подтверждена</string>
     <string name="IMEICorrect">- IMEI прошел проверку</string>
     <string name="premiumUser">- премиум подписка подключена</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settigs4_parks_and_billings">Settigs4ParksAndBillingsActivity
+    </string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

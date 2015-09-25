@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class SQLHelper extends SQLiteOpenHelper {
     static final String DB_NAME = "taxiDB";
-    static final int DB_VERSION = 24;
+    static final int DB_VERSION = 25;
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
     private static final String LOG_TAG = "SQLHelper";
 
@@ -41,7 +41,7 @@ public class SQLHelper extends SQLiteOpenHelper {
         Log.d(LOG_TAG, "Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
 
         if (newVersion == 24 && oldVersion == 23) {
-            db.execSQL("ALTER TABLE "+OrdersSQLHelper.TABLE_NAME+" ADD companyID INT");
+            db.execSQL("ALTER TABLE "+OrdersSQLHelper.TABLE_NAME+" ADD taxoparkID INT");
             db.execSQL("ALTER TABLE "+OrdersSQLHelper.TABLE_NAME+" ADD billingID INT");
         }
         else {

@@ -10,10 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
@@ -34,8 +36,10 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
     private static Button timeButton;
 //    private static CustomTimePicker timePicker;
 //    private static LinearLayout timePickerPlaceHolder;
-    private static RadioGroup typeOfPaymentUI;
-    private static EditText priceUI, noteUI;
+    private RadioGroup typeOfPaymentUI;
+    private EditText priceUI, noteUI;
+    private Spinner spnTaxopark, spnBilling;
+    public static ArrayAdapter spnTaxoparkAdapter, spnBillingAdapter;
     private final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
     private static AppCompatActivity mActivity;
 
@@ -70,11 +74,13 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
         rootView.setLayoutParams(layoutParams);
 //        Storage.measureScreenWidth(mActivity, (ViewGroup) rootView);
 
-        dateButton = (Button) rootView.findViewById(R.id.btnDate);
-        timeButton = (Button) rootView.findViewById(R.id.btnTime);
-        typeOfPaymentUI = (RadioGroup) rootView.findViewById(R.id.payTypeRadioGroup);
-        priceUI = (EditText) rootView.findViewById(R.id.price);
-        noteUI  = (EditText) rootView.findViewById(R.id.note);
+        dateButton      = (Button)      rootView.findViewById(R.id.btnDate);
+        timeButton      = (Button)      rootView.findViewById(R.id.btnTime);
+        typeOfPaymentUI = (RadioGroup)  rootView.findViewById(R.id.payTypeRadioGroup);
+        priceUI         = (EditText)    rootView.findViewById(R.id.price);
+        noteUI          = (EditText)    rootView.findViewById(R.id.note);
+        spnTaxopark     = (Spinner)     rootView.findViewById(R.id.spnTaxopark);
+        spnBilling      = (Spinner)     rootView.findViewById(R.id.spnBilling);
 
         arrivalDateTime = Calendar.getInstance();
         if (savedInstanceState != null) {
@@ -135,6 +141,10 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
                 Toast.makeText(mActivity, "форма очищена", Toast.LENGTH_SHORT).show();
             }
         });
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.taxoparks);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnBillingAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.billings);
+        spnBilling.setAdapter(spnBillingAdapter);
 
         return rootView;
     }
@@ -166,6 +176,8 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
                 default:    typeOfPaymentUI.clearCheck();
             }
             noteUI.setText(receivedOrder.note);
+            spnTaxopark.setSelection(receivedOrder.taxoparkID);
+            spnBilling.setSelection(receivedOrder.billingID);
         } else{
             arrivalDateTime = Calendar.getInstance();
             priceUI.setText("");
@@ -207,11 +219,23 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
             Log.d(LOG_TAG, "Exception caught while parsing note");
             note = "";
         }
-        Order newOrder;
-        if (distance == 0 && travelTime == 0)
-            newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note);
-        else
-            newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note, distance, travelTime);
+
+        int taxoparkID, billingID;
+        try {
+            taxoparkID = ((Taxopark) spnTaxopark.getSelectedItem()).taxoparkID;
+        } catch (NullPointerException e) {
+            Log.d(LOG_TAG, "taxopark not defined");
+            taxoparkID = -1;
+        }
+        try {
+            billingID = ((Billing) spnBilling.getSelectedItem()).billingID;
+        } catch (NullPointerException e) {
+            Log.d(LOG_TAG, "billing not defined");
+            billingID = -1;
+        }
+
+        Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
+                distance, travelTime, taxoparkID, billingID);
         ((OnOrderFragmentInteractionListener) mActivity).addOrder(newOrder);
         refreshWidgets(null);
     }
@@ -260,7 +284,7 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
         public void addOrder(Order order);
     }
 
-    //TODO перейти от setVisibility к диспетчеру фрагментов
+    //TODO: перейти от setVisibility к диспетчеру фрагментов
 //    public static void refreshInputStyle(){
 //        if (dateButton != null) {
 //            switch (Storage.typeOfDateInput){

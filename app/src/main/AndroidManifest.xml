@@ -86,5 +86,10 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Settigs4ParksAndBillingsActivity"
+            android:label="@string/title_activity_settigs4_parks_and_billings" >
+        </activity>
     </application>
 </manifest>

@@ -26,21 +26,21 @@ public class OrdersSQLHelper extends SQLHelper {
     static final String PRICE = "price";
     static final String TYPE_OF_PAYMENT = "typeOfPayment";
     static final String SHIFT_ID = "shiftID";
-    static final String COMPANY_ID = "companyID";
-    static final String BILLING_ID = "billingID";
     static final String DISTANCE = "distance";
     static final String TRAVEL_TIME = "travelTime";
     static final String NOTE = "note";
+    static final String TAXOPARK_ID = "taxoparkID";
+    static final String BILLING_ID = "billingID";
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
             + ARRIVAL_DATE_TIME + " DATETIME, "
-            + PRICE + " INT, "
-            + TYPE_OF_PAYMENT + " TINYINT, "
-            + SHIFT_ID + " INT, "
-            + DISTANCE + " INT, "
-            + TRAVEL_TIME + " LONGINT,"
-            + NOTE + " TEXT,"
-            + COMPANY_ID + " INT, "
-            + BILLING_ID + " INT)";
+            + PRICE             + " INT, "
+            + TYPE_OF_PAYMENT   + " TINYINT, "
+            + SHIFT_ID          + " INT, "
+            + DISTANCE          + " INT, "
+            + TRAVEL_TIME       + " LONGINT,"
+            + NOTE              + " TEXT,"
+            + TAXOPARK_ID       + " INT, "
+            + BILLING_ID        + " INT)";
 
     public OrdersSQLHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -64,7 +64,7 @@ public class OrdersSQLHelper extends SQLHelper {
         cv.put(DISTANCE, order.shift.shiftID);
         cv.put(TRAVEL_TIME, order.shift.shiftID);
         cv.put(NOTE, order.note);
-        cv.put(COMPANY_ID, order.companyID);
+        cv.put(TAXOPARK_ID, order.taxoparkID);
         cv.put(BILLING_ID, order.billingID);
 
         long result = db.insert(OrdersSQLHelper.TABLE_NAME, null, cv);
@@ -161,10 +161,6 @@ public class OrdersSQLHelper extends SQLHelper {
         return result;
     }
 
-//    public OrdersStorageList getOrders(Date date) {
-//        return getOrders(date, date);
-//    }
-
     private Order loadOrderFromCursor(Cursor cursor) {
         Date arrivalDateTime = null;
         try { arrivalDateTime = dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
@@ -175,11 +171,11 @@ public class OrdersSQLHelper extends SQLHelper {
         String note = cursor.getString(cursor.getColumnIndex(NOTE));
         int distance = cursor.getInt(cursor.getColumnIndex(DISTANCE));
         long travelTime = cursor.getLong(cursor.getColumnIndex(TRAVEL_TIME));
+        int taxoparkID = cursor.getInt(cursor.getColumnIndex(TAXOPARK_ID));
+        int billingID = cursor.getInt(cursor.getColumnIndex(BILLING_ID));
 
-        Order order = new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), note, distance, travelTime);
-        order.billingID = cursor.getInt(cursor.getColumnIndex(BILLING_ID));
-        order.companyID = cursor.getInt(cursor.getColumnIndex(COMPANY_ID));
-        return order;
+        return new Order(arrivalDateTime, price, typeOfPayment, ShiftsStorage.getShiftByID(shiftID), note,
+                distance, travelTime, taxoparkID, billingID);
     }
 
     public int remove(Order order){

@@ -1,0 +1,22 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context="tt.richTaxist.Settigs4ParksAndBillingsActivity"
+    android:orientation="vertical">
+
+    <fragment
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="tt.richTaxist.TaxoparksFragment"
+        android:id="@+id/fragmentTaxoparks"
+        tools:layout="@layout/fragment_taxoparks"/>
+
+    <fragment
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1"
+        android:name="tt.richTaxist.BillingsFragment"
+        android:id="@+id/fragmentBillings"
+        android:layout_gravity="center_horizontal"
+        tools:layout="@layout/fragment_billings"/>
+</LinearLayout>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <Button
+        style="@style/ButtonBordered"
+        android:layout_width="45dp" android:layout_height="45dp"
+        android:text="-"
+        android:id="@+id/delBilling"/>
+
+    <EditText
+        style="@style/Text"
+        android:hint="@string/billingName"
+        android:id="@+id/billingName"
+        android:layout_width="0dp" android:layout_height="45dp"
+        android:layout_weight="2"
+        android:inputType="text"/>
+    <EditText
+        style="@style/Text"
+        android:hint="@string/commission"
+        android:id="@+id/etCommission"
+        android:layout_width="0dp" android:layout_height="45dp"
+        android:layout_weight="1"
+        android:inputType="text"/>
+</LinearLayout>

@@ -2,9 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context="tt.richTaxist.CompaniesFragment"
-    android:orientation="vertical"
-    >
+    tools:context="tt.richTaxist.BillingsFragment"
+    android:orientation="vertical">
 
     <TableRow
         android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -12,18 +11,16 @@
             style="@style/ButtonBordered"
             android:layout_width="45dp" android:layout_height="45dp"
             android:text="+"
-            android:id="@+id/addCompany"/>
+            android:id="@+id/addBilling"/>
 
         <TextView
             android:layout_width="0dp" android:layout_height="wrap_content"
-            android:text="@string/companies"
+            android:text="@string/billings"
             android:layout_weight="1"
             android:gravity="center_horizontal"/>
-
     </TableRow>
 
     <ListView
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:id="@android:id/list"
-        />
+        android:id="@android:id/list"/>
 </LinearLayout>

@@ -15,8 +15,7 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_marginBottom="2dp"
-                android:layout_marginTop="2dp">
+                android:layout_marginBottom="2dp" android:layout_marginTop="2dp">
                 <TextView
                     android:text="@string/arrivalDateTime"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -61,15 +60,13 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp">
+                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
 
                 <TextView
                     android:text="@string/payType"
                     style="@style/Text"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    />
+                    android:layout_gravity="center_horizontal"/>
 
                 <RadioGroup
                     android:id="@+id/payTypeRadioGroup"
@@ -98,12 +95,10 @@
             </LinearLayout>
 
 
-            <LinearLayout
+            <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:layout_marginBottom="2dp">
+                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
                 <EditText
                     android:id="@+id/price"
                     style="@style/Text"
@@ -133,17 +128,48 @@
                     android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
-            </LinearLayout>
+            </TableRow>
 
             <EditText
                 android:id="@+id/note"
                 android:hint="@string/noteInputHint"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp" android:layout_marginBottom="2dp"
                 android:inputType="textMultiLine"
                 android:minHeight="60dp"/>
+
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                <TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/taxopark"
+                    android:spinnerMode="dialog"
+                    android:gravity="center_horizontal"/>
+                <TextView
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/billing"
+                    android:spinnerMode="dialog"
+                    android:gravity="center_horizontal"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                <Spinner
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/spnTaxopark"
+                    android:spinnerMode="dialog"/>
+                <Spinner
+                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/spnBilling"
+                    android:spinnerMode="dialog"/>
+            </TableRow>
         </LinearLayout>
     </ScrollView>
 </FrameLayout>
