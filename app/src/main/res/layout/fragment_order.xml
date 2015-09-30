@@ -100,7 +100,7 @@
                 android:gravity="center"
                 android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
                 <EditText
-                    android:id="@+id/price"
+                    android:id="@+id/etPrice"
                     style="@style/Text"
                     android:hint="@string/costInputHint"
                     android:layout_width="0dp" android:layout_height="60dp"
@@ -117,43 +117,43 @@
                 <Button
                     android:text="@string/addNewOrder"
                     style="@style/ButtonBordered"
-                    android:id="@+id/buttonAddNew"
+                    android:id="@+id/btnAddNewOrder"
                     android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
                 <Button
                     android:text="@string/clearForm"
                     style="@style/ButtonBordered"
-                    android:id="@+id/buttonClearForm"
+                    android:id="@+id/btnClearForm"
                     android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
 
             <EditText
-                android:id="@+id/note"
+                android:id="@+id/etNote"
                 android:hint="@string/noteInputHint"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="2dp" android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp" android:layout_marginBottom="20dp"
                 android:inputType="textMultiLine"
                 android:minHeight="60dp"/>
 
             <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
-                <TextView
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                <Button
                     android:text="@string/taxopark"
-                    android:spinnerMode="dialog"
-                    android:gravity="center_horizontal"/>
-                <TextView
-                    android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:id="@+id/btnTaxopark"
+                    style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="30dp"
+                    android:layout_weight="1"/>
+                <Button
                     android:text="@string/billing"
-                    android:spinnerMode="dialog"
-                    android:gravity="center_horizontal"/>
+                    android:id="@+id/btnBilling"
+                    style="@style/ButtonBordered"
+                    android:layout_width="0dp" android:layout_height="30dp"
+                    android:layout_weight="1"/>
             </TableRow>
 
             <TableRow

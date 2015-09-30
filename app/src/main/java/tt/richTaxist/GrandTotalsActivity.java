@@ -88,8 +88,6 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
         gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
         gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
-        gt_workHoursSpent   = (EditText) findViewById(R.id.gt_workHoursSpent);
-        gt_salaryPerHour    = (EditText) findViewById(R.id.gt_salaryPerHour);
     }
 
     private void createButtonsAndSeekBar(final Calendar rangeStart, final Calendar rangeEnd) {
@@ -377,7 +375,5 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         gt_toTheCashier.    setText(String.format(Locale.GERMANY, "%,d", toTheCashier));
         gt_salaryOfficial.  setText(String.format(Locale.GERMANY, "%,d", salaryOfficial));
         gt_salaryPlusBonus. setText(String.format(Locale.GERMANY, "%,d", salaryPlusBonus));
-        gt_workHoursSpent.  setText(String.valueOf(workHoursSpent));
-        gt_salaryPerHour.   setText(String.format(Locale.GERMANY, "%,d", salaryPerHour));
     }
 }

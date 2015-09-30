@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.parse.LogInCallback;
@@ -44,8 +45,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_first_screen);
         activity = FirstScreenActivity.this;
         context = getApplicationContext();
-//        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.fragment1));
-        //TODO: выяснить, зачем такое назначение ссылки
+//        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_first_screen));
         MainActivity.context = context;
 
         GPSHelper.startService(MainActivity.context);
@@ -100,7 +100,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
                 else {
                     MainActivity.currentShift = ShiftsStorage.getLastShift();
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
                     Intent intent = new Intent(activity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
@@ -150,7 +150,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                         Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift);
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
                 }
                 startActivity(new Intent(activity, RouteActivity.class));
                 Log.d(LOG_TAG, "открываю карту маршрута смены");
@@ -187,8 +187,14 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 if (user != null) {
                     Storage.userHasAccess = verifyUser(user);
                 } else {
-                    Log.d(LOG_TAG, "error code " + error.getCode());//всегда 101
-                    Toast.makeText(context, "Ошибка логина или пароля", Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "error code " + error.getCode());
+                    String msg;
+                    switch (error.getCode()){
+                        case 100: msg = "Проверьте интернет-подключение"; break;
+                        case 101: msg = "Ошибка логина или пароля"; break;
+                        default:  msg = "Необычная ошибка " + error.getCode(); break;
+                    }
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -200,6 +206,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     private boolean verifyUser(ParseUser user) {
         //пользователь авторизован. загрузим его сохраненные настройки из облака
         Log.d(LOG_TAG, "user logged in");
+
         Storage.currentUser     = user;
         Storage.premiumUser     = user.getBoolean("premiumUser");
         Storage.emailVerified   = user.getBoolean("emailVerified");
@@ -207,6 +214,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Storage.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Storage.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Storage.hideTaxometer   = user.getBoolean("hideTaxometer");
+        Storage.taxoparkID      = user.getInt("taxoparkID");
+        Storage.billingID       = user.getInt("billingID");
+        Storage.monthID         = user.getInt("monthID");
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {

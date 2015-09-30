@@ -6,14 +6,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
@@ -25,6 +26,8 @@ public class OrdersListFragment extends ListFragment {
     private AppCompatActivity mActivity;
     public static ArrayAdapter orderAdapter;
     private SwipeDetector swipeDetector;
+    private Spinner spnTaxopark;
+    public static ArrayAdapter spnTaxoparkAdapter;
 
     public OrdersListFragment() {
     }
@@ -53,17 +56,39 @@ public class OrdersListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//        Storage.measureScreenWidth(mActivity, container);
         View rootView = inflater.inflate(R.layout.fragment_orders_list, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
         MainActivity.sortOrdersStorage();
+
+        spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.taxoparks);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                Storage.saveSpinner(0, spnTaxopark);
+                if (spnTaxopark.getSelectedItemId() == 0)
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
+                else
+                    MainActivity.ordersStorage.fillOrdersByShiftAndTaxopark(MainActivity.currentShift.shiftID, Storage.taxoparkID);
+                orderAdapter.notifyDataSetChanged();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        Storage.setPositionOfSpinner(0, spnTaxoparkAdapter, spnTaxopark);
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);
         swipeDetector = new SwipeDetector();
         mListView.setOnTouchListener(swipeDetector);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Storage.saveSpinner(0, spnTaxopark);
     }
 
     @Override

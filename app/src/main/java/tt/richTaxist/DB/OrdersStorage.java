@@ -8,6 +8,7 @@ import tt.richTaxist.MainActivity;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.Taxopark;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -26,8 +27,11 @@ public class OrdersStorage {
     public static Map<TypeOfPayment,Integer> getSumOrdersByShift(Shift shift) {
         return dbOpenHelper.getSumOrdersByShift(shift);
     }
-    public static OrdersStorageList getOrdersByShift(Shift shift) {
-        return dbOpenHelper.getOrdersByShift(shift);
+    public static OrdersStorageList getOrdersByShift(int shiftID) {
+        return dbOpenHelper.getOrdersByShift(shiftID);
+    }
+    public static OrdersStorageList getOrdersByShiftAndTaxopark(int shiftID, int taxoparkID) {
+        return dbOpenHelper.getOrdersByShiftAndTaxopark(shiftID, taxoparkID);
     }
     public static boolean hasShiftOrders(Shift shift) {
         return dbOpenHelper.hasShiftOrders(shift);

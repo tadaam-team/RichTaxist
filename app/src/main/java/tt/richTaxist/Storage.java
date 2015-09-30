@@ -11,6 +11,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 import com.parse.ParseUser;
 import java.io.FileInputStream;
@@ -18,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Properties;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfInput;
@@ -27,20 +30,26 @@ import tt.richTaxist.gps.GPSHelper;
  * Created by Tau on 09.07.2015.
  */
 public class Storage {
-    public static TypeOfInput typeOfDateInput = TypeOfInput.BUTTON;
-    public static TypeOfInput typeOfTimeInput = TypeOfInput.BUTTON;
-    public static int timePickerStep = 10;
-    public static Boolean showListHint = true;//все булевы, переключаемые через tb должны в дефолте быть true
-    public static Boolean youngIsOnTop = true;
-    public static Boolean twoTapTimePick = true;
-    public static Boolean hideTaxometer = true;
 
     public static ParseUser currentUser;
     public static String username = "";
     public static String password = "";
-    public static String deviceIMEI = "";
-    public static Boolean emailVerified = false;
+
     public static Boolean premiumUser = false;
+    public static Boolean emailVerified = false;
+    public static Boolean showListHint = true;//все булевы, переключаемые через tb должны в дефолте быть true
+    public static Boolean youngIsOnTop = true;
+    public static Boolean twoTapTimePick = true;
+    public static Boolean hideTaxometer = true;
+    public static int taxoparkID = -1;
+    public static int billingID = -1;
+    public static int monthID = -1;
+
+    public static TypeOfInput typeOfDateInput = TypeOfInput.BUTTON;
+    public static TypeOfInput typeOfTimeInput = TypeOfInput.BUTTON;
+    public static int timePickerStep = 10;
+
+    public static String deviceIMEI = "";
     //TODO привязать платные участки проги к булевому userHasAccess
     public static Boolean userHasAccess = false;
     //TODO: проверять каждые 6 часов, что с пользователем все хорошо.
@@ -65,8 +74,7 @@ public class Storage {
         Log.d(LOG_TAG, "Created");
     }
 
-    //обрежет используемую область экрана до 720pix если текущая ширина экрана больше 8 см
-    //временная мера чтобы не писать отдельные лэйауты для планшетов
+    //обрежет используемую область экрана до 720pix если текущая ширина экрана больше 6,5 см
     public static void measureScreenWidth(Context context, ViewGroup layout){
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         double screenWidthInches = metrics.widthPixels / metrics.xdpi;
@@ -81,6 +89,80 @@ public class Storage {
         }
     }
 
+    public static void saveSpinner(int typeOfSpinner, Spinner spinner){
+        switch (typeOfSpinner) {
+            case 0://taxopark
+                try {
+                    taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
+                } catch (NullPointerException e) {
+                    Log.d(LOG_TAG, "taxopark not defined");
+                    taxoparkID = -1;
+                }
+                Log.d(LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
+                break;
+
+            case 1://billing
+                try {
+                    billingID = ((Billing) spinner.getSelectedItem()).billingID;
+                } catch (NullPointerException e) {
+                    Log.d(LOG_TAG, "billing not defined");
+                    billingID = -1;
+                }
+                Log.d(LOG_TAG, "billingID: " + String.valueOf(billingID));
+                break;
+
+            case 2://month
+                try {
+                    monthID = (int) spinner.getSelectedItemId();
+                } catch (NullPointerException e) {
+                    Log.d(LOG_TAG, "month not defined");
+                    monthID = -1;
+                }
+                Log.d(LOG_TAG, "monthID: " + String.valueOf(monthID));
+                break;
+        }
+    }
+
+    public static void setPositionOfSpinner(int typeOfSpinner, ArrayAdapter adapter, Spinner spinner){
+        switch (typeOfSpinner){
+            case 0://taxopark
+                //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
+                if (taxoparkID == 0) {
+                    for (Taxopark taxoparkIter : MainActivity.taxoparks)
+                        if (taxoparkIter.isDefault) taxoparkID = taxoparkIter.taxoparkID;
+                }
+                try {
+                    Taxopark taxopark = Taxopark.getTaxoparkByID(taxoparkID);
+                    int indexInSpinner = adapter.getPosition(taxopark);
+                    spinner.setSelection(indexInSpinner);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "error while setting taxoparkName");
+                    spinner.setSelection(0);
+                }
+                break;
+
+            case 1://billing
+                try {
+                    Billing billing = Billing.getBillingByID(billingID);
+                    int indexInSpinner = adapter.getPosition(billing);
+                    spinner.setSelection(indexInSpinner);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "error while setting billingName");
+                    spinner.setSelection(0);
+                }
+                break;
+
+            case 2://month
+                try {
+                    spinner.setSelection(monthID);
+                } catch (Exception e) {
+                    Log.d(LOG_TAG, "error while setting month");
+                    spinner.setSelection(0);
+                }
+                break;
+        }
+        adapter.notifyDataSetChanged();
+    }
 
     public static ActivityState manageFragments(FragmentManager fragmentManager, ActivityState activityState,
                                                 Fragment fragment1, Fragment fragment2){
@@ -129,11 +211,6 @@ public class Storage {
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .show(fragment1)
                         .commit();
-                if (Storage.showListHint) {
-                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
-                    listHint.setGravity(Gravity.TOP, 0, 0);
-                    listHint.show();
-                }
                 break;
 
             case PORT_2:
@@ -141,6 +218,11 @@ public class Storage {
                 transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                         .show(fragment2)
                         .commit();
+                if (Storage.showListHint) {
+                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
+                    listHint.setGravity(Gravity.TOP, 0, 0);
+                    listHint.show();
+                }
                 break;
         }
         return activityState;
@@ -150,15 +232,20 @@ public class Storage {
         Log.d(LOG_TAG, "saving settings to cloud");
         if (currentUser != null) {
             currentUser.put("premiumUser", premiumUser);
-            currentUser.put("userHasAccess", userHasAccess);
-            //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
-            currentUser.put("typeOfDateInput", typeOfDateInput.toString());
-            currentUser.put("typeOfTimeInput", typeOfTimeInput.toString());
-            currentUser.put("timePickerStep", timePickerStep);
+            //emailVerified не отправляем в облако, т.к. этот ключ генерируется там
             currentUser.put("showListHint", showListHint);
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("twoTapTimePick", twoTapTimePick);
             currentUser.put("hideTaxometer", hideTaxometer);
+            currentUser.put("taxoparkID", taxoparkID);
+            currentUser.put("billingID", billingID);
+            currentUser.put("monthID", monthID);
+
+            currentUser.put("typeOfDateInput", typeOfDateInput.toString());
+            currentUser.put("typeOfTimeInput", typeOfTimeInput.toString());
+            currentUser.put("timePickerStep", timePickerStep);
+            currentUser.put("userHasAccess", userHasAccess);
+            //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
             currentUser.saveInBackground();
         }
 
@@ -213,15 +300,20 @@ public class Storage {
     }
 
     public static void resetSettings() {
-        emailVerified   = false;
         premiumUser     = false;
+        emailVerified   = false;
+        showListHint    = true;
+        youngIsOnTop    = true;
+        twoTapTimePick  = true;
+        hideTaxometer   = true;
+        taxoparkID      = 1;
+        billingID       = 0;
+        monthID         = 0;
+
         userHasAccess   = false;
         typeOfDateInput = TypeOfInput.BUTTON;
         typeOfTimeInput = TypeOfInput.BUTTON;
         timePickerStep  = 10;
-        showListHint    = true;
-        youngIsOnTop    = true;
-        twoTapTimePick  = false;
     }
 
     //работает только с числом десятичных знаков 0-5

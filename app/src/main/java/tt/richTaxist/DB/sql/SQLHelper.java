@@ -12,7 +12,7 @@ import java.util.Locale;
  */
 public class SQLHelper extends SQLiteOpenHelper {
     static final String DB_NAME = "taxiDB";
-    static final int DB_VERSION = 25;
+    static final int DB_VERSION = 27;
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
     private static final String LOG_TAG = "SQLHelper";
 

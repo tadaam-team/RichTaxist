@@ -11,18 +11,19 @@ public class Taxopark {
     public int defaultBilling;
 
     public Taxopark(int taxoparkID, String taxoparkName, boolean isDefault, int defaultBilling) {
-        this.taxoparkID = taxoparkID;
-        this.taxoparkName = taxoparkName;
-        this.isDefault = isDefault;
+        this.taxoparkID     = taxoparkID;
+        this.taxoparkName   = taxoparkName;
+        this.isDefault      = isDefault;
         this.defaultBilling = defaultBilling;
     }
 
     public static int getNextTaxoparkID(){
         int id = 0;
         if (MainActivity.taxoparks != null) {
-            for (Taxopark taxopark : MainActivity.taxoparks)
+            for (Taxopark taxopark : MainActivity.taxoparks) {
                 if (taxopark.taxoparkID > id) id = taxopark.taxoparkID;
-            id++;
+                id++;
+            }
         }
         return id;
     }

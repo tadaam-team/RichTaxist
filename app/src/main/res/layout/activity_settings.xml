@@ -99,7 +99,7 @@
                 <TextView
                     android:text="@string/extraFunctions"
                     style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_width="0dp" android:layout_height="0dp"
                     android:gravity="center_horizontal"
                     android:layout_marginTop="20dp"
                     android:textStyle="italic"
@@ -116,24 +116,28 @@
                     android:onClick="onParksAndBillingsClick"
                     android:layout_weight="1"
                     android:layout_gravity="center_vertical"/>
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent" android:layout_height="wrap_content">
                 <Button
                     android:text="@string/exportShifts"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:layout_width="0dp" android:layout_height="0dp"
                     android:background="#6dff0000"
                     android:onClick="onExportImportShiftsClick"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:layout_gravity="center_vertical"/>
                 <Button
                     android:text="@string/socials"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="60dp"
+                    android:layout_width="0dp" android:layout_height="0dp"
                     android:background="#6dff0000"
                     android:onClick="onSocialsClick"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
-
             <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView

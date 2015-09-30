@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
     }
 
     public void onParksAndBillingsClick(View p1) {
-        startActivity(new Intent(this, Settigs4ParksAndBillingsActivity.class));
+        startActivity(new Intent(this, Settings4ParksAndBillingsActivity.class));
     }
     public void onExportImportShiftsClick(View p1) {
         Toast.makeText(this, "когда-нибудь это будет открывать окно экспорта", Toast.LENGTH_SHORT).show();

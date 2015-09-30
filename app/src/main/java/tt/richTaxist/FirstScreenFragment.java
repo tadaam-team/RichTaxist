@@ -41,7 +41,6 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
         rootView = inflater.inflate(R.layout.fragment_first_screen, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 2.0f);
         rootView.setLayoutParams(layoutParams);
-//        Storage.measureScreenWidth(getActivity(), (ViewGroup) rootView);
 
         (rootView.findViewById(R.id.btnOpenLastShift))  .setOnClickListener(this);
         (rootView.findViewById(R.id.btnNewShift))       .setOnClickListener(this);

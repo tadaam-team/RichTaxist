@@ -15,6 +15,7 @@ import tt.richTaxist.DB.ShiftsStorage;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.Taxopark;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -75,7 +76,6 @@ public class OrdersSQLHelper extends SQLHelper {
     public OrdersStorageList getOrders(Date fromDate, Date toDate) {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "' AND "
                 + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "'";
@@ -91,10 +91,27 @@ public class OrdersSQLHelper extends SQLHelper {
         return ordersStorage;
     }
 
-    public OrdersStorageList getOrdersByShift(Shift shift) {
+    public OrdersStorageList getOrdersByShift(int shiftID) {
         OrdersStorageList ordersStorage = new OrdersStorageList(false);
-        // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
+
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do ordersStorage.add(loadOrderFromCursor(cursor));
+            while (cursor.moveToNext());
+        }
+        ordersStorage.setWriteToDB(true);
+        return ordersStorage;
+    }
+
+    public OrdersStorageList getOrdersByShiftAndTaxopark(int shiftID, int taxoparkID) {
+        OrdersStorageList ordersStorage = new OrdersStorageList(false);
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+                + SHIFT_ID + "='" + String.valueOf(shiftID)  + "' AND "
+                + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
 
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -109,8 +126,6 @@ public class OrdersSQLHelper extends SQLHelper {
     }
 
     public boolean hasShiftOrders(Shift shift) {
-//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
-        // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -121,8 +136,6 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public Map<TypeOfPayment,Integer> getSumOrdersByShift(Shift shift) {
         Map<TypeOfPayment,Integer> result = new HashMap<>();
-//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
-        // Select All Query
         String selectQuery = "SELECT typeOfPayment, SUM(price) FROM " + TABLE_NAME +
                 " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "' GROUP BY typeOfPayment";
         SQLiteDatabase db = getWritableDatabase();
@@ -143,9 +156,7 @@ public class OrdersSQLHelper extends SQLHelper {
 
     public Map<String,Object> getDistanceAndTimeByShift(Shift shift) {
         Map<String,Object> result = new HashMap<>();
-//        OrdersStorageList ordersStorage = new OrdersStorageList(false);
 
-        // Select All Query
         String selectQuery = "SELECT SUM(distance), SUM(travelTime) FROM " + TABLE_NAME +
                 " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();

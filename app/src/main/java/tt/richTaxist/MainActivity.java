@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
@@ -44,7 +45,9 @@ public class MainActivity extends AppCompatActivity implements
         //TODO: при открытии загружать из SQL taxoparks и billings вместо инициализации показанной ниже
         Taxopark taxopark;
         int taxoparkID = Taxopark.getNextTaxoparkID();
-        taxopark = new Taxopark(taxoparkID, "Таксовичков", true, 0);
+        taxopark = new Taxopark(taxoparkID, "- - -", false, 0);
+        taxoparks.add(taxopark);
+        taxopark = new Taxopark(++taxoparkID, "Таксовичков", true, 0);
         taxoparks.add(taxopark);
         taxopark = new Taxopark(++taxoparkID, "АС-такси", false, 0);
         taxoparks.add(taxopark);
@@ -167,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_show_orders_list:
                 //Обработчик нажатия кнопки "Список заказов"
-                if (OrdersStorage.getOrdersByShift(currentShift).size() == 0)
+                if (ordersStorage.size() == 0)
                     Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
                 else {
                     if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;

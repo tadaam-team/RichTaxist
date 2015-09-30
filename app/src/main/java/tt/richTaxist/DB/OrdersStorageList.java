@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
+import tt.richTaxist.Taxopark;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -15,14 +16,14 @@ public class OrdersStorageList extends ArrayList<Order> {
         this.writeToDB = writeToDB;
     }
     public OrdersStorageList() {    }
-    public void fillTodayOrders() {
+    public void fillOrdersByShift(int shiftID) {
         clear(false);
-        Date today = new Date();
-        addAll(OrdersStorage.getOrders(today, today));
+        addAll(OrdersStorage.getOrdersByShift(shiftID));
     }
-    public void fillOrdersByShift(Shift shift) {
+
+    public void fillOrdersByShiftAndTaxopark(int shiftID, int taxoparkID) {
         clear(false);
-        addAll(OrdersStorage.getOrdersByShift(shift));
+        addAll(OrdersStorage.getOrdersByShiftAndTaxopark(shiftID, taxoparkID));
     }
 
     @Override

@@ -43,7 +43,6 @@ public class SignInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         context = getApplicationContext();
         Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_sign_in));
 
@@ -171,7 +170,7 @@ public class SignInActivity extends AppCompatActivity {
         Storage.resetSettings();
         Storage.saveSettings(context);
         showLogInORLogOut(true, false);
-        //TODO: база не должна быть доступна, если залогинился другой юзер
+        //onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
     }
 
 
@@ -246,14 +245,21 @@ public class SignInActivity extends AppCompatActivity {
                 if (user != null) {
                     Storage.userHasAccess = verifyUser(user);
                 } else {
-                    Log.d(LOG_TAG, "error code " + error.getCode());//всегда 101
-                    Toast.makeText(context, "Ошибка логина или пароля", Toast.LENGTH_SHORT).show();
+                    Log.d(LOG_TAG, "error code " + error.getCode());
+                    String msg;
+                    switch (error.getCode()){
+                        case 100: msg = "Проверьте интернет-подключение"; break;
+                        case 101: msg = "Ошибка логина или пароля"; break;
+                        default:  msg = "Необычная ошибка " + error.getCode(); break;
+                    }
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                     showProgress(false);
                     showLogInORLogOut(true, false);
                 }
             }
         };
-        if (Storage.username != null) ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
+        if (Storage.username != null && !Storage.username.equals(""))
+            ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
     }
 
 
@@ -264,11 +270,15 @@ public class SignInActivity extends AppCompatActivity {
 
 
         Storage.currentUser     = user;
+        Storage.premiumUser     = user.getBoolean("premiumUser");
+        Storage.emailVerified   = user.getBoolean("emailVerified");
         Storage.showListHint    = user.getBoolean("showListHint");
         Storage.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Storage.twoTapTimePick  = user.getBoolean("twoTapTimePick");
-        Storage.premiumUser     = user.getBoolean("premiumUser");
-        Storage.emailVerified   = user.getBoolean("emailVerified");
+        Storage.hideTaxometer   = user.getBoolean("hideTaxometer");
+        Storage.taxoparkID      = user.getInt("taxoparkID");
+        Storage.billingID       = user.getInt("billingID");
+        Storage.monthID         = user.getInt("monthID");
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {

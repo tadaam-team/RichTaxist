@@ -8,13 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
@@ -27,6 +27,7 @@ public class ShiftsListFragment extends ListFragment {
     private AppCompatActivity mActivity;
     public static ArrayAdapter shiftAdapter;
     private SwipeDetector swipeDetector;
+    private Spinner spnMonth, spnTaxopark;
 
     public ShiftsListFragment() {
     }
@@ -51,18 +52,35 @@ public class ShiftsListFragment extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //TODO: добавить фильтрацию списка смен например по месяцам
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
-//        Storage.measureScreenWidth(mActivity, (ViewGroup) rootView);
         MainActivity.sortShiftsStorage();
+
+        spnMonth    = (Spinner) rootView.findViewById(R.id.spnMonth);
+        spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
+
+        ArrayAdapter<?> spnMonthAdapter = ArrayAdapter.createFromResource(mActivity, R.array.months,  android.R.layout.simple_spinner_item);
+        spnMonthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnMonth.setAdapter(spnMonthAdapter);
+        Storage.setPositionOfSpinner(2, spnMonthAdapter, spnMonth);
+
+        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.taxoparks);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        Storage.setPositionOfSpinner(1, spnTaxoparkAdapter, spnTaxopark);
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);
         swipeDetector = new SwipeDetector();
         mListView.setOnTouchListener(swipeDetector);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Storage.saveSpinner(2, spnMonth);
+        Storage.saveSpinner(0, spnTaxopark);
     }
 
     @Override
@@ -79,7 +97,7 @@ public class ShiftsListFragment extends ListFragment {
 
                 case RIGHT_TO_LEFT://вывести в поля для редактирования смену, которую смахнули влево
                     MainActivity.currentShift = selectedShift;
-                    MainActivity.ordersStorage.fillOrdersByShift(selectedShift);
+                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
                     Intent intent = new Intent(mActivity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
