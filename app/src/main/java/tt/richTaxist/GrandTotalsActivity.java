@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import tt.richTaxist.DB.OrdersStorage;
-import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.gps.RangeSeekBar;
 
 
@@ -57,7 +57,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         rangeEnd = Calendar.getInstance();
 
         //получим список всех смен и найдем дату начала первой смены
-        shifts = ShiftsStorage.getShifts(rangeStart.getTime(), rangeEnd.getTime(), false);
+        shifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(rangeStart.getTime(), rangeEnd.getTime(), false);
         if (shifts.size() != 0) {
             //отсечем заведомо пустой кусок шкалы между 01.01.2015 и датой начала первой смены
             rangeStart.setTime(shifts.get(0).beginShift);
@@ -159,7 +159,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
         Calendar preLastShiftDate = Calendar.getInstance();
 
         revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
-        shifts = ShiftsStorage.getShifts(rangeStart.getTime(), rangeEnd.getTime(), true); //true заменить на переменную из сторожа
+        shifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(rangeStart.getTime(), rangeEnd.getTime(), true); //true заменить на переменную из сторожа
         if (shifts.size() == 0) {
             //в интервал не попало начало ни одной смены
             //не факт, что заказы вообще есть в этом интервале, но processPartlyShift с этим разберется сам
@@ -205,7 +205,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 lastShiftStart.setTime(lastShift.beginShift);
                 preLastShiftDate.setTimeInMillis(lastShiftStart.getTimeInMillis() - 1);
                 //получим список всегда целых смен с конца. здесь первая смена всегда целая
-                ArrayList<Shift> wholeShifts = ShiftsStorage.getShifts(firstShiftStart.getTime(), preLastShiftDate.getTime(), true);
+                ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(firstShiftStart.getTime(), preLastShiftDate.getTime(), true);
 
                 processWholeShifts(wholeShifts);
                 processPartlyShift(lastShiftStart, rangeEnd);
@@ -220,7 +220,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
                 //получим список всегда целых смен с конца. здесь первая смена всегда не целая
                 //таких может и не оказаться, если в интервал попало всего 2 нецелые смены
                 if (preLastShiftDate.after(firstShiftStart)) {
-                    ArrayList<Shift> wholeShifts = ShiftsStorage.getShifts(firstShiftStart.getTime(), preLastShiftDate.getTime(), true);
+                    ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(firstShiftStart.getTime(), preLastShiftDate.getTime(), true);
                     processWholeShifts(wholeShifts);
                 }
                 processPartlyShift(lastShiftStart, rangeEnd);
@@ -269,7 +269,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DatePicker
     private void processPartlyShift(Calendar fromDate, Calendar toDate) {
         int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
         revenueCashLocal = revenueCardLocal = revenueBonusLocal = 0;
-        ArrayList<Order> orders = OrdersStorage.getOrders(fromDate.getTime(), toDate.getTime());
+        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersInRange(fromDate.getTime(), toDate.getTime());
         if (orders.size() != 0) {
             for (Order order : orders) {
                 switch (order.typeOfPayment) {

@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import tt.richTaxist.Bricks.DF_NumberInput;
-import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.DB.ShiftsSQLHelper;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -190,7 +190,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         destination.setTime(buffer.getTime().getTime());
         currentShift.calculateShiftTotals(0);
         refreshWidgets();
-        ShiftsStorage.update(currentShift);
+        ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
 
     public void updateShiftTime(Calendar source, Date destination) {
@@ -201,7 +201,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         destination.setTime(buffer.getTime().getTime());
         currentShift.calculateShiftTotals(0);
         refreshWidgets();
-        ShiftsStorage.update(currentShift);
+        ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
 
     public void onButtonShiftIsClosedClick(View button) {

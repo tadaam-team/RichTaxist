@@ -9,16 +9,9 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.util.Log;
 import android.widget.Toast;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
-import tt.richTaxist.DB.LocationsStorage;
+import tt.richTaxist.DB.LocationsSQLHelper;
 
 public class GPSService extends Service {
 
@@ -91,7 +84,7 @@ public class GPSService extends Service {
                 Log.d(LOG_TAG, "pi == null");
             }
             try {
-                LocationsStorage.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
+                LocationsSQLHelper.dbOpenHelper.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
             } catch (Exception e) {
                 e.printStackTrace();
 

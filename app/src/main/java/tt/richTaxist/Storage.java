@@ -20,17 +20,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Properties;
+import tt.richTaxist.DB.BillingsSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfInput;
+import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.gps.GPSHelper;
 
 /**
  * Created by Tau on 09.07.2015.
  */
 public class Storage {
-
     public static ParseUser currentUser;
     public static String username = "";
     public static String password = "";
@@ -69,9 +70,7 @@ public class Storage {
 
     private Storage(Context context) {
         this.context = context;
-        Log.d(LOG_TAG, "Constructor");
         loadSettingsFromFile();
-        Log.d(LOG_TAG, "Created");
     }
 
     //обрежет используемую область экрана до 720pix если текущая ширина экрана больше 6,5 см
@@ -83,56 +82,52 @@ public class Storage {
         Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
         if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
             ViewGroup.LayoutParams params = layout.getLayoutParams();
-            int maxWidth = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
-            Log.d(LOG_TAG, "maxWidth: " + String.valueOf(maxWidth));
-            params.width = maxWidth;
+            params.width = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
         }
     }
 
-    public static void saveSpinner(int typeOfSpinner, Spinner spinner){
+    public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
         switch (typeOfSpinner) {
-            case 0://taxopark
+            case TAXOPARK:
                 try {
                     taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "taxopark not defined");
                     taxoparkID = -1;
                 }
-                Log.d(LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
                 break;
 
-            case 1://billing
+            case BILLING:
                 try {
                     billingID = ((Billing) spinner.getSelectedItem()).billingID;
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "billing not defined");
                     billingID = -1;
                 }
-                Log.d(LOG_TAG, "billingID: " + String.valueOf(billingID));
                 break;
 
-            case 2://month
+            case MONTH:
                 try {
                     monthID = (int) spinner.getSelectedItemId();
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "month not defined");
                     monthID = -1;
                 }
-                Log.d(LOG_TAG, "monthID: " + String.valueOf(monthID));
                 break;
         }
     }
 
-    public static void setPositionOfSpinner(int typeOfSpinner, ArrayAdapter adapter, Spinner spinner){
+    //TODO: нормализовать работу метода
+    public static void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, ArrayAdapter adapter, Spinner spinner, int id){
         switch (typeOfSpinner){
-            case 0://taxopark
+            case TAXOPARK:
                 //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
-                if (taxoparkID == 0) {
-                    for (Taxopark taxoparkIter : MainActivity.taxoparks)
-                        if (taxoparkIter.isDefault) taxoparkID = taxoparkIter.taxoparkID;
+                if (id == 0 || id == -1) {
+                    for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks())
+                        if (taxoparkIter.isDefault) taxoparkID = id = taxoparkIter.taxoparkID;
                 }
                 try {
-                    Taxopark taxopark = Taxopark.getTaxoparkByID(taxoparkID);
+                    Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
                     int indexInSpinner = adapter.getPosition(taxopark);
                     spinner.setSelection(indexInSpinner);
                 } catch (Exception e) {
@@ -141,9 +136,9 @@ public class Storage {
                 }
                 break;
 
-            case 1://billing
+            case BILLING:
                 try {
-                    Billing billing = Billing.getBillingByID(billingID);
+                    Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(billingID);
                     int indexInSpinner = adapter.getPosition(billing);
                     spinner.setSelection(indexInSpinner);
                 } catch (Exception e) {
@@ -152,7 +147,7 @@ public class Storage {
                 }
                 break;
 
-            case 2://month
+            case MONTH:
                 try {
                     spinner.setSelection(monthID);
                 } catch (Exception e) {
@@ -273,9 +268,8 @@ public class Storage {
         }
     }
 
-
     private void loadSettingsFromFile(){
-        Log.d(LOG_TAG, "Load settings from file");
+        Log.d(LOG_TAG, "loading settings from file");
         String path = context.getFilesDir() + "/config.properties";
         Properties prop = new Properties();
         InputStream input = null;

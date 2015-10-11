@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import com.parse.LogInCallback;
@@ -23,7 +22,8 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import tt.richTaxist.ChatClient.ChatLoginActivity;
-import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.RouteActivity;
@@ -50,8 +50,13 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
         GPSHelper.startService(MainActivity.context);
 
-        MainActivity.shiftsStorage.clear();
-        MainActivity.shiftsStorage.addAll(ShiftsStorage.getShiftsForList());
+        MainActivity.currentShift = ShiftsSQLHelper.dbOpenHelper.getLastShift();
+        if (MainActivity.currentShift != null) {
+            MainActivity.shiftsStorage.clear();
+            MainActivity.ordersStorage.clear();
+            MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
+            MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+        }
         Storage.init(this);
         Storage.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
@@ -96,22 +101,22 @@ public class FirstScreenActivity extends AppCompatActivity implements
     public void onButtonSelected(int buttonIndex){
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
-                if (ShiftsStorage.getLastShift() == null)
-                    Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
-                else {
-                    MainActivity.currentShift = ShiftsStorage.getLastShift();
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
+                if (MainActivity.currentShift != null){
+                    MainActivity.ordersStorage.clear();
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
                     Intent intent = new Intent(activity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
-                    Log.d(LOG_TAG, "открываю последнюю сохраненную смену");
+                    Log.d(LOG_TAG, "открываю последнюю сохранённую смену");
                     finish();
                 }
+                else
+                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnNewShift:
                 MainActivity.currentShift = new Shift();
-                MainActivity.ordersStorage.clear(false);
+                MainActivity.ordersStorage.clear();
                 startActivity(new Intent(activity, MainActivity.class));
                 Log.d(LOG_TAG, "открываю новую смену");
                 finish();
@@ -119,13 +124,13 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnOpenShift:
                 //Обработчик нажатия кнопки "Список смен"
-                if (ShiftsStorage.getLastShift() == null)
-                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
-                else {
+                if (MainActivity.currentShift != null){
                     if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
                     else activityState = ActivityState.PORT_2;
                     activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
                 }
+                else
+                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnSettings:
@@ -144,16 +149,14 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnRoute:
-                if (MainActivity.currentShift == null){
-                    MainActivity.currentShift = ShiftsStorage.getLastShift();
-                    if (MainActivity.currentShift == null) {
-                        Toast.makeText(activity, "сохраненных смен не найдено", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
+                if (MainActivity.currentShift != null) {
+                    MainActivity.ordersStorage.clear();
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                    startActivity(new Intent(activity, RouteActivity.class));
+                    Log.d(LOG_TAG, "открываю карту маршрута смены");
                 }
-                startActivity(new Intent(activity, RouteActivity.class));
-                Log.d(LOG_TAG, "открываю карту маршрута смены");
+                else
+                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnGrandTotals:
@@ -190,9 +193,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     Log.d(LOG_TAG, "error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
-                        case 100: msg = "Проверьте интернет-подключение"; break;
-                        case 101: msg = "Ошибка логина или пароля"; break;
-                        default:  msg = "Необычная ошибка " + error.getCode(); break;
+                        case 100: msg = getResources().getString(R.string.noInternetMSG); break;
+                        case 101: msg = getResources().getString(R.string.loginOrPasswordErrMSG); break;
+                        default:  msg = getResources().getString(R.string.irregularErrMSG) + " " + error.getCode(); break;
                     }
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                 }

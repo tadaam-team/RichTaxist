@@ -13,9 +13,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import java.util.ArrayList;
+import tt.richTaxist.DB.BillingsSQLHelper;
 
 public class BillingsFragment extends ListFragment {
     private static final String LOG_TAG = "BillingsFragment";
+    ArrayList<Billing> billings = new ArrayList<>();
     private AppCompatActivity mActivity;
     private ArrayAdapter billingsAdapter;
     public BillingsFragment() { }
@@ -24,6 +27,7 @@ public class BillingsFragment extends ListFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = (AppCompatActivity) activity;
+        billings.addAll(BillingsSQLHelper.dbOpenHelper.getAllBillings());
         billingsAdapter = new BillingsAdapter(mActivity);
         setListAdapter(billingsAdapter);
     }
@@ -37,8 +41,9 @@ public class BillingsFragment extends ListFragment {
         (rootView.findViewById(R.id.addBilling)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Billing billing = new Billing(Billing.getNextBillingID(), "", 0.0f);
-                MainActivity.billings.add(billing);
+                Billing billing = new Billing("", 0.0f);
+                billings.add(billing);
+                BillingsSQLHelper.dbOpenHelper.create(billing);
                 billingsAdapter.notifyDataSetChanged();
                 if (OrderFragment.spnBillingAdapter != null) OrderFragment.spnBillingAdapter.notifyDataSetChanged();
             }
@@ -50,7 +55,7 @@ public class BillingsFragment extends ListFragment {
         private final Context context;
 
         public BillingsAdapter(Context context) {
-            super(context, android.R.layout.simple_list_item_1, MainActivity.billings);
+            super(context, android.R.layout.simple_list_item_1, billings);
             this.context = context;
         }
 
@@ -58,64 +63,77 @@ public class BillingsFragment extends ListFragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_entry_billings, parent, false);
+                convertView = inflater.inflate(R.layout.list_entry_billings_editable, parent, false);
             }
-            //TODO: проверить корректность строки ниже
-            final Billing billing = MainActivity.billings.get(position);
+            final Billing billing = getItem(position);
 
-            final EditText billingName = (EditText) convertView.findViewById(R.id.billingName);
-            billingName.setText(billing.billingName);
+            final EditText etBillingName = (EditText) convertView.findViewById(R.id.etBillingName);
+            etBillingName.setText(billing.billingName);
+            final EditText etCommission = (EditText) convertView.findViewById(R.id.etCommission);
+            etCommission.setText(String.valueOf(billing.commission));
+
             //моментами сохранения считаются либо нажатие enter либо потеря фокуса EditText-ом
-            billingName.setOnKeyListener(new View.OnKeyListener() {
+            etBillingName.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        saveBillingName(billingName, billing);
+                        saveBilling(billing, etBillingName, etCommission);
                         return true;
                     }
                     return false;
                 }
             });
-//            BillingName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View view, boolean hasFocus) {
-//                    if (!hasFocus) saveBillingName(BillingName, Billing);
-//                }
-//            });
-            final EditText etCommission = (EditText) convertView.findViewById(R.id.etCommission);
-            etCommission.setText(String.valueOf(billing.commission));
-            //моментами сохранения считаются либо нажатие enter либо потеря фокуса EditText-ом
             etCommission.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        billing.commission = Float.valueOf(etCommission.getText().toString());
+                        saveBilling(billing, etBillingName, etCommission);
                         return true;
                     }
                     return false;
                 }
             });
+//            etBillingName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View view, boolean hasFocus) {
+//                    if (!hasFocus) saveBilling(billing, etBillingName, etCommission);
+//                }
+//            });
+//            etCommission.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//                @Override
+//                public void onFocusChange(View view, boolean hasFocus) {
+//                    if (!hasFocus) saveBilling(billing, etBillingName, etCommission);
+//                }
+//            });
 
             (convertView.findViewById(R.id.delBilling)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    MainActivity.billings.remove(billing);
+                    billings.remove(billing);
+                    BillingsSQLHelper.dbOpenHelper.remove(billing);
                     notifyDataSetChanged();
                     if (OrderFragment.spnBillingAdapter != null) OrderFragment.spnBillingAdapter.notifyDataSetChanged();
                 }
             });
             return convertView;
         }
-    }
 
-    private void saveBillingName(EditText billingName, Billing currentBilling){
-        String newName = billingName.getText().toString();
-        boolean isInTheList = false;
-        for (Billing billing : MainActivity.billings) {
-            if (newName.equals(billing.billingName) && currentBilling.billingID != billing.billingID) isInTheList = true;
+        private void saveBilling(Billing currentBilling, EditText billingName, EditText commission){
+            String newName = billingName.getText().toString();
+            boolean isInTheList = false;
+            for (Billing billingIter : BillingsSQLHelper.dbOpenHelper.getAllBillings()) {
+                if (newName.equals(billingIter.billingName) && currentBilling.billingID != billingIter.billingID) isInTheList = true;
+            }
+            if (isInTheList) {
+                Toast.makeText(mActivity, getResources().getString(R.string.billing) + " " + String.valueOf(newName) + " " +
+                        getResources().getString(R.string.isInTheList), Toast.LENGTH_SHORT).show();
+                billingName.setText("");
+                commission.setText("");
+            }
+            else {
+                currentBilling.billingName = newName;
+                currentBilling.commission = Float.valueOf(commission.getText().toString());
+                BillingsSQLHelper.dbOpenHelper.update(currentBilling);
+                if (OrderFragment.spnBillingAdapter != null) OrderFragment.spnBillingAdapter.notifyDataSetChanged();
+            }
         }
-        if (isInTheList) {
-            Toast.makeText(mActivity, "система расчетов " + String.valueOf(newName) + " уже есть в списке", Toast.LENGTH_SHORT).show();
-            billingName.setText("");
-        }
-        else currentBilling.billingName = newName;
     }
 }

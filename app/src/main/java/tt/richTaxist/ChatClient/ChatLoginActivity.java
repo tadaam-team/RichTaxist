@@ -27,7 +27,7 @@ public class ChatLoginActivity extends Activity{
 		Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_chat_home));
 
 		ipAddress = (EditText) findViewById(R.id.et_IP);
-		ipAddress.setText("109.195.91.45");
+		ipAddress.setText("94.19.67.96");
 
 		Button connect = (Button)findViewById(R.id.chat_login);
 		connect.setOnClickListener(new OnClickListener() {

@@ -2,6 +2,8 @@ package tt.richTaxist;
 
 import java.util.Calendar;
 import java.util.Date;
+import tt.richTaxist.DB.BillingsSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
@@ -36,9 +38,10 @@ public class Order {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass() || arrivalDateTime == null) return false;
         Order that = (Order) o;
-        return !(arrivalDateTime != null ? !arrivalDateTime.equals(that.arrivalDateTime) : that.arrivalDateTime != null);
+        if (that.arrivalDateTime == null) return false;
+        return arrivalDateTime.equals(that.arrivalDateTime);
     }
 
     @Override
@@ -55,7 +58,8 @@ public class Order {
                         "\nпарк: %s, расчёты: %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString(),
-                Taxopark.getTaxoparkByID(taxoparkID), Billing.getBillingByID(billingID));
+                TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(taxoparkID),
+                BillingsSQLHelper.dbOpenHelper.getBillingByID(billingID));
         if (!"".equals(note)) text += String.format(",\nзаметка: %s", note);
         return text;
     }

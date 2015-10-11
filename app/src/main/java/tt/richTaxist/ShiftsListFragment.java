@@ -11,23 +11,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Calendar;
-import tt.richTaxist.DB.OrdersStorage;
-import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.Enums.TypeOfSpinner;
 import android.widget.LinearLayout.LayoutParams;
 
 public class ShiftsListFragment extends ListFragment {
     private static final String LOG_TAG = "ShiftsListFragment";
-    private AppCompatActivity mActivity;
+    private static AppCompatActivity mActivity;
     public static ArrayAdapter shiftAdapter;
     private SwipeDetector swipeDetector;
-    private Spinner spnMonth, spnTaxopark;
+    private static Spinner spnMonth, spnTaxopark;
+    public static ArrayAdapter spnTaxoparkAdapter;
 
     public ShiftsListFragment() {
     }
@@ -60,14 +65,12 @@ public class ShiftsListFragment extends ListFragment {
         spnMonth    = (Spinner) rootView.findViewById(R.id.spnMonth);
         spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
 
-        ArrayAdapter<?> spnMonthAdapter = ArrayAdapter.createFromResource(mActivity, R.array.months,  android.R.layout.simple_spinner_item);
+        ArrayAdapter<?> spnMonthAdapter = ArrayAdapter.createFromResource(mActivity, R.array.months, android.R.layout.simple_spinner_item);
         spnMonthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnMonth.setAdapter(spnMonthAdapter);
-        Storage.setPositionOfSpinner(2, spnMonthAdapter, spnMonth);
+        Storage.setPositionOfSpinner(TypeOfSpinner.MONTH, spnMonthAdapter, spnMonth, 0);
 
-        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.taxoparks);
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        Storage.setPositionOfSpinner(1, spnTaxoparkAdapter, spnTaxopark);
+        createTaxoparkSpinner();
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);
         swipeDetector = new SwipeDetector();
@@ -76,11 +79,41 @@ public class ShiftsListFragment extends ListFragment {
         return rootView;
     }
 
+    public static void createTaxoparkSpinner(){
+        ArrayList<Taxopark> list = new ArrayList<>();
+        list.add(0, new Taxopark("- - -", false, 0));
+        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, list);
+        spnTaxoparkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                if (MainActivity.currentShift != null) {
+                    if (spnTaxopark.getSelectedItemId() == 0) {
+                        MainActivity.ordersStorage.clear();
+                        MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                    } else {
+                        MainActivity.ordersStorage.clear();
+                        MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark
+                                (MainActivity.currentShift.shiftID, Storage.taxoparkID));
+
+                    }
+                    shiftAdapter.notifyDataSetChanged();
+                }
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Storage.saveSpinner(2, spnMonth);
-        Storage.saveSpinner(0, spnTaxopark);
+        Storage.saveSpinner(TypeOfSpinner.MONTH, spnMonth);
+        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
     }
 
     @Override
@@ -97,7 +130,8 @@ public class ShiftsListFragment extends ListFragment {
 
                 case RIGHT_TO_LEFT://вывести в поля для редактирования смену, которую смахнули влево
                     MainActivity.currentShift = selectedShift;
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
+                    MainActivity.ordersStorage.clear();
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
                     Intent intent = new Intent(mActivity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
@@ -134,11 +168,11 @@ public class ShiftsListFragment extends ListFragment {
     }
 
     private void deleteShift(Shift shift){
-        Toast.makeText(mActivity, "смена удалена", Toast.LENGTH_SHORT).show();
-        ShiftsStorage.remove(shift);
-        OrdersStorage.deleteOrdersByShift(shift);
+        ShiftsSQLHelper.dbOpenHelper.remove(shift);
+        OrdersSQLHelper.dbOpenHelper.deleteOrdersByShift(shift);
         MainActivity.shiftsStorage.remove(shift);
         shiftAdapter.notifyDataSetChanged();
+        Toast.makeText(mActivity, "смена удалена", Toast.LENGTH_SHORT).show();
     }
 
 

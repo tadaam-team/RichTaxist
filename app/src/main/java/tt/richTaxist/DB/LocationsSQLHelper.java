@@ -1,4 +1,4 @@
-package tt.richTaxist.DB.sql;
+package tt.richTaxist.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,24 +6,28 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import tt.richTaxist.MainActivity;
 import tt.richTaxist.Shift;
 import tt.richTaxist.gps.Coordinates;
 
 /**
  * Created by AlexShredder on 16.07.2015.
  */
-public class LocationsSqlHelper extends SQLHelper {
+public class LocationsSQLHelper extends SQLHelper {
     static final String TABLE_NAME = "path";
     static final String DATE_TIME = "dateTime";
     static final String LON = "lon";
     static final String LAT = "lat";
+
+    public static LocationsSQLHelper dbOpenHelper = new LocationsSQLHelper(MainActivity.context);
+
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
             + DATE_TIME + " DATETIME, "
             + LON + " FLOAT, "
             + LAT + " FLOAT)";
 
-    public LocationsSqlHelper(Context context) {
+    public LocationsSQLHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -75,7 +79,7 @@ public class LocationsSqlHelper extends SQLHelper {
         return result != -1;
     }
 
-    public List<Coordinates> getLocationsByPeriod(Date fromTime, Date toTime) {
+    public ArrayList<Coordinates> getLocationsByPeriod(Date fromTime, Date toTime) {
         ArrayList<Coordinates> coordinates = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + DATE_TIME + ">='" + dateFormat.format(fromTime) + "' AND "

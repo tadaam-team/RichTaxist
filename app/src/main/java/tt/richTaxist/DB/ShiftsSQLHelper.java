@@ -1,4 +1,4 @@
-package tt.richTaxist.DB.sql;
+package tt.richTaxist.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import tt.richTaxist.MainActivity;
 import tt.richTaxist.Shift;
 
 /**
@@ -32,6 +33,8 @@ public class ShiftsSQLHelper extends SQLHelper {
     static final String DISTANCE                 = "distance";
     static final String TRAVEL_TIME              = "travelTime";
 
+    public static ShiftsSQLHelper dbOpenHelper = new ShiftsSQLHelper(MainActivity.context);
+
     static final String CREATE_TABLE = "create table " + TABLE_NAME + " ( _id integer primary key autoincrement, "
             + SHIFT_ID                  + " INT, "
             + BEGIN_SHIFT               + " DATETIME, "
@@ -54,17 +57,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        super.onCreate(sqLiteDatabase);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        super.onUpgrade(sqLiteDatabase, i, i1);
-    }
-
-    public boolean commit(Shift shift){
+    public boolean create(Shift shift){
         SQLiteDatabase db = getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -88,6 +81,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         db.close();
         return result != -1;
     }
+
     public boolean update(Shift shift){
         SQLiteDatabase db = getWritableDatabase();
 
@@ -108,7 +102,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         cv.put(WORK_HOURS_SPENT,        shift.workHoursSpent);
         cv.put(SALARY_PER_HOUR,         shift.salaryPerHour);
 
-        long result = db.update(TABLE_NAME, cv, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        int result = db.update(TABLE_NAME, cv, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
         db.close();
         return result != -1;
     }
@@ -120,26 +114,15 @@ public class ShiftsSQLHelper extends SQLHelper {
         return result;
     }
 
-    public int remove(List<Shift> shifts){
-        SQLiteDatabase db = getWritableDatabase();
-        int result = 0;
-        for (int i = 0; i < shifts.size(); i++) {
-            Shift shift = shifts.get(i);
-            result += db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
-        }
-        db.close();
-        return result;
-    }
-
-    public ArrayList<Shift> getShifts(Date fromDate, Date toDate, boolean youngIsOnTop) {
+    public ArrayList<Shift> getShiftsInRange(Date fromDate, Date toDate, boolean youngIsOnTop) {
         ArrayList<Shift> shiftsStorage = new ArrayList<>();
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
+        SQLiteDatabase db = getWritableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
                 + BEGIN_SHIFT + ">='" + dateFormat.format(fromDate) + "' AND "
                 + BEGIN_SHIFT + "<='" + dateFormat.format(toDate)
                 + "' ORDER BY " + BEGIN_SHIFT + " " + sortMethod;
-        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -147,15 +130,14 @@ public class ShiftsSQLHelper extends SQLHelper {
             do shiftsStorage.add(loadShiftFromCursor(cursor));
             while (cursor.moveToNext());
         }
-        //TODO: добавить cursor.close для всех случаев также для Orders и Locations
         return shiftsStorage;
     }
 
-    public ArrayList<Shift> getShiftsForList() {
+    public ArrayList<Shift> getAllShifts() {
         ArrayList<Shift> shiftsStorage = new ArrayList<>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
         SQLiteDatabase db = getWritableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
@@ -165,11 +147,28 @@ public class ShiftsSQLHelper extends SQLHelper {
         }
         return shiftsStorage;
     }
+
+//    public ArrayList<Shift> getShiftsByMonthAndTaxopark(int monthID, int taxoparkID) {
+//        ArrayList<Shift> shiftList = new ArrayList<>();
+//        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+//                + SHIFT_ID + "='" + String.valueOf(shiftID)  + "' AND "
+//                + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
+//
+//        SQLiteDatabase db = getWritableDatabase();
+//        Cursor cursor = db.rawQuery(selectQuery, null);
+//
+//        // looping through all rows and adding to list
+//        if (cursor.moveToFirst()) {
+//            do shiftList.add(loadShiftFromCursor(cursor));
+//            while (cursor.moveToNext());
+//        }
+//        return shiftList;
+//    }
 
     public Shift getLastShift() {
         Shift shift = null;
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
         SQLiteDatabase db = getWritableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // в курсоре единственная запись и луп излишен
@@ -182,22 +181,11 @@ public class ShiftsSQLHelper extends SQLHelper {
 
     public Shift getShiftByID(int shiftID) {
         Shift shift = null;
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
         SQLiteDatabase db = getWritableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // в курсоре единственная запись и луп излишен
-        if (cursor.moveToFirst()) {
-            do shift = loadShiftFromCursor(cursor);
-            while (cursor.moveToNext());
-        }
+        if (cursor.moveToFirst()) shift = loadShiftFromCursor(cursor);
         return shift;
-    }
-
-    public boolean isLastShiftClosed(){
-        Shift shift = getLastShift();
-        if (shift == null) return true;
-        return shift.endShift != null;
     }
 
     private Shift loadShiftFromCursor(Cursor cursor){

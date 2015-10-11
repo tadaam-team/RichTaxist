@@ -1,40 +1,46 @@
 package tt.richTaxist;
 
+import tt.richTaxist.DB.BillingsSQLHelper;
+
 /**
  * Created by Tau on 25.09.2015.
  */
 public class Billing {
-    int billingID;
-    String billingName;
-    float commission;
+    public int billingID;
+    public String billingName;
+    public float commission;
 
-    public Billing(int billingID, String billingName, float commission) {
-        this.billingID = billingID;
+    public Billing(String billingName, float commission) {
+        Billing lastBilling = BillingsSQLHelper.dbOpenHelper.getLastBilling();
+        if (lastBilling == null) billingID = 0;
+        else billingID = lastBilling.billingID + 1;
+
         this.billingName = billingName;
         this.commission = commission;
     }
 
-    public static int getNextBillingID(){
-        int id = 0;
-        if (MainActivity.billings != null) {
-            for (Billing billing : MainActivity.billings)
-                if (billing.billingID > id) id = billing.billingID;
-            id++;
-        }
-        return id;
+    public Billing(int billingID) {
+        this.billingID = billingID;
+        billingName = "";
+        commission = 0f;
     }
 
-    public static Billing getBillingByID(int ID){
-        Billing result = null;
-        if (MainActivity.billings != null)
-            for (Billing billing: MainActivity.billings)
-                if (billing.billingID == ID) result = billing;
-        return result;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Billing that = (Billing) o;
+        return billingID == that.billingID;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * billingID;
     }
 
     @Override
     public String toString() {
         return billingName;
-//        return String.format("ID: %d, имя: %s, taxoparkID, taxoparkName);
+//        return String.format("ID: %d, имя: %s, комиссия: %f", billingID, billingName, commission);
     }
 }

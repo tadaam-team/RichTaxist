@@ -9,14 +9,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 import tt.richTaxist.ChatClient.ChatLoginActivity;
-import tt.richTaxist.DB.OrdersStorage;
-import tt.richTaxist.DB.OrdersStorageList;
+import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 
 /**
@@ -28,12 +26,9 @@ public class MainActivity extends AppCompatActivity implements
         OrdersListFragment.OnOrderListFragmentInteractionListener {
     private static final String LOG_TAG = "MainActivity";
     public static Context context;
-    final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
     public static Shift currentShift;
-    final static OrdersStorageList ordersStorage = new OrdersStorageList();
-    //TODO: сохранять в SQL taxoparks и billings
-    final static ArrayList<Taxopark> taxoparks = new ArrayList<>();
-    final static ArrayList<Billing> billings = new ArrayList<>();
+    final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
+    final static ArrayList<Order> ordersStorage = new ArrayList<>();
 
     public static ArrayAdapter orderAdapterMA;
     public static FragmentManager fragmentManager;
@@ -41,28 +36,6 @@ public class MainActivity extends AppCompatActivity implements
     private OrdersListFragment fragment2;
     private ActivityState activityState;
 
-    static {
-        //TODO: при открытии загружать из SQL taxoparks и billings вместо инициализации показанной ниже
-        Taxopark taxopark;
-        int taxoparkID = Taxopark.getNextTaxoparkID();
-        taxopark = new Taxopark(taxoparkID, "- - -", false, 0);
-        taxoparks.add(taxopark);
-        taxopark = new Taxopark(++taxoparkID, "Таксовичков", true, 0);
-        taxoparks.add(taxopark);
-        taxopark = new Taxopark(++taxoparkID, "АС-такси", false, 0);
-        taxoparks.add(taxopark);
-        taxopark = new Taxopark(++taxoparkID, "068", false, 0);
-        taxoparks.add(taxopark);
-
-        Billing billing;
-        int billingID = Billing.getNextBillingID();
-        billing = new Billing(billingID, "50/50", 50.0f);
-        billings.add(billing);
-        billing = new Billing(++billingID, "70/30", 30.0f);
-        billings.add(billing);
-        billing = new Billing(++billingID, "80/20", 20.0f);
-        billings.add(billing);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void addOrder(Order order){
         ordersStorage.add(order);
+        OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
         if (orderAdapterMA != null) orderAdapterMA.notifyDataSetChanged();
         currentShift.calculateShiftTotals(0);
@@ -105,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void removeOrder(Order order){
         ordersStorage.remove(order);
+        OrdersSQLHelper.dbOpenHelper.remove(order);
     }
 
     public void switchToOrderFragment(){

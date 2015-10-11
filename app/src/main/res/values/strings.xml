@@ -8,9 +8,15 @@
     <string name="ordersList">Список заказов</string>
     <string name="shiftTotals">Итоги смены</string>
     <string name="routeMap">Карта маршрута</string>
-    <string name="noShiftsMSG">нет сохранённых смен</string>
-    <string name="noOrdersMSG">нет сохранённых заказов</string>
 
+    <string name="noShiftsMSG">сохранённых смен не найдено</string>
+    <string name="noOrdersMSG">нет сохранённых заказов</string>
+    <string name="noInternetMSG">проверьте интернет-подключение</string>
+    <string name="loginOrPasswordErrMSG">ошибка логина или пароля</string>
+    <string name="irregularErrMSG">необычная ошибка</string>
+    <string name="orderDeletedMSG">заказ удален</string>
+    <string name="orderSelectedMSG">выбран заказ для редактирования</string>
+    <string name="orderListSelectErrMSG">ошибка обработки жеста</string>
 
     <string name="ok">OK</string>
     <string name="cancel">Отмена</string>
@@ -24,6 +30,7 @@
     <string name="billings">Системы расчетов</string>
     <string name="billingName">название системы</string>
     <string name="commission">комиссия</string>
+    <string name="isInTheList">уже есть в списке</string>
 
     <string name="contribute">Сказать спасибо</string>
     <string name="exportShifts">Экспорт и импорт\nсмен</string>
@@ -41,6 +48,7 @@
     <string name="time">Время</string>
     <string name="costInputHint">цена</string>
     <string name="noteInputHint">заметка</string>
+    <string name="formClearedMSG">форма очищена</string>
 
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">нал</string>
@@ -129,6 +137,7 @@
     <string name="premiumUser">- премиум подписка подключена</string>
 
     <array name="months">
+        <item>- - -</item>
         <item>Январь</item>
         <item>Февраль</item>
         <item>Март</item>

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,20 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Calendar;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.Enums.TypeOfSpinner;
 
 public class OrdersListFragment extends ListFragment {
     private static final String LOG_TAG = "OrdersListFragment";
     private OnOrderListFragmentInteractionListener mListener;
-    private AppCompatActivity mActivity;
+    private static AppCompatActivity mActivity;
     public static ArrayAdapter orderAdapter;
     private SwipeDetector swipeDetector;
-    private Spinner spnTaxopark;
+    private static Spinner spnTaxopark;
     public static ArrayAdapter spnTaxoparkAdapter;
 
     public OrdersListFragment() {
@@ -45,6 +48,7 @@ public class OrdersListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainActivity.sortOrdersStorage();
         orderAdapter = new OrderAdapter(mActivity);
         MainActivity.orderAdapterMA = orderAdapter;
         setListAdapter(orderAdapter);
@@ -59,24 +63,9 @@ public class OrdersListFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.fragment_orders_list, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
-        MainActivity.sortOrdersStorage();
 
         spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
-        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.taxoparks);
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Storage.saveSpinner(0, spnTaxopark);
-                if (spnTaxopark.getSelectedItemId() == 0)
-                    MainActivity.ordersStorage.fillOrdersByShift(MainActivity.currentShift.shiftID);
-                else
-                    MainActivity.ordersStorage.fillOrdersByShiftAndTaxopark(MainActivity.currentShift.shiftID, Storage.taxoparkID);
-                orderAdapter.notifyDataSetChanged();
-            }
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        Storage.setPositionOfSpinner(0, spnTaxoparkAdapter, spnTaxopark);
+        createTaxoparkSpinner();
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);
         swipeDetector = new SwipeDetector();
@@ -85,10 +74,38 @@ public class OrdersListFragment extends ListFragment {
         return rootView;
     }
 
+    public static void createTaxoparkSpinner(){
+        ArrayList<Taxopark> list = new ArrayList<>();
+        list.add(0, new Taxopark("- - -", false, 0));
+        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, list);
+        spnTaxoparkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                if (spnTaxopark.getSelectedItemId() == 0) {
+                    MainActivity.ordersStorage.clear();
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                }
+                else {
+                    MainActivity.ordersStorage.clear();
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark
+                            (MainActivity.currentShift.shiftID, Storage.taxoparkID));
+                }
+                orderAdapter.notifyDataSetChanged();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Storage.saveSpinner(0, spnTaxopark);
+        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
     }
 
     @Override
@@ -101,7 +118,7 @@ public class OrdersListFragment extends ListFragment {
                 case LEFT_TO_RIGHT://удалить запись, которую смахнули вправо
                     ((OnOrderListFragmentInteractionListener) mActivity).removeOrder(selectedOrder);
                     orderAdapter.notifyDataSetChanged();
-                    Toast.makeText(mActivity, "заказ удален", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                     break;
 
                 case RIGHT_TO_LEFT://вывести в поля для редактирования и удалить из списка запись, которую смахнули влево
@@ -109,12 +126,12 @@ public class OrdersListFragment extends ListFragment {
                     ((OnOrderListFragmentInteractionListener) mActivity).removeOrder(selectedOrder);
                     //исправленная запись вернется в список по нажатию "ДОБАВИТЬ ЗАКАЗ"
                     orderAdapter.notifyDataSetChanged();
-                    Toast.makeText(mActivity, "выбран заказ для редактирования", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
                     ((OnOrderListFragmentInteractionListener) mActivity).switchToOrderFragment();
                     break;
 
                 default:
-                    Toast.makeText(mActivity, "ошибка обработки жеста", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.orderListSelectErrMSG, Toast.LENGTH_SHORT).show();
             }
         } else {
             //клик по записи выводит ее тост
@@ -135,6 +152,8 @@ public class OrdersListFragment extends ListFragment {
         public void switchToOrderFragment();
     }
 
+
+
     class OrderAdapter extends ArrayAdapter<Order> {
         private final Context context;
 
@@ -145,7 +164,6 @@ public class OrdersListFragment extends ListFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Log.d("-----", "OrderConvertView: " + String.valueOf(convertView));
             Order order = getItem(position);
 
             if (convertView == null) {

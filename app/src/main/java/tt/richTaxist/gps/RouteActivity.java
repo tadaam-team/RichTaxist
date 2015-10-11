@@ -5,13 +5,12 @@ import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import com.google.android.gms.maps.SupportMapFragment;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-import tt.richTaxist.DB.LocationsStorage;
+import tt.richTaxist.DB.LocationsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Shift;
@@ -42,7 +41,7 @@ public class RouteActivity extends FragmentActivity {
         final Calendar rangeEnd = Calendar.getInstance();
         if (currentShift.isClosed()) rangeEnd.setTime(currentShift.endShift);
 
-        ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByShift(currentShift));
+        ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByShift(currentShift));
         final TextView tvRangeStart = (TextView) findViewById(R.id.tvRangeStart);
         final TextView tvRangeEnd   = (TextView) findViewById(R.id.tvRangeEnd);
         tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
@@ -58,7 +57,7 @@ public class RouteActivity extends FragmentActivity {
                 rangeEnd.setTimeInMillis(maxValue);
                 tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
                 tvRangeEnd.setText(getStringDateTimeFromCal(rangeEnd));
-                ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
+                ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
             }
         });
 
@@ -90,7 +89,8 @@ public class RouteActivity extends FragmentActivity {
                     //Log.d(LOG_TAG,"Updating map");
                     try {
                         seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
-                        ((MapFragment) mapFragment).showPath(LocationsStorage.getLocationsByPeriod(rangeStart.getTime(), Calendar.getInstance().getTime()));
+                        ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod
+                                (rangeStart.getTime(), Calendar.getInstance().getTime()));
                     } catch (Exception e) {
                         e.printStackTrace();
                         updateTask.cancel(true);

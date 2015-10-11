@@ -20,15 +20,16 @@ import android.widget.Toast;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-
-import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.F_CustomDatePicker;
+import tt.richTaxist.DB.BillingsSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.Enums.TypeOfSpinner;
 
 public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, F_CustomDatePicker.OnFragmentInteractionListener{
-    String LOG_TAG = "OrderFragment";
+    private static final String LOG_TAG = "OrderFragment";
     private OnOrderFragmentInteractionListener mListener;
     View rootView;
     DatePickerDialog.OnDateSetListener dateSetListener;
@@ -105,7 +106,7 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
 //            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //            F_CustomDatePicker myFragment = new F_CustomDatePicker();
 //            fragmentTransaction.add(R.id.datePickerPlaceHolder, myFragment);
-//            fragmentTransaction.commit();
+//            fragmentTransaction.create();
 //        }
 
         timeButton.setText(getStringTimeFromCal(arrivalDateTime));
@@ -134,7 +135,9 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                Toast.makeText(mActivity, "форма очищена", Toast.LENGTH_SHORT).show();
+                Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+                Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
+                Toast.makeText(mActivity, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -152,30 +155,29 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
         });
         createTaxoparkSpinner();
 
-        spnBillingAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, MainActivity.billings);
+        spnBillingAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item,
+                BillingsSQLHelper.dbOpenHelper.getAllBillings());
+        spnBillingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnBilling.setAdapter(spnBillingAdapter);
-        Storage.taxoparkID = 0;
-        Storage.setPositionOfSpinner(1, spnBillingAdapter, spnBilling);
+        Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Storage.billingID);
 
         return rootView;
     }
 
     public static void createTaxoparkSpinner(){
-        ArrayList<Taxopark> taxoparksWithoutClear = new ArrayList<>();
-        taxoparksWithoutClear.addAll(MainActivity.taxoparks);
-        taxoparksWithoutClear.remove(0);
-        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, taxoparksWithoutClear);
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item,
+                TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        spnTaxoparkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        Storage.taxoparkID = 0;
-        Storage.setPositionOfSpinner(0, spnTaxoparkAdapter, spnTaxopark);
+        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-        Storage.saveSpinner(0, spnTaxopark);
-        Storage.saveSpinner(1, spnBilling);
+        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        Storage.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
     }
 
     private TypeOfPayment getRadioState(){
@@ -199,19 +201,13 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
                 default:    typeOfPaymentUI.clearCheck();
             }
             etNote.setText(receivedOrder.note);
-            Storage.taxoparkID = receivedOrder.taxoparkID;
-            Storage.billingID  = receivedOrder.billingID;
-            Storage.setPositionOfSpinner(0, spnTaxoparkAdapter, spnTaxopark);
-            Storage.setPositionOfSpinner(1, spnBillingAdapter, spnBilling);
+            Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
+            Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
         } else{
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
             typeOfPaymentUI.check(R.id.choiceCash);
             etNote.setText("");
-            Storage.taxoparkID = 1;
-            Storage.billingID  = 0;
-            Storage.setPositionOfSpinner(0, spnTaxoparkAdapter, spnTaxopark);
-            Storage.setPositionOfSpinner(1, spnBillingAdapter, spnBilling);
         }
         dateButton.setText(getStringDateFromCal(arrivalDateTime));
         timeButton.setText(getStringTimeFromCal(arrivalDateTime));
@@ -249,8 +245,8 @@ public class OrderFragment extends Fragment implements DatePickerDialog.OnDateSe
             note = "";
         }
 
-        Storage.saveSpinner(0, spnTaxopark);
-        Storage.saveSpinner(1, spnBilling);
+        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        Storage.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
 
         Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
                 distance, travelTime, Storage.taxoparkID, Storage.billingID);

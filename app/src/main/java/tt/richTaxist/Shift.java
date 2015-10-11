@@ -1,11 +1,12 @@
 package tt.richTaxist;
 
 import android.util.Log;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import tt.richTaxist.DB.OrdersStorage;
-import tt.richTaxist.DB.ShiftsStorage;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
@@ -25,18 +26,21 @@ public class Shift {
     private static final String LOG_TAG = "ShiftClass";
 
     public Shift() {
-        Shift lastShift = ShiftsStorage.getLastShift();
-        if (lastShift == null) shiftID = 1;
+        Shift lastShift = ShiftsSQLHelper.dbOpenHelper.getLastShift();
+        if (lastShift == null) shiftID = 0;
         else shiftID = lastShift.shiftID + 1;
 
         beginShift = new Date();
         petrolFilledByHands = false;
         Log.d(LOG_TAG, "new shift created. ID: " + String.valueOf(shiftID));
-        ShiftsStorage.commit(this);
+        ShiftsSQLHelper.dbOpenHelper.create(this);
     }
 
     public Shift(int shiftID) {
+        //если передаем в конструктор ID значит в SQL добавлять запись не нужно
         this.shiftID = shiftID;
+        beginShift = new Date();
+        petrolFilledByHands = false;
     }
 
     @Override
@@ -52,22 +56,23 @@ public class Shift {
     public void closeShift() {
         this.endShift = new Date();
         //в этой точке бензин уже введен и итоги уже рассчитаны
-        ShiftsStorage.update(this);
+        ShiftsSQLHelper.dbOpenHelper.update(this);
     }
 
     public void openShift() {
         this.endShift = null;
-        ShiftsStorage.update(this);
+        ShiftsSQLHelper.dbOpenHelper.update(this);
     }
     public boolean isClosed(){
         return this.endShift != null;
     }
     public boolean hasOrders(){
-        return OrdersStorage.hasShiftOrders(this);
+        ArrayList<Order> ordersList = OrdersSQLHelper.dbOpenHelper.getOrdersByShift(this.shiftID);
+        return !ordersList.isEmpty();
     }
 
     public void calculateShiftTotals(int petrol){
-        Map<TypeOfPayment,Integer> pricesOfOrders = OrdersStorage.getSumOrdersByShift(this);
+        Map<TypeOfPayment,Integer> pricesOfOrders = OrdersSQLHelper.dbOpenHelper.getSumOrdersByShift(this);
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
 
         for (Map.Entry<TypeOfPayment,Integer> priceOfOrder : pricesOfOrders.entrySet()){
@@ -81,7 +86,7 @@ public class Shift {
 
         if (petrol == 0) {//значит факт бензин еще не известен или уже заполнен
             if (!petrolFilledByHands) this.petrol = (int) (revenueOfficial * 0.13);
-            else {/*иначе мы не трогаем введенный руками бензин*/}
+            /*иначе мы не трогаем введенный руками бензин*/
         }
         else{//нажата кнопка _st_petrol после ввода факт. бензина
             this.petrol = petrol;
@@ -95,6 +100,6 @@ public class Shift {
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
         workHoursSpent = Storage.RoundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryPlusBonus / workHoursSpent);
-        ShiftsStorage.update(this);
+        ShiftsSQLHelper.dbOpenHelper.update(this);
     }
 }
