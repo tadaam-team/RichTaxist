@@ -6,29 +6,37 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import tt.richTaxist.Bricks.DF_NumberInput;
 import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.Enums.TypeOfSpinner;
 
 /**
  * Created by Tau on 27.06.2015.
  */
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.EditNameDialogListener {
+    private static final String LOG_TAG = "ShiftTotalsActivity";
     private static Context context;
-    private Shift currentShift;
+    private static Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private Calendar shiftStart, shiftEnd;
@@ -38,6 +46,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, buttonContinueShift;
     private EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryPlusBonus, st_workHoursSpent, st_salaryPerHour;
     private ToggleButton buttonShiftIsClosed;
+    private static Spinner spnTaxopark;
+    public static ArrayAdapter spnTaxoparkAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +60,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         timeSetListener = ShiftTotalsActivity.this;
 
         currentShift = MainActivity.currentShift;
-        currentShift.calculateShiftTotals(0);
+        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
 
         //найдем даты начала и конца смены
         shiftStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
@@ -188,7 +198,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.MONTH, source.get(Calendar.MONTH));
         buffer.set(Calendar.DAY_OF_MONTH, source.get(Calendar.DAY_OF_MONTH));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0);
+        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
         refreshWidgets();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -199,7 +209,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
         buffer.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0);
+        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
         refreshWidgets();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -245,7 +255,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     public void onFinishEditDialog(int inputNumber) {
         currentShift.petrol = inputNumber;
         currentShift.petrolFilledByHands = true;
-        currentShift.calculateShiftTotals(inputNumber);
+        currentShift.calculateShiftTotals(inputNumber, Storage.taxoparkID);
         refreshWidgets();
     }
 
@@ -266,6 +276,28 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         st_salaryPerHour        = (EditText) findViewById(R.id.st_salaryPerHour);
         buttonShiftIsClosed     = (ToggleButton) findViewById(R.id.buttonShiftIsClosed);
         buttonContinueShift     = (Button)   findViewById(R.id.buttonContinueShift);
+        spnTaxopark             = (Spinner)  findViewById(R.id.spnTaxopark);
+        createTaxoparkSpinner();
+    }
+
+    public void createTaxoparkSpinner(){
+        ArrayList<Taxopark> list = new ArrayList<>();
+        list.add(0, new Taxopark(0, "- - -", false, 0));
+        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        //создать list_entry_spinner.xml пришлось, т.к. текст этого спиннера отображался белым и не был виден
+        spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner, list);
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                currentShift.calculateShiftTotals(0, Storage.taxoparkID);
+                refreshWidgets();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     private void refreshWidgets(){

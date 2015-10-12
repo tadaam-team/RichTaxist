@@ -71,15 +71,20 @@ public class Shift {
         return !ordersList.isEmpty();
     }
 
-    public void calculateShiftTotals(int petrol){
-        Map<TypeOfPayment,Integer> pricesOfOrders = OrdersSQLHelper.dbOpenHelper.getSumOrdersByShift(this);
+    public void calculateShiftTotals(int petrol, int taxoparkID){
+        ArrayList<Order> orders;
+        if (taxoparkID != 0)
+            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(this.shiftID, taxoparkID);
+        else
+            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShift(this.shiftID);
+
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
 
-        for (Map.Entry<TypeOfPayment,Integer> priceOfOrder : pricesOfOrders.entrySet()){
-            switch (priceOfOrder.getKey()){
-                case CASH: revenueCash = priceOfOrder.getValue(); break;
-                case CARD: revenueCard = priceOfOrder.getValue(); break;
-                case TIP: revenueBonus = priceOfOrder.getValue(); break;
+        for (Order order : orders){
+            switch (order.typeOfPayment){
+                case CASH: revenueCash = order.price; break;
+                case CARD: revenueCard = order.price; break;
+                case TIP: revenueBonus = order.price; break;
             }
         }
         revenueOfficial = revenueCash + revenueCard;

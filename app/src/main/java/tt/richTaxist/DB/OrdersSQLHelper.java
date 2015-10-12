@@ -8,9 +8,6 @@ import android.util.Log;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
@@ -114,26 +111,6 @@ public class OrdersSQLHelper extends SQLHelper {
             while (cursor.moveToNext());
         }
         return ordersList;
-    }
-
-    public Map<TypeOfPayment,Integer> getSumOrdersByShift(Shift shift) {
-        Map<TypeOfPayment,Integer> result = new HashMap<>();
-        String selectQuery = "SELECT typeOfPayment, SUM(price) FROM " + TABLE_NAME +
-                " WHERE " + SHIFT_ID + "='" + String.valueOf(shift.shiftID) + "' GROUP BY typeOfPayment";
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        Log.d(LOG_TAG, "cursor.getColumnCount(): " + String.valueOf(cursor.getColumnCount()));
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do {
-                TypeOfPayment typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
-                int revenueOfSuchType = cursor.getInt(1);
-                result.put(typeOfPayment, revenueOfSuchType);
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return result;
     }
 
 //    public Map<String,Object> getDistanceAndTimeByShift(Shift shift) {

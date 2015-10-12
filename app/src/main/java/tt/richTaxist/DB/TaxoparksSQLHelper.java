@@ -99,7 +99,7 @@ public class TaxoparksSQLHelper extends SQLHelper {
 
     private Taxopark loadTaxoparkFromCursor(Cursor cursor){
         int taxoparkID          = cursor.getInt(cursor.getColumnIndex(TAXOPARK_ID));
-        Taxopark taxopark       = new Taxopark(taxoparkID);
+        Taxopark taxopark       = new Taxopark(taxoparkID, "", false, 0);
         taxopark.taxoparkName   = cursor.getString(cursor.getColumnIndex(TAXOPARK_NAME));
         taxopark.isDefault      = cursor.getInt(cursor.getColumnIndex(IS_DEFAULT)) == 1;
         taxopark.defaultBilling = cursor.getInt(cursor.getColumnIndex(DEFAULT_BILLING));

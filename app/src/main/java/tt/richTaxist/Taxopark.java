@@ -1,6 +1,5 @@
 package tt.richTaxist;
 
-
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 
 /**
@@ -13,20 +12,24 @@ public class Taxopark {
     public int defaultBilling;
 
     public Taxopark(String taxoparkName, boolean isDefault, int defaultBilling) {
-        Taxopark lastTaxopark = TaxoparksSQLHelper.dbOpenHelper.getLastTaxopark();
-        if (lastTaxopark == null) taxoparkID = 0;
-        else taxoparkID = lastTaxopark.taxoparkID + 1;
-        
+        this.taxoparkID     = getNextID();
         this.taxoparkName   = taxoparkName;
         this.isDefault      = isDefault;
         this.defaultBilling = defaultBilling;
     }
 
-    public Taxopark(int taxoparkID) {
-        this.taxoparkID = taxoparkID;
-        taxoparkName = "";
-        isDefault = false;
-        defaultBilling = 0;
+    public Taxopark(int taxoparkID, String taxoparkName, boolean isDefault, int defaultBilling) {
+        Taxopark taxopark   = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(taxoparkID);
+        this.taxoparkID     = (taxopark == null) ? taxoparkID : getNextID();
+        this.taxoparkName   = taxoparkName;
+        this.isDefault      = isDefault;
+        this.defaultBilling = defaultBilling;
+    }
+
+    private int getNextID() {
+        Taxopark lastTaxopark = TaxoparksSQLHelper.dbOpenHelper.getLastTaxopark();
+        return (lastTaxopark == null) ? 1 : lastTaxopark.taxoparkID + 1;
+        //младший id = 1 гарантирует свободность 0-индекса для списков с "- - -"
     }
 
     @Override

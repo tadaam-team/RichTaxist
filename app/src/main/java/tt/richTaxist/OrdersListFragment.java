@@ -76,7 +76,7 @@ public class OrdersListFragment extends ListFragment {
 
     public static void createTaxoparkSpinner(){
         ArrayList<Taxopark> list = new ArrayList<>();
-        list.add(0, new Taxopark("- - -", false, 0));
+        list.add(0, new Taxopark(0, "- - -", false, 0));
         list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
         spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, list);
         spnTaxoparkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

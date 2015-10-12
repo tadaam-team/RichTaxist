@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements
         OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
         if (orderAdapterMA != null) orderAdapterMA.notifyDataSetChanged();
-        currentShift.calculateShiftTotals(0);
+        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
         Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
     }
 

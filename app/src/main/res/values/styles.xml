@@ -26,5 +26,6 @@
 
     <style name="Text" parent="android:style/Widget.TextView">
         <item name="android:layout_margin">2dp</item>
+        <item name="android:textSize">20dp</item>
     </style>
 </resources>
