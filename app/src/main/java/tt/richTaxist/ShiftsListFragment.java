@@ -1,7 +1,8 @@
 package tt.richTaxist;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,39 +21,33 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
+import tt.richTaxist.Bricks.DateTimeRangeFragment;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfSpinner;
 import android.widget.LinearLayout.LayoutParams;
 
-public class ShiftsListFragment extends ListFragment {
+public class ShiftsListFragment extends ListFragment implements DateTimeRangeFragment.OnDateTimeRangeFragmentInteractionListener {
     private static final String LOG_TAG = "ShiftsListFragment";
     private static AppCompatActivity mActivity;
     public static ArrayAdapter shiftAdapter;
     private SwipeDetector swipeDetector;
-    private static Spinner spnMonth, spnTaxopark;
+    private static Spinner spnTaxopark;
     public static ArrayAdapter spnTaxoparkAdapter;
+    private DateTimeRangeFragment dateTimeRangeFragment;
 
     public ShiftsListFragment() {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = (AppCompatActivity) activity;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActivity = (AppCompatActivity) getActivity();
         shiftAdapter = new ShiftAdapter(mActivity);
         FirstScreenActivity.shiftAdapterMA = shiftAdapter;
         setListAdapter(shiftAdapter);
-        setRetainInstance(true);
-        //onDestroy() will not be called (but onDetach() still will be, because the fragment is being detached from its current activity).
-        //onCreate(Bundle) will not be called since the fragment is not being re-created.
-        //onAttach(Activity) and onActivityCreated(Bundle) will still be called.
     }
 
     @Override
@@ -62,20 +57,34 @@ public class ShiftsListFragment extends ListFragment {
         rootView.setLayoutParams(layoutParams);
         MainActivity.sortShiftsStorage();
 
-        spnMonth    = (Spinner) rootView.findViewById(R.id.spnMonth);
         spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
-
-        ArrayAdapter<?> spnMonthAdapter = ArrayAdapter.createFromResource(mActivity, R.array.months, android.R.layout.simple_spinner_item);
-        spnMonthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnMonth.setAdapter(spnMonthAdapter);
-        Storage.setPositionOfSpinner(TypeOfSpinner.MONTH, spnMonthAdapter, spnMonth, 0);
-
         createTaxoparkSpinner();
 
         ListView mListView = (ListView) rootView.findViewById(android.R.id.list);
         swipeDetector = new SwipeDetector();
         mListView.setOnTouchListener(swipeDetector);
 
+        FragmentManager fragmentManager = getChildFragmentManager();//getFragmentManager()????
+        if (((FirstScreenActivity) mActivity).activityState == ActivityState.PORT_2 ||
+                ((FirstScreenActivity) mActivity).activityState == ActivityState.LAND_2) {
+            //применяется только когда лист единственный на экране
+            dateTimeRangeFragment = (DateTimeRangeFragment) fragmentManager.findFragmentByTag("dateTimeRangeFragment");
+            if (dateTimeRangeFragment == null) {
+                dateTimeRangeFragment = new DateTimeRangeFragment();
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.add(R.id.container_shift_list, dateTimeRangeFragment, "dateTimeRangeFragment");
+                ft.commit();
+            }
+        }
+        else {
+            //когда лист НЕ единственный на экране, фрагмент следует убрать
+            dateTimeRangeFragment = (DateTimeRangeFragment) fragmentManager.findFragmentByTag("dateTimeRangeFragment");
+            if (dateTimeRangeFragment != null) {
+                FragmentTransaction ft = fragmentManager.beginTransaction();
+                ft.remove(dateTimeRangeFragment);
+                ft.commit();
+            }
+        }
         return rootView;
     }
 
@@ -89,18 +98,16 @@ public class ShiftsListFragment extends ListFragment {
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-                if (MainActivity.currentShift != null) {
-                    if (spnTaxopark.getSelectedItemId() == 0) {
-                        MainActivity.ordersStorage.clear();
-                        MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
-                    } else {
-                        MainActivity.ordersStorage.clear();
-                        MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark
-                                (MainActivity.currentShift.shiftID, Storage.taxoparkID));
-
-                    }
-                    shiftAdapter.notifyDataSetChanged();
-                }
+//                if (MainActivity.currentShift != null) {
+//                    if (spnTaxopark.getSelectedItemId() == 0) {
+//                        MainActivity.shiftsStorage.clear();
+//                        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
+//                    } else {
+//                        MainActivity.shiftsStorage.clear();
+//                        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsByTaxopark(Storage.taxoparkID));
+//                    }
+//                    shiftAdapter.notifyDataSetChanged();
+//                }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
@@ -110,9 +117,20 @@ public class ShiftsListFragment extends ListFragment {
     }
 
     @Override
+    public void calculate(Calendar rangeStart, Calendar rangeEnd) {
+        MainActivity.shiftsStorage.clear();
+        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(rangeStart, rangeEnd, Storage.youngIsOnTop));
+    }
+
+    @Override
+    public void refreshControls() {
+        shiftAdapter.notifyDataSetChanged();
+    }
+
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Storage.saveSpinner(TypeOfSpinner.MONTH, spnMonth);
         Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
     }
 
@@ -169,7 +187,6 @@ public class ShiftsListFragment extends ListFragment {
 
     private void deleteShift(Shift shift){
         ShiftsSQLHelper.dbOpenHelper.remove(shift);
-        OrdersSQLHelper.dbOpenHelper.deleteOrdersByShift(shift);
         MainActivity.shiftsStorage.remove(shift);
         shiftAdapter.notifyDataSetChanged();
         Toast.makeText(mActivity, "смена удалена", Toast.LENGTH_SHORT).show();

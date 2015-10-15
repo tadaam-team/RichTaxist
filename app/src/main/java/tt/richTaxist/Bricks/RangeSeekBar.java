@@ -1,4 +1,4 @@
-package tt.richTaxist.gps;
+package tt.richTaxist.Bricks;
 import java.math.BigDecimal;
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String LOG_TAG = "MainActivity";
     public static Context context;
     public static Shift currentShift;
-    final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
-    final static ArrayList<Order> ordersStorage = new ArrayList<>();
+    public final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
+    public final static ArrayList<Order> ordersStorage = new ArrayList<>();
 
     public static ArrayAdapter orderAdapterMA;
     public static FragmentManager fragmentManager;
@@ -48,20 +48,16 @@ public class MainActivity extends AppCompatActivity implements
         //фрагментная логика
         fragmentManager = getSupportFragmentManager();
         if (savedInstanceState != null) {
-            int activityStateID = savedInstanceState.getInt("activityState", ActivityState.LAND_2_1.id);
+            int activityStateID = savedInstanceState.getInt("activityState");
             activityState = ActivityState.getById(activityStateID);
-            fragment1 = (OrderFragment) fragmentManager.findFragmentByTag("fragment1");
-            fragment2 = (OrdersListFragment) fragmentManager.findFragmentByTag("fragment2");
         }
-        else {
-            fragment2 = new OrdersListFragment();
-            fragment1 = new OrderFragment();
-            FragmentTransaction transactionInitial = fragmentManager.beginTransaction();
-            transactionInitial.add(R.id.container_main, fragment2, "fragment2");
-            transactionInitial.add(R.id.container_main, fragment1, "fragment1");
-            transactionInitial.commit();
-        }
-        activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+
+        fragment1 = (OrderFragment) fragmentManager.findFragmentByTag("fragment1");
+        if (fragment1 == null) fragment1 = new OrderFragment();
+        fragment2 = (OrdersListFragment) fragmentManager.findFragmentByTag("fragment2");
+        if (fragment2 == null) fragment2 = new OrdersListFragment();
+
+        activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
     }
 
     public void addOrder(Order order){
@@ -86,11 +82,11 @@ public class MainActivity extends AppCompatActivity implements
         switch (activityState){
             case LAND_2:
                 activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
                 break;
             case PORT_2:
                 activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
                 break;
             //также возможной точкой вызова этого метода является LAND_2_1, но в этом случае никаких операций по смене фрагментов не нужно
         }
@@ -150,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
                 else {
                     if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
                     else activityState = ActivityState.PORT_2;
-                    activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                    activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
                 }
                 return true;
 
@@ -189,11 +185,11 @@ public class MainActivity extends AppCompatActivity implements
         switch (activityState){
             case LAND_2:
                 activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
                 break;
             case PORT_2:
                 activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
                 break;
             default:
                 startActivity(new Intent(context, FirstScreenActivity.class));

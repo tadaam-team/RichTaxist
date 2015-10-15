@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:text="@string/rangeStart"
+            style="@style/Text"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:gravity="start"/>
+        <TextView
+            android:text="@string/rangeEnd"
+            style="@style/Text"
+            android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+            android:gravity="end"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:text="@string/date"
+            style="@style/ButtonBordered"
+            android:id="@+id/buttonRangeStartDate"
+            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1"/>
+        <Button
+            android:text="@string/time"
+            style="@style/ButtonBordered"
+            android:id="@+id/buttonRangeStartTime"
+            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1"/>
+        <Button
+            android:text="@string/date"
+            style="@style/ButtonBordered"
+            android:id="@+id/buttonRangeEndDate"
+            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1"/>
+        <Button
+            android:text="@string/time"
+            style="@style/ButtonBordered"
+            android:id="@+id/buttonRangeEndTime"
+            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/seekBarPlaceHolder"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:minHeight="20dp">
+
+    </LinearLayout>
+</LinearLayout>

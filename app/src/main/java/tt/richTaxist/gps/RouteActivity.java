@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.SupportMapFragment;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
+import tt.richTaxist.Bricks.RangeSeekBar;
 import tt.richTaxist.DB.LocationsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;

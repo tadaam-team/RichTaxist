@@ -19,8 +19,7 @@ public class Taxopark {
     }
 
     public Taxopark(int taxoparkID, String taxoparkName, boolean isDefault, int defaultBilling) {
-        Taxopark taxopark   = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(taxoparkID);
-        this.taxoparkID     = (taxopark == null) ? taxoparkID : getNextID();
+        this.taxoparkID     = taxoparkID;
         this.taxoparkName   = taxoparkName;
         this.isDefault      = isDefault;
         this.defaultBilling = defaultBilling;

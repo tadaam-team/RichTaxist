@@ -1,7 +1,7 @@
 package tt.richTaxist;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,28 +12,18 @@ import android.widget.LinearLayout.LayoutParams;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
     String LOG_TAG = "FirstScreenFragment";
-    private OnFirstScreenFragmentInteractionListener mListener;
     private View rootView;
 
     public FirstScreenFragment() {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try { mListener = (OnFirstScreenFragmentInteractionListener) activity;
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try { OnFirstScreenFragmentInteractionListener mListener = (OnFirstScreenFragmentInteractionListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnFirstScreenFragmentInteractionListener");
+            throw new ClassCastException(context.toString() + " must implement OnFirstScreenFragmentInteractionListener");
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-        //onDestroy() will not be called (but onDetach() still will be, because the fragment is being detached from its current activity).
-        //onCreate(Bundle) will not be called since the fragment is not being re-created.
-        //onAttach(Activity) and onActivityCreated(Bundle) will still be called.
     }
 
     @Override
@@ -61,12 +51,6 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
     @Override
     public void onClick(View v) {
         ((OnFirstScreenFragmentInteractionListener) getActivity()).onButtonSelected(v.getId());
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     public interface OnFirstScreenFragmentInteractionListener {

@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import tt.richTaxist.MainActivity;
@@ -107,21 +108,14 @@ public class ShiftsSQLHelper extends SQLHelper {
         return result != -1;
     }
 
-    public int remove(Shift shift){
-        SQLiteDatabase db = getWritableDatabase();
-        int result = db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
-        db.close();
-        return result;
-    }
-
-    public ArrayList<Shift> getShiftsInRange(Date fromDate, Date toDate, boolean youngIsOnTop) {
+    public ArrayList<Shift> getShiftsInRange(Calendar fromDate, Calendar toDate, boolean youngIsOnTop) {
         ArrayList<Shift> shiftsStorage = new ArrayList<>();
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
         SQLiteDatabase db = getWritableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + BEGIN_SHIFT + ">='" + dateFormat.format(fromDate) + "' AND "
-                + BEGIN_SHIFT + "<='" + dateFormat.format(toDate)
+                + BEGIN_SHIFT + ">='" + dateFormat.format(fromDate.getTime()) + "' AND "
+                + BEGIN_SHIFT + "<='" + dateFormat.format(toDate.getTime())
                 + "' ORDER BY " + BEGIN_SHIFT + " " + sortMethod;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -220,5 +214,13 @@ public class ShiftsSQLHelper extends SQLHelper {
         shift.travelTime            = cursor.getInt(cursor.getColumnIndex(TRAVEL_TIME));
 
         return shift;
+    }
+
+    public int remove(Shift shift){
+        SQLiteDatabase db = getWritableDatabase();
+        int result = db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        db.close();
+        OrdersSQLHelper.dbOpenHelper.deleteOrdersByShift(shift);
+        return result;
     }
 }

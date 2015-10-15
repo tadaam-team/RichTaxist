@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -37,7 +36,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     private FragmentManager fragmentManager;
     private FirstScreenFragment fragment1;
     private ShiftsListFragment fragment2;
-    private ActivityState activityState;
+    public ActivityState activityState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,22 +77,17 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
         //фрагментная логика
         fragmentManager = getSupportFragmentManager();
-        if (savedInstanceState == null) {
-            fragment2 = new ShiftsListFragment();
-            fragment1 = new FirstScreenFragment();
-            FragmentTransaction transactionInitial = fragmentManager.beginTransaction();
-            transactionInitial.add(R.id.container_first_screen, fragment2, "fragment2");
-            transactionInitial.add(R.id.container_first_screen, fragment1, "fragment1");
-            transactionInitial.commit();
-//            fragmentManager.executePendingTransactions();
-        }
-        else {
-            int activityStateID = savedInstanceState.getInt("activityState", ActivityState.LAND_2_1.id);
+        if (savedInstanceState != null) {
+            int activityStateID = savedInstanceState.getInt("activityState");
             activityState = ActivityState.getById(activityStateID);
-            fragment1 = (FirstScreenFragment) fragmentManager.findFragmentByTag("fragment1");
-            fragment2 = (ShiftsListFragment) fragmentManager.findFragmentByTag("fragment2");
         }
-        activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+
+        fragment1 = (FirstScreenFragment) fragmentManager.findFragmentByTag("fragment1");
+        if (fragment1 == null) fragment1 = new FirstScreenFragment();
+        fragment2 = (ShiftsListFragment) fragmentManager.findFragmentByTag("fragment2");
+        if (fragment2 == null) fragment2 = new ShiftsListFragment();
+
+        activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
     }
 
 
@@ -127,7 +121,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 if (MainActivity.currentShift != null){
                     if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
                     else activityState = ActivityState.PORT_2;
-                    activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                    activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
                 }
                 else
                     Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
@@ -304,11 +298,11 @@ public class FirstScreenActivity extends AppCompatActivity implements
         switch (activityState){
             case LAND_2:
                 activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
                 break;
             case PORT_2:
                 activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, fragment1, fragment2);
+                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
                 break;
             default:
                 Storage.openQuitDialog(this);

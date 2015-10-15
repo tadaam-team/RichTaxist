@@ -160,7 +160,11 @@ public class Storage {
     }
 
     public static ActivityState manageFragments(FragmentManager fragmentManager, ActivityState activityState,
-                                                Fragment fragment1, Fragment fragment2){
+                                                int containerId, Fragment fragment1, Fragment fragment2){
+        if (fragment1 == null || fragment2 == null) {
+            throw new NullPointerException("you shall not pass null fragments to manageFragments method");
+        }
+
         if (Storage.deviceIsInLandscape) {
             if (activityState == null) activityState = ActivityState.LAND_2_1;//точка входа ландшафт
             else if (activityState == ActivityState.PORT_1) activityState = ActivityState.LAND_2_1;
@@ -174,19 +178,21 @@ public class Storage {
 
         //очистим экран
         transaction = fragmentManager.beginTransaction();
-        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                .hide(fragment1)
-                .hide(fragment2)
-                .commit();
+//        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);//нельзя!!
+        if (fragment1.isAdded()) transaction.remove(fragment1);
+        if (fragment2.isAdded()) transaction.remove(fragment2);
+        transaction.commit();
+        fragmentManager.executePendingTransactions();
 
         Log.d(LOG_TAG, "activityState: " + String.valueOf(activityState));
         switch (activityState){
             case LAND_2_1:
                 transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .show(fragment2)
-                        .show(fragment1)
-                        .commit();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+                transaction.add(containerId, fragment2, "fragment2");
+                transaction.add(containerId, fragment1, "fragment1");
+                transaction.commit();
+
                 if (Storage.showListHint) {
                     Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
                     listHint.setGravity(Gravity.TOP, 0, 0);
@@ -196,23 +202,24 @@ public class Storage {
 
             case LAND_2:
                 transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .show(fragment2)
-                        .commit();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+                transaction.add(containerId, fragment2, "fragment2");
+                transaction.commit();
                 break;
 
             case PORT_1:
                 transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .show(fragment1)
-                        .commit();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+                transaction.add(containerId, fragment1, "fragment1");
+                transaction.commit();
                 break;
 
             case PORT_2:
                 transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .show(fragment2)
-                        .commit();
+                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
+                transaction.add(containerId, fragment2, "fragment2");
+                transaction.commit();
+
                 if (Storage.showListHint) {
                     Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
                     listHint.setGravity(Gravity.TOP, 0, 0);
