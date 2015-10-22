@@ -8,31 +8,32 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import tt.richTaxist.MainActivity;
+import tt.richTaxist.Order;
 import tt.richTaxist.Shift;
 
 /**
  * Created by AlexShredder on 29.06.2015.
  */
 public class ShiftsSQLHelper extends SQLHelper {
-    static final String TABLE_NAME               = "shifts";
-    static final String SHIFT_ID                 = "shiftID";
-    static final String BEGIN_SHIFT              = "beginShift";
-    static final String END_SHIFT                = "endShift";
-    static final String REVENUE_OFFICIAL         = "revenueOfficial";
-    static final String REVENUE_CASH             = "revenueCash";
-    static final String REVENUE_CARD             = "revenueCard";
-    static final String PETROL                   = "petrol";
-    static final String PETROL_FILLED_BY_HANDS   = "petrolFilledByHands";
-    static final String TO_THE_CASHIER           = "toTheCashier";
-    static final String SALARY_OFFICIAL          = "salaryOfficial";
-    static final String REVENUE_BONUS            = "revenueBonus";
-    static final String SALARY_PLUS_BONUS        = "salaryPlusBonus";
-    static final String WORK_HOURS_SPENT         = "workHoursSpent";
-    static final String SALARY_PER_HOUR          = "salaryPerHour";
-    static final String DISTANCE                 = "distance";
-    static final String TRAVEL_TIME              = "travelTime";
+    static final String TABLE_NAME              = "shifts";
+    static final String SHIFT_ID                = "shiftID";
+    static final String BEGIN_SHIFT             = "beginShift";
+    static final String END_SHIFT               = "endShift";
+    static final String REVENUE_OFFICIAL        = "revenueOfficial";
+    static final String REVENUE_CASH            = "revenueCash";
+    static final String REVENUE_CARD            = "revenueCard";
+    static final String PETROL                  = "petrol";
+    static final String PETROL_FILLED_BY_HANDS  = "petrolFilledByHands";
+    static final String TO_THE_CASHIER          = "toTheCashier";
+    static final String SALARY_OFFICIAL         = "salaryOfficial";
+    static final String REVENUE_BONUS           = "revenueBonus";
+    static final String CAR_RENT                = "carRent";
+    static final String SALARY_UNOFFICIAL       = "salaryUnofficial";
+    static final String WORK_HOURS_SPENT        = "workHoursSpent";
+    static final String SALARY_PER_HOUR         = "salaryPerHour";
+    static final String DISTANCE                = "distance";
+    static final String TRAVEL_TIME             = "travelTime";
 
     public static ShiftsSQLHelper dbOpenHelper = new ShiftsSQLHelper(MainActivity.context);
 
@@ -48,7 +49,8 @@ public class ShiftsSQLHelper extends SQLHelper {
             + TO_THE_CASHIER            + " INT,"
             + SALARY_OFFICIAL           + " INT,"
             + REVENUE_BONUS             + " INT,"
-            + SALARY_PLUS_BONUS         + " INT,"
+            + CAR_RENT                  + " INT,"
+            + SALARY_UNOFFICIAL         + " INT,"
             + WORK_HOURS_SPENT          + " REAL,"
             + SALARY_PER_HOUR           + " INT,"
             + DISTANCE                  + " INT,"
@@ -74,7 +76,8 @@ public class ShiftsSQLHelper extends SQLHelper {
         cv.put(TO_THE_CASHIER,          shift.toTheCashier);
         cv.put(SALARY_OFFICIAL,         shift.salaryOfficial);
         cv.put(REVENUE_BONUS,           shift.revenueBonus);
-        cv.put(SALARY_PLUS_BONUS,       shift.salaryPlusBonus);
+        cv.put(CAR_RENT,                shift.carRent);
+        cv.put(SALARY_UNOFFICIAL,       shift.salaryUnofficial);
         cv.put(WORK_HOURS_SPENT,        shift.workHoursSpent);
         cv.put(SALARY_PER_HOUR,         shift.salaryPerHour);
 
@@ -99,7 +102,8 @@ public class ShiftsSQLHelper extends SQLHelper {
         cv.put(TO_THE_CASHIER,          shift.toTheCashier);
         cv.put(SALARY_OFFICIAL,         shift.salaryOfficial);
         cv.put(REVENUE_BONUS,           shift.revenueBonus);
-        cv.put(SALARY_PLUS_BONUS,       shift.salaryPlusBonus);
+        cv.put(CAR_RENT,                shift.carRent);
+        cv.put(SALARY_UNOFFICIAL,       shift.salaryUnofficial);
         cv.put(WORK_HOURS_SPENT,        shift.workHoursSpent);
         cv.put(SALARY_PER_HOUR,         shift.salaryPerHour);
 
@@ -108,7 +112,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         return result != -1;
     }
 
-    public ArrayList<Shift> getShiftsInRange(Calendar fromDate, Calendar toDate, boolean youngIsOnTop) {
+    public ArrayList<Shift> getShiftsInRangeByTaxopark(Calendar fromDate, Calendar toDate, boolean youngIsOnTop, int taxoparkID) {
         ArrayList<Shift> shiftsStorage = new ArrayList<>();
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
@@ -121,10 +125,20 @@ public class ShiftsSQLHelper extends SQLHelper {
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            do shiftsStorage.add(loadShiftFromCursor(cursor));
+            do {
+                Shift shift = loadShiftFromCursor(cursor);
+                if (taxoparkID == 0 || checkTaxoparkInShift(shift, taxoparkID)) shiftsStorage.add(shift);
+            }
             while (cursor.moveToNext());
         }
         return shiftsStorage;
+    }
+    private boolean checkTaxoparkInShift(Shift shift, int taxoparkID){
+        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(shift.shiftID, taxoparkID);
+        boolean hasOrdersWithTargetTaxopark = false;
+        for (Order order: orders)
+            if (order.taxoparkID == taxoparkID) hasOrdersWithTargetTaxopark = true;
+        return hasOrdersWithTargetTaxopark;
     }
 
     public ArrayList<Shift> getAllShifts() {
@@ -141,23 +155,6 @@ public class ShiftsSQLHelper extends SQLHelper {
         }
         return shiftsStorage;
     }
-
-//    public ArrayList<Shift> getShiftsByMonthAndTaxopark(int monthID, int taxoparkID) {
-//        ArrayList<Shift> shiftList = new ArrayList<>();
-//        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-//                + SHIFT_ID + "='" + String.valueOf(shiftID)  + "' AND "
-//                + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
-//
-//        SQLiteDatabase db = getWritableDatabase();
-//        Cursor cursor = db.rawQuery(selectQuery, null);
-//
-//        // looping through all rows and adding to list
-//        if (cursor.moveToFirst()) {
-//            do shiftList.add(loadShiftFromCursor(cursor));
-//            while (cursor.moveToNext());
-//        }
-//        return shiftList;
-//    }
 
     public Shift getLastShift() {
         Shift shift = null;
@@ -207,7 +204,8 @@ public class ShiftsSQLHelper extends SQLHelper {
         shift.toTheCashier          = cursor.getInt(cursor.getColumnIndex(TO_THE_CASHIER));
         shift.salaryOfficial        = cursor.getInt(cursor.getColumnIndex(SALARY_OFFICIAL));
         shift.revenueBonus          = cursor.getInt(cursor.getColumnIndex(REVENUE_BONUS));
-        shift.salaryPlusBonus       = cursor.getInt(cursor.getColumnIndex(SALARY_PLUS_BONUS));
+        shift.carRent               = cursor.getInt(cursor.getColumnIndex(CAR_RENT));
+        shift.salaryUnofficial      = cursor.getInt(cursor.getColumnIndex(SALARY_UNOFFICIAL));
         shift.workHoursSpent        = cursor.getInt(cursor.getColumnIndex(WORK_HOURS_SPENT));
         shift.salaryPerHour         = cursor.getInt(cursor.getColumnIndex(SALARY_PER_HOUR));
         shift.distance              = cursor.getInt(cursor.getColumnIndex(DISTANCE));

@@ -1,5 +1,6 @@
 package tt.richTaxist;
 
+import android.content.res.Resources;
 import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.DB.BillingsSQLHelper;
@@ -53,14 +54,17 @@ public class Order {
     public String toString() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
-        String text = String.format("подача: %02d.%02d.%02d %02d:%02d," +
-                        "\nцена: %d, тип оплаты: %s," +
-                        "\nпарк: %s, расчёты: %s",
+        Resources res = MainActivity.context.getResources();
+        String text = String.format(res.getString(R.string.arrivalDateTime) + ": %02d.%02d.%02d %02d:%02d,\n" +
+                        res.getString(R.string.costInputHint) + ": %d, " +
+                        res.getString(R.string.payType) + ": %s,\n" +
+                        res.getString(R.string.taxopark) + ": %s, " +
+                        res.getString(R.string.billing) + ": %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString(),
                 TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(taxoparkID),
                 BillingsSQLHelper.dbOpenHelper.getBillingByID(billingID));
-        if (!"".equals(note)) text += String.format(",\nзаметка: %s", note);
+        if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.noteInputHint) + ": %s", note);
         return text;
     }
 }

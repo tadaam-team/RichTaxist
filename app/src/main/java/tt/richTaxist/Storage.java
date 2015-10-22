@@ -24,7 +24,7 @@ import java.util.Properties;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
-import tt.richTaxist.Enums.TypeOfInput;
+import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.gps.GPSHelper;
 
@@ -46,8 +46,7 @@ public class Storage {
     public static int billingID = -1;
     public static int monthID = -1;
 
-    public static TypeOfInput typeOfDateInput = TypeOfInput.BUTTON;
-    public static TypeOfInput typeOfTimeInput = TypeOfInput.BUTTON;
+    public static InputStyle inputStyle = InputStyle.BUTTON;
     public static int timePickerStep = 10;
 
     public static String deviceIMEI = "";
@@ -89,8 +88,7 @@ public class Storage {
     public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
         switch (typeOfSpinner) {
             case TAXOPARK:
-                try {
-                    taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
+                try { taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "taxopark not defined");
                     taxoparkID = -1;
@@ -98,8 +96,7 @@ public class Storage {
                 break;
 
             case BILLING:
-                try {
-                    billingID = ((Billing) spinner.getSelectedItem()).billingID;
+                try { billingID = ((Billing) spinner.getSelectedItem()).billingID;
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "billing not defined");
                     billingID = -1;
@@ -107,8 +104,7 @@ public class Storage {
                 break;
 
             case MONTH:
-                try {
-                    monthID = (int) spinner.getSelectedItemId();
+                try { monthID = (int) spinner.getSelectedItemId();
                 } catch (NullPointerException e) {
                     Log.d(LOG_TAG, "month not defined");
                     monthID = -1;
@@ -117,43 +113,27 @@ public class Storage {
         }
     }
 
-    //TODO: нормализовать работу метода
     public static void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, ArrayAdapter adapter, Spinner spinner, int id){
         switch (typeOfSpinner){
             case TAXOPARK:
                 //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
-                if (id == 0 || id == -1) {
+                if (id == -1)
                     for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks())
                         if (taxoparkIter.isDefault) taxoparkID = id = taxoparkIter.taxoparkID;
-                }
-                try {
-                    Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
-                    int indexInSpinner = adapter.getPosition(taxopark);
-                    spinner.setSelection(indexInSpinner);
-                } catch (Exception e) {
-                    Log.d(LOG_TAG, "error while setting taxoparkName");
-                    spinner.setSelection(0);
-                }
+
+                Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
+                int indexInSpinner = adapter.getPosition(taxopark);
+                spinner.setSelection(indexInSpinner);
                 break;
 
             case BILLING:
-                try {
-                    Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(billingID);
-                    int indexInSpinner = adapter.getPosition(billing);
-                    spinner.setSelection(indexInSpinner);
-                } catch (Exception e) {
-                    Log.d(LOG_TAG, "error while setting billingName");
-                    spinner.setSelection(0);
-                }
+                Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(id);
+                indexInSpinner = adapter.getPosition(billing);
+                spinner.setSelection(indexInSpinner);
                 break;
 
             case MONTH:
-                try {
-                    spinner.setSelection(monthID);
-                } catch (Exception e) {
-                    Log.d(LOG_TAG, "error while setting month");
-                    spinner.setSelection(0);
-                }
+                spinner.setSelection(monthID);
                 break;
         }
         adapter.notifyDataSetChanged();
@@ -242,9 +222,7 @@ public class Storage {
             currentUser.put("taxoparkID", taxoparkID);
             currentUser.put("billingID", billingID);
             currentUser.put("monthID", monthID);
-
-            currentUser.put("typeOfDateInput", typeOfDateInput.toString());
-            currentUser.put("typeOfTimeInput", typeOfTimeInput.toString());
+            currentUser.put("inputStyle", inputStyle.toString());
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("userHasAccess", userHasAccess);
             //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
@@ -312,8 +290,7 @@ public class Storage {
         monthID         = 0;
 
         userHasAccess   = false;
-        typeOfDateInput = TypeOfInput.BUTTON;
-        typeOfTimeInput = TypeOfInput.BUTTON;
+        inputStyle = InputStyle.BUTTON;
         timePickerStep  = 10;
     }
 

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Order;
@@ -64,12 +65,13 @@ public class OrdersSQLHelper extends SQLHelper {
         return result != -1;
     }
 
-    public ArrayList<Order> getOrdersInRange(Date fromDate, Date toDate) {
+    public ArrayList<Order> getOrdersInRangeByTaxopark(Calendar fromDate, Calendar toDate, int taxoparkID) {
         ArrayList<Order> ordersList = new ArrayList<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate) + "' AND "
-                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate) + "'";
+                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate.getTime()) + "' AND "
+                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate.getTime()) + "'";
+        if (taxoparkID != 0) selectQuery += " AND " + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 

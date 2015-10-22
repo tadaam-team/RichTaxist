@@ -7,10 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 import tt.richTaxist.Bricks.DF_ChooseFromList;
-import tt.richTaxist.Enums.TypeOfInput;
+import tt.richTaxist.Enums.InputStyle;
 
 
 public class SettingsActivity extends AppCompatActivity implements DF_ChooseFromList.ListInputDialogListener {
@@ -30,17 +29,11 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
         ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Storage.youngIsOnTop);
         ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.twoTapTimePick);
         ((ToggleButton) findViewById(R.id.tbHideTaxometer)) .setChecked(!Storage.hideTaxometer);
-
-        ToggleButton buttonDate = (ToggleButton) findViewById(R.id.btnDate);
-        if (Storage.typeOfDateInput.id == TypeOfInput.BUTTON.id) buttonDate.setChecked(false);
-        else buttonDate.setChecked(true);
-
-        ToggleButton buttonTime = (ToggleButton) findViewById(R.id.btnTime);
-        if (Storage.typeOfTimeInput.id == TypeOfInput.BUTTON.id) buttonTime.setChecked(false);
-        else buttonTime.setChecked(true);
+        ((ToggleButton) findViewById(R.id.tbInputStyle))    .setChecked(Storage.inputStyle.id != InputStyle.SPINNER.id);
 
         btnTimePickerInterval = (Button) findViewById(R.id.btnTimePickerInterval);
-        if (Storage.typeOfTimeInput.id == TypeOfInput.SPINNER.id) btnTimePickerInterval.setEnabled(true);
+        if (Storage.inputStyle.id == InputStyle.SPINNER.id)
+            btnTimePickerInterval.setEnabled(true);
         else btnTimePickerInterval.setEnabled(false);
         btnTimePickerInterval.setText(String.valueOf(Storage.timePickerStep));
         btnTimePickerInterval.setOnClickListener(new View.OnClickListener() {
@@ -68,37 +61,32 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
     public void onTBTimePickClicksClick(View view) { Storage.twoTapTimePick   = !((ToggleButton) view).isChecked(); }
     public void onTBHideTaxometerClick(View view)  { Storage.hideTaxometer    = !((ToggleButton) view).isChecked(); }
 
-    public void onTBDateInputClick(View view) {
-        if (!((ToggleButton) view).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
-        else Storage.typeOfDateInput = TypeOfInput.SPINNER;
-    }
-
-    public void onTBTimeInputClick(View view) {
-        if (!((ToggleButton) view).isChecked()) Storage.typeOfDateInput = TypeOfInput.BUTTON;
-        else Storage.typeOfDateInput = TypeOfInput.SPINNER;
+    public void onTBInputStyleClick(View view) {
+        if (!((ToggleButton) view).isChecked()) Storage.inputStyle = InputStyle.SPINNER;
+        else Storage.inputStyle = InputStyle.BUTTON;
+        btnTimePickerInterval.setEnabled(!((ToggleButton) view).isChecked());
     }
 
     public void onParksAndBillingsClick(View p1) {
         startActivity(new Intent(this, Settings4ParksAndBillingsActivity.class));
     }
-    public void onExportImportShiftsClick(View p1) {
-        Toast.makeText(this, "когда-нибудь это будет открывать окно экспорта", Toast.LENGTH_SHORT).show();
-    }
-    public void onSocialsClick(View p1) {
-        Toast.makeText(this, "когда-нибудь это будет вести к ссылкам на наши странички", Toast.LENGTH_SHORT).show();
-    }
+//    public void onExportImportShiftsClick(View p1) {
+//        Toast.makeText(this, "когда-нибудь это будет открывать окно экспорта", Toast.LENGTH_SHORT).show();
+//    }
+//    public void onSocialsClick(View p1) {
+//        Toast.makeText(this, "когда-нибудь это будет вести к ссылкам на наши странички", Toast.LENGTH_SHORT).show();
+//    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         Storage.saveSettings(context);
-        if (MainActivity.currentShift != null && MainActivity.fragmentManager != null) {
-            OrderFragment fragment1 = (OrderFragment) MainActivity.fragmentManager.findFragmentByTag("fragment1");
-            if (fragment1 != null) fragment1.refreshWidgets(null);
+        if (MainActivity.currentShift != null) {
             MainActivity.sortOrdersStorage();
             if (MainActivity.orderAdapterMA != null) MainActivity.orderAdapterMA.notifyDataSetChanged();
             MainActivity.sortShiftsStorage();
             if (FirstScreenActivity.shiftAdapterMA != null) FirstScreenActivity.shiftAdapterMA.notifyDataSetChanged();
+//            изменения типа ввода кнопка/спиннер обрабатываются в OrderFragment.onResume()
         }
     }
 }

@@ -1,25 +1,23 @@
 package tt.richTaxist;
 
+import android.content.res.Resources;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
-import tt.richTaxist.Enums.TypeOfPayment;
 
 /**
  * Created by Tau on 27.06.2015.
  */
 public class Shift {
-//    final public ArrayList<ArrayList<Order>> listOfAllOrdersPerOneShift = new ArrayList<>();
     public int shiftID;
     public Date beginShift;
     public Date endShift; //по этому полю проверяется закрыта ли смена. == null пока не закрыта
     public int revenueCash, revenueCard, revenueOfficial, petrol;
     public boolean petrolFilledByHands;
-    public int toTheCashier, salaryOfficial, revenueBonus, salaryPlusBonus;
+    public int toTheCashier, salaryOfficial, revenueBonus, carRent, salaryUnofficial;
     public double workHoursSpent;
     public int salaryPerHour, distance;
     public long travelTime;
@@ -43,16 +41,6 @@ public class Shift {
         petrolFilledByHands = false;
     }
 
-    @Override
-    public String toString() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(beginShift);
-        return String.format("дата начала: %02d.%02d %02d:%02d,\nвыручка офиц.: %d,\nсдать в кассу: %d,\nбензин: %d, закрыта? %s",
-                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1,
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                revenueOfficial, toTheCashier, petrol, this.isClosed()?"да":"нет");
-    }
-
     public void closeShift() {
         this.endShift = new Date();
         //в этой точке бензин уже введен и итоги уже рассчитаны
@@ -73,12 +61,12 @@ public class Shift {
 
     public void calculateShiftTotals(int petrol, int taxoparkID){
         ArrayList<Order> orders;
-        if (taxoparkID != 0)
-            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(this.shiftID, taxoparkID);
-        else
+        if (taxoparkID == 0)
             orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShift(this.shiftID);
+        else
+            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(this.shiftID, taxoparkID);
 
-        revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
+        revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){
             switch (order.typeOfPayment){
@@ -99,12 +87,29 @@ public class Shift {
 
         toTheCashier = revenueCash - this.petrol;
         salaryOfficial = (revenueOfficial / 2) - this.petrol;
-        salaryPlusBonus = salaryOfficial + revenueBonus;
+        salaryUnofficial = salaryOfficial + revenueBonus - carRent;
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
         workHoursSpent = Storage.RoundResult(workHoursSpent, 2);
-        salaryPerHour  = (int) Math.round(salaryPlusBonus / workHoursSpent);
+        salaryPerHour  = (int) Math.round(salaryUnofficial / workHoursSpent);
         ShiftsSQLHelper.dbOpenHelper.update(this);
+    }
+
+    @Override
+    public String toString() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(beginShift);
+        Resources res = MainActivity.context.getResources();
+        String text = String.format(res.getString(R.string.shiftStart) + ": %02d.%02d %02d:%02d,\n" +
+                        res.getString(R.string.revenueOfficial) + ": %d,\n" +
+                        res.getString(R.string.toTheCashier) + ": %d,\n" +
+                        res.getString(R.string.petrol) + ": %d, " +
+                        res.getString(R.string.shiftIsClosed) + "? %s",
+                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1,
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
+                revenueOfficial, toTheCashier, petrol, this.isClosed() ? res.getString(R.string.yes) : res.getString(R.string.no));
+        if (carRent != 0) text += String.format("\n" + res.getString(R.string.carRent) + ": %d", carRent);
+        return text;
     }
 }

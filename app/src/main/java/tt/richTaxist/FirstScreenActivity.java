@@ -24,6 +24,7 @@ import tt.richTaxist.ChatClient.ChatLoginActivity;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
+import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.RouteActivity;
 
@@ -214,6 +215,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Storage.taxoparkID      = user.getInt("taxoparkID");
         Storage.billingID       = user.getInt("billingID");
         Storage.monthID         = user.getInt("monthID");
+        Storage.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {

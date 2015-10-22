@@ -24,10 +24,10 @@ import tt.richTaxist.Storage;
 /**
  * Created by Tau on 13.10.2015.
  */
-public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
-    private FragmentActivity context;
+    private FragmentActivity mActivity;
 
     private ArrayList<? extends Object> list;
     private String workList;
@@ -36,10 +36,11 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
     private ViewGroup seekBarPlaceHolder;
     private RangeSeekBar<Long> seekBar;
     private String clickedButtonID;
+    private OnDateTimeRangeFragmentInteractionListener mListener;
 
-    public DateTimeRangeFragment() { }
+    public DateTimeRangeFrag() { }
 
-//    public DateTimeRangeFragment(String workList) {
+//    public DateTimeRangeFrag(String workList) {
 //        this.workList = workList;
 //        if ("shifts".equals(workList))      list = MainActivity.shiftsStorage;
 //        else if ("orders".equals(workList)) list = MainActivity.ordersStorage;
@@ -50,21 +51,18 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
         super.onAttach(context);
         try {
             //проверим, реализован ли нужный интерфейс родительским фрагментом или активностью
-            OnDateTimeRangeFragmentInteractionListener parent;
-            parent = (OnDateTimeRangeFragmentInteractionListener) getParentFragment();
-            if (parent == null) parent = (OnDateTimeRangeFragmentInteractionListener) getActivity();
+            mListener = (OnDateTimeRangeFragmentInteractionListener) getParentFragment();
+            if (mListener == null) mListener = (OnDateTimeRangeFragmentInteractionListener) getActivity();
         } catch (ClassCastException e) {
-            throw new ClassCastException("parent must implement OnFirstScreenFragmentInteractionListener");
-        }
+            throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());}
+        dateSetListener = DateTimeRangeFrag.this;
+        timeSetListener = DateTimeRangeFrag.this;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        context = getActivity();
+        mActivity = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_date_time_range, container, false);
-
-        dateSetListener = DateTimeRangeFragment.this;
-        timeSetListener = DateTimeRangeFragment.this;
 
         initiateControls(rootView);
 
@@ -84,7 +82,10 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
 
         if (!list.isEmpty()) {
             //отсечем заведомо пустой кусок шкалы между 01.01.2015 и минимальной датой в list
-            Object object = list.get(0);
+            Object object;
+            if (Storage.youngIsOnTop) object = list.get(list.size() - 1);
+            else object = list.get(0);
+
             if (object instanceof Shift)        rangeStart.setTime(((Shift) object).beginShift);
             else if (object instanceof Order)   rangeStart.setTime(((Order) object).arrivalDateTime);
             refreshControls(true);
@@ -107,7 +108,7 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
 
     private void createButtonsAndSeekBar(final Calendar rangeStart, final Calendar rangeEnd) {
         if (buttonRangeStartDate == null || buttonRangeStartTime == null || buttonRangeEndDate == null || buttonRangeEndTime == null)
-            throw new NullPointerException("some controls of DateTimeRangeFragment are not ready");
+            throw new NullPointerException("some controls of DateTimeRangeFrag are not ready");
         buttonRangeStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +116,7 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
                 startDatePD.setVibrate(false);
                 startDatePD.setYearRange(2015, 2020);
                 startDatePD.setCloseOnSingleTapDay(true);
-                startDatePD.show(context.getSupportFragmentManager(), "datepicker");
+                startDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeStartDate";
             }
         });
@@ -125,7 +126,7 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
                 TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
                 startTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
-                startTimePD.show(context.getSupportFragmentManager(), "timepicker");
+                startTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeStartTime";
             }
         });
@@ -136,7 +137,7 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
                 endDatePD.setVibrate(false);
                 endDatePD.setYearRange(2015, 2020);
                 endDatePD.setCloseOnSingleTapDay(true);
-                endDatePD.show(context.getSupportFragmentManager(), "datepicker");
+                endDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeEndDate";
             }
         });
@@ -146,13 +147,13 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
                 TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
                 endTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
-                endTimePD.show(context.getSupportFragmentManager(), "timepicker");
+                endTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeEndTime";
             }
         });
 
         //add RangeSeekBar to window
-        seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), context);
+        seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), mActivity);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Long>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
@@ -201,7 +202,7 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
                 rangeEnd.set(Calendar.MINUTE, minute);
                 seekBar.setSelectedMaxValue(rangeEnd.getTimeInMillis());
                 break;
-            default: Toast.makeText(context, "ошибка ввода", Toast.LENGTH_SHORT).show();
+            default: Toast.makeText(mActivity, R.string.irregularErrMSG, Toast.LENGTH_SHORT).show();
                 break;
         }
         sendDataToParent();
@@ -242,12 +243,8 @@ public class DateTimeRangeFragment extends Fragment implements DatePickerDialog.
     public Calendar getRangeEnd(){   return rangeEnd; }
 
     private void sendDataToParent(){
-        OnDateTimeRangeFragmentInteractionListener parent;
-        parent = (OnDateTimeRangeFragmentInteractionListener) getParentFragment();
-        if (parent == null) parent = (OnDateTimeRangeFragmentInteractionListener) getActivity();
-
-        parent.calculate(rangeStart, rangeEnd);
-        parent.refreshControls();
+        mListener.calculate(rangeStart, rangeEnd);
+        mListener.refreshControls();
     }
 
     public interface OnDateTimeRangeFragmentInteractionListener {

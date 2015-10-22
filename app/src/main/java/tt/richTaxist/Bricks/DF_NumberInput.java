@@ -1,6 +1,7 @@
 package tt.richTaxist.Bricks;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
@@ -16,8 +17,18 @@ import tt.richTaxist.R;
 
 public class DF_NumberInput extends DialogFragment implements TextView.OnEditorActionListener {
     private Activity superActivity;//ссылка на контейнер класса Activity, в котором сейчас находится этот фрагмент
+    private NumberInputDialogListener mListener;
     private EditText mEditText;
     public DF_NumberInput() {}
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try { mListener = (NumberInputDialogListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,8 +63,10 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (EditorInfo.IME_ACTION_DONE == actionId) {
             // Return input text to activity
-            EditNameDialogListener activity = (EditNameDialogListener) superActivity;
-            try { activity.onFinishEditDialog(Integer.parseInt(mEditText.getText().toString()));
+            try {
+                int answer = Integer.parseInt(mEditText.getText().toString());
+                String authorTag = getTag();
+                mListener.onFinishEditDialog(answer, authorTag);
             } catch (NumberFormatException e){
                 Toast.makeText(superActivity, "только целое число, пожалуйста", Toast.LENGTH_SHORT).show();
             }
@@ -63,7 +76,7 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
         return false;
     }
 
-    public interface EditNameDialogListener {
-        void onFinishEditDialog(int inputNumber);
+    public interface NumberInputDialogListener {
+        void onFinishEditDialog(int inputNumber, String authorTag);
     }
 }

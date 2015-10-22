@@ -1,70 +1,52 @@
 <resources>
     <string name="appName">Богатый таксист</string>
-    <string name="settings">Настройки</string>
     <string name="mainMenu">Главное меню</string>
     <string name="openLastShift">Вернуться\nк последней смене</string>
-    <string name="shiftsList">Список смен</string>
     <string name="newShift">Новая смена</string>
-    <string name="ordersList">Список заказов</string>
-    <string name="shiftTotals">Итоги смены</string>
-    <string name="routeMap">Карта маршрута</string>
-
-    <string name="noShiftsMSG">сохранённых смен не найдено</string>
-    <string name="noOrdersMSG">нет сохранённых заказов</string>
-    <string name="noInternetMSG">проверьте интернет-подключение</string>
-    <string name="loginOrPasswordErrMSG">ошибка логина или пароля</string>
-    <string name="irregularErrMSG">необычная ошибка</string>
-    <string name="orderDeletedMSG">заказ удален</string>
-    <string name="orderSelectedMSG">выбран заказ для редактирования</string>
-    <string name="orderListSelectErrMSG">ошибка обработки жеста</string>
-
-    <string name="ok">OK</string>
-    <string name="cancel">Отмена</string>
-
-    <string name="taxoparksAndBillings">Таксопарки и системы</string>
-    <string name="main">осн</string>
-    <string name="taxopark">Таксопарк</string>
-    <string name="taxoparks">Таксопарки</string>
-    <string name="taxoparkName">имя таксопарка</string>
-    <string name="billing">Система расчетов</string>
-    <string name="billings">Системы расчетов</string>
-    <string name="billingName">название системы</string>
-    <string name="commission">комиссия</string>
-    <string name="isInTheList">уже есть в списке</string>
-
-    <string name="contribute">Сказать спасибо</string>
-    <string name="exportShifts">Экспорт и импорт\nсмен</string>
-    <string name="socials">tadaam-team\nв соцсетях</string>
+    <string name="shiftsList">Список смен</string>
+    <string name="settings">Настройки</string>
+    <string name="signIn">Учетные записи</string>
     <string name="chat">Водительский чат</string>
-    <string name="ipInputHint">Введите IP:</string>
-    <string name="enterChat">Войти в чат</string>
+    <string name="routeMap">Карта маршрута</string>
+    <string name="grandTotals">Заработано</string>
     <string name="exit">Закрыть\nпрограмму</string>
+    <string name="noShiftsMSG">сохранённых смен не найдено</string>
 
-    <string name="addNewOrder">Добавить заказ</string>
+
+    <string name="shiftsListScreenName">Список смен</string>
+    <string name="shiftNotEmptyMSG">Эта смена не пустая, удалить?</string>
+    <string name="shiftDeletedMSG">смена удалена</string>
+    <string name="shiftSelectedMSG">выбрана смена для редактирования</string>
+    <string name="gestureErrorMSG">ошибка обработки жеста</string>
+    <string name="shift">смена</string>
+
+
     <string name="mainScreenName">Заказ</string>
+    <string name="noOrdersMSG">нет сохранённых заказов</string>
+    <string name="addNewOrder">Добавить заказ</string>
     <string name="clearForm">Очистить форму</string>
+    <string name="formClearedMSG">форма очищена</string>
     <string name="arrivalDateTime">Подача</string>
     <string name="date">Дата</string>
     <string name="time">Время</string>
     <string name="costInputHint">цена</string>
     <string name="noteInputHint">заметка</string>
-    <string name="formClearedMSG">форма очищена</string>
+    <string name="ordersList">Список заказов</string>
+    <string name="shiftTotals">Итоги смены</string>
 
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">нал</string>
     <string name="payTypeCard">безнал</string>
     <string name="payTypeTip">чаевые</string>
 
-    <string name="activityStateLAND_2_1">ландшафт с двумя фрагментами</string>
-    <string name="activityStateLAND_2">ландшафт только со списком</string>
-    <string name="activityStatePORT_1">портрет только с главным фрагментом</string>
-    <string name="activityStatePORT_2">портрет только со списком</string>
+    <string name="google_maps_key">AIzaSyB1ZznQZMNQ_j1FuD9Qm5EBqMnblllNZP8</string>
+    <string name="travelTime">Время в пути</string>
+    <string name="travelDistance">Пробег поездки</string>
+    <string name="closeOrder">Закрыть заказ</string>
+    <string name="openMap">Открыть карту</string>
 
 
-    <string name="entryTextExampleMain">пример основного текста</string>
-    <string name="entryTextExampleAdditional">пример поясняющего текста</string>
-
-    <string name="shiftTotalsScreenName">Итоги за смену</string>
+    <string name="shiftTotalsScreenName">Итоги смены</string>
     <string name="shiftStart">Начало смены</string>
     <string name="shiftEnd">Конец смены</string>
     <string name="revenueOfficial">Выручка офиц.</string>
@@ -72,31 +54,27 @@
     <string name="revenueCard">- в т.ч. безналичные</string>
     <string name="petrol">Бензин</string>
     <string name="toTheCashier">Сдать в кассу</string>
-    <string name="salaryOfficial">Зарплата офиц.</string>
+    <string name="salaryOfficial">Зарплата белая</string>
+    <string name="salaryOfficialShort">зп белая</string>
     <string name="revenueBonus">Чаевые</string>
-    <string name="salaryPlusBonus">Зарплата с чаем</string>
+    <string name="carRent">Аренда машины</string>
+    <string name="salaryUnofficial">Зарплата с чаем</string>
+    <string name="salaryUnofficialShort">зп + чай</string>
     <string name="workHoursSpent">Отработано часов</string>
     <string name="salaryPerHour">Зарплата в час</string>
-    <string name="crutch">Костыль для ScrollView</string>
     <string name="closeShift">Закрыть смену</string>
     <string name="continueShift">Продолжить\nсмену</string>
     <string name="exitToMainMenu">Главное\nменю</string>
     <string name="shiftIsOpen">Смена\nоткрыта</string>
     <string name="shiftIsClosed">Смена\nзакрыта</string>
     <string name="zero">0</string>
-    <string name="petrolInputMsg">Введите фактический\nчек за бензин</string>
+    <string name="summInputMsg">Введите сумму</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Отмена</string>
 
-    <string name="companiesEditMsg">Заполните список таксопарков</string>
-    <string name="companyNameHint">название</string>
-    <string name="companyCommissionHint">их %</string>
 
-    <string name="grandTotalsScreenName">Заработано</string>
-    <string name="rangeStart">Первая смена</string>
-    <string name="rangeEnd">Последняя смена</string>
-    <string name="handedToTheCashier">Сдано кассу</string>
-
-    <string name="viewOfTimePicker">Способ ввода времени</string>
-    <string name="viewOfDatePicker">Способ ввода дат</string>
+    <string name="settingsScreenName">Настройки</string>
+    <string name="viewOfDateTimePicker">Способ ввода времени и дат</string>
     <string name="button">кнопка</string>
     <string name="spinner">спиннер</string>
     <string name="timePickerInterval">Шаг спиннера минут</string>
@@ -114,15 +92,24 @@
     <string name="yes">да</string>
     <string name="no">нет</string>
     <string name="extraFunctions">Дополнительные возможности</string>
+    <string name="chooseNumber">Выберите число</string>
+    <string name="exportShifts">Экспорт и импорт\nсмен</string>
+    <string name="socials">Мы в соцсетях</string>
 
-    <string name="google_maps_key">AIzaSyB1ZznQZMNQ_j1FuD9Qm5EBqMnblllNZP8</string>
-    <string name="routeMapScreenName">Окно маршрута</string>
-    <string name="travelTime">Время в пути</string>
-    <string name="travelDistance">Пробег поездки</string>
-    <string name="closeOrder">Закрыть заказ</string>
-    <string name="openMap">Открыть карту</string>
+    <string name="taxoparksAndBillings">Таксопарки и системы</string>
+    <string name="taxoparksAndBillingsInputMSG">Завершайте ввод клавишей\nOK или Enter</string>
+    <string name="main">осн</string>
+    <string name="taxopark">Таксопарк</string>
+    <string name="taxoparks">Таксопарки</string>
+    <string name="taxoparkName">имя таксопарка</string>
+    <string name="billing">Система расчетов</string>
+    <string name="billings">Системы расчетов</string>
+    <string name="billingName">название системы</string>
+    <string name="commission">комиссия</string>
+    <string name="isInTheList">уже есть в списке</string>
 
-    <string name="signIn">Учетные записи</string>
+
+    <string name="signInScreenName">Учетные записи</string>
     <string name="username">логин</string>
     <string name="password">пароль</string>
     <string name="email">почта</string>
@@ -135,20 +122,34 @@
     <string name="emailVerified">- почта подтверждена</string>
     <string name="IMEICorrect">- IMEI прошел проверку</string>
     <string name="premiumUser">- премиум подписка подключена</string>
+    <string name="noInternetMSG">проверьте интернет-подключение</string>
+    <string name="loginOrPasswordErrMSG">ошибка логина или пароля</string>
+    <string name="irregularErrMSG">необычная ошибка</string>
+    <string name="orderDeletedMSG">заказ удален</string>
+    <string name="orderSelectedMSG">выбран заказ для редактирования</string>
+    <string name="orderListSelectErrMSG">ошибка обработки жеста</string>
+    <string name="contribute">Сказать спасибо</string>
 
-    <array name="months">
-        <item>- - -</item>
-        <item>Январь</item>
-        <item>Февраль</item>
-        <item>Март</item>
-        <item>Апрель</item>
-        <item>Май</item>
-        <item>Июнь</item>
-        <item>Июль</item>
-        <item>Август</item>
-        <item>Сентябрь</item>
-        <item>Октябрь</item>
-        <item>Ноябрь</item>
-        <item>Декабрь</item>
-    </array>
+
+    <string name="chatScreenName">Водительский чат</string>
+    <string name="ipInputHint">Введите IP:</string>
+    <string name="enterChat">Войти в чат</string>
+
+
+    <string name="grandTotalsScreenName">Заработано</string>
+    <string name="rangeStart">Первая смена</string>
+    <string name="rangeEnd">Последняя смена</string>
+    <string name="handedToTheCashier">Сдано кассу</string>
+
+
+    <string name="activityStateLAND_2_1">ландшафт с двумя фрагментами</string>
+    <string name="activityStateLAND_2">ландшафт только со списком</string>
+    <string name="activityStatePORT_1">портрет только с главным фрагментом</string>
+    <string name="activityStatePORT_2">портрет только со списком</string>
+
+    <string name="entryTextExampleMain">пример основного текста</string>
+    <string name="entryTextExampleAdditional">пример поясняющего текста</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

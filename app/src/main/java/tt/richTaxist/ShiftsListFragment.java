@@ -1,5 +1,7 @@
 package tt.richTaxist;
 
+import android.content.res.Resources;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.ListFragment;
@@ -8,7 +10,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
-import tt.richTaxist.Bricks.DateTimeRangeFragment;
+import java.util.GregorianCalendar;
+import tt.richTaxist.Bricks.DateTimeRangeFrag;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
@@ -29,29 +31,24 @@ import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfSpinner;
 import android.widget.LinearLayout.LayoutParams;
 
-public class ShiftsListFragment extends ListFragment implements DateTimeRangeFragment.OnDateTimeRangeFragmentInteractionListener {
+public class ShiftsListFragment extends ListFragment implements DateTimeRangeFrag.OnDateTimeRangeFragmentInteractionListener {
     private static final String LOG_TAG = "ShiftsListFragment";
-    private static AppCompatActivity mActivity;
+    private static FragmentActivity mActivity;
     public static ArrayAdapter shiftAdapter;
     private SwipeDetector swipeDetector;
     private static Spinner spnTaxopark;
     public static ArrayAdapter spnTaxoparkAdapter;
-    private DateTimeRangeFragment dateTimeRangeFragment;
+    private static DateTimeRangeFrag dateTimeRangeFrag;
 
-    public ShiftsListFragment() {
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mActivity = (AppCompatActivity) getActivity();
-        shiftAdapter = new ShiftAdapter(mActivity);
-        FirstScreenActivity.shiftAdapterMA = shiftAdapter;
-        setListAdapter(shiftAdapter);
-    }
+    public ShiftsListFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mActivity = getActivity();
+        shiftAdapter = new ShiftAdapter(mActivity);
+        FirstScreenActivity.shiftAdapterMA = shiftAdapter;
+        setListAdapter(shiftAdapter);
+
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
@@ -68,20 +65,20 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
         if (((FirstScreenActivity) mActivity).activityState == ActivityState.PORT_2 ||
                 ((FirstScreenActivity) mActivity).activityState == ActivityState.LAND_2) {
             //применяется только когда лист единственный на экране
-            dateTimeRangeFragment = (DateTimeRangeFragment) fragmentManager.findFragmentByTag("dateTimeRangeFragment");
-            if (dateTimeRangeFragment == null) {
-                dateTimeRangeFragment = new DateTimeRangeFragment();
+            dateTimeRangeFrag = (DateTimeRangeFrag) fragmentManager.findFragmentByTag("dateTimeRangeFrag");
+            if (dateTimeRangeFrag == null) {
+                dateTimeRangeFrag = new DateTimeRangeFrag();
                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.add(R.id.container_shift_list, dateTimeRangeFragment, "dateTimeRangeFragment");
+                ft.add(R.id.container_shift_list, dateTimeRangeFrag, "dateTimeRangeFrag");
                 ft.commit();
             }
         }
         else {
             //когда лист НЕ единственный на экране, фрагмент следует убрать
-            dateTimeRangeFragment = (DateTimeRangeFragment) fragmentManager.findFragmentByTag("dateTimeRangeFragment");
-            if (dateTimeRangeFragment != null) {
+            dateTimeRangeFrag = (DateTimeRangeFrag) fragmentManager.findFragmentByTag("dateTimeRangeFrag");
+            if (dateTimeRangeFrag != null) {
                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.remove(dateTimeRangeFragment);
+                ft.remove(dateTimeRangeFrag);
                 ft.commit();
             }
         }
@@ -92,26 +89,28 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
         ArrayList<Taxopark> list = new ArrayList<>();
         list.add(0, new Taxopark(0, "- - -", false, 0));
         list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, list);
-        spnTaxoparkAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTaxoparkAdapter = new ArrayAdapter<>(mActivity, R.layout.list_entry_spinner, list);
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-//                if (MainActivity.currentShift != null) {
-//                    if (spnTaxopark.getSelectedItemId() == 0) {
-//                        MainActivity.shiftsStorage.clear();
-//                        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
-//                    } else {
-//                        MainActivity.shiftsStorage.clear();
-//                        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsByTaxopark(Storage.taxoparkID));
-//                    }
-//                    shiftAdapter.notifyDataSetChanged();
-//                }
+                if (MainActivity.currentShift != null) {
+                    MainActivity.shiftsStorage.clear();
+                    Calendar rangeStart, rangeEnd;
+                    if (dateTimeRangeFrag != null) {
+                        rangeStart = dateTimeRangeFrag.getRangeStart();
+                        rangeEnd = dateTimeRangeFrag.getRangeEnd();
+                    } else {
+                        rangeStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
+                        rangeEnd = Calendar.getInstance();
+                    }
+                    MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
+                            rangeStart, rangeEnd, Storage.youngIsOnTop, Storage.taxoparkID));
+                    shiftAdapter.notifyDataSetChanged();
+                }
             }
 
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
         Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
@@ -119,7 +118,9 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
     @Override
     public void calculate(Calendar rangeStart, Calendar rangeEnd) {
         MainActivity.shiftsStorage.clear();
-        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRange(rangeStart, rangeEnd, Storage.youngIsOnTop));
+        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
+                rangeStart, rangeEnd, Storage.youngIsOnTop, Storage.taxoparkID));
     }
 
     @Override
@@ -153,13 +154,13 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
                     Intent intent = new Intent(mActivity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
-                    Toast.makeText(mActivity, "выбрана смена для редактирования", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.shiftSelectedMSG, Toast.LENGTH_SHORT).show();
                     //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран
                     mActivity.finish();
                     break;
 
                 default:
-                    Toast.makeText(mActivity, "ошибка обработки жеста", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, R.string.gestureErrorMSG, Toast.LENGTH_SHORT).show();
             }
         } else {
             //клик по записи выводит ее тост
@@ -169,18 +170,16 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
 
     private void openShiftDeleteDialog(final Shift shift) {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(mActivity);
-        quitDialog.setTitle("Эта смена не пустая, удалить?");
-        quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+        quitDialog.setTitle(R.string.shiftNotEmptyMSG);
+        quitDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 deleteShift(shift);
             }
         });
-        quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+        quitDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
+            public void onClick(DialogInterface dialog, int which) {/*NOP*/}
         });
         quitDialog.show();
     }
@@ -189,7 +188,7 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
         ShiftsSQLHelper.dbOpenHelper.remove(shift);
         MainActivity.shiftsStorage.remove(shift);
         shiftAdapter.notifyDataSetChanged();
-        Toast.makeText(mActivity, "смена удалена", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mActivity, R.string.shiftDeletedMSG, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -213,13 +212,16 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
             }
 
             //установим, какие данные из Shift отобразятся в полях списка
+            Resources res = MainActivity.context.getResources();
             TextView textViewMain = (TextView) convertView.findViewById(R.id.entryTextViewMain);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(shift.beginShift);
-            textViewMain.setText(String.format("смена %02d.%02d", calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1));
+            textViewMain.setText(String.format(res.getString(R.string.shift)+" %02d.%02d",
+                    calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1));
 
             TextView textViewAdditional = (TextView) convertView.findViewById(R.id.entryTextViewAdditional);
-            textViewAdditional.setText(String.format("зп офиц.: %d, зп с чаем: %d", shift.salaryOfficial, shift.salaryPlusBonus));
+            textViewAdditional.setText(String.format(res.getString(R.string.salaryOfficialShort) + ": %d,\n" +
+                    res.getString(R.string.salaryUnofficialShort) + ": %d", shift.salaryOfficial, shift.salaryUnofficial));
 
             //назначим картинку каждой строке списка
             ImageView imageView = (ImageView) convertView.findViewById(R.id.entryIcon);

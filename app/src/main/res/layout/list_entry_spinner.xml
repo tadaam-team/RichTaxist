@@ -3,7 +3,7 @@
           style="@style/Text"
           android:singleLine="true"
           android:layout_width="match_parent"
-          android:layout_height="40dp"
+          android:layout_height="60dp"
           android:ellipsize="marquee"
           android:textColor="@color/button_material_dark"
           android:text="1111"

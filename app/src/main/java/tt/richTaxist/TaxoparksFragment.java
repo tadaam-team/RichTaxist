@@ -1,10 +1,8 @@
 package tt.richTaxist;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +18,17 @@ import tt.richTaxist.DB.TaxoparksSQLHelper;
 public class TaxoparksFragment extends ListFragment {
     private static final String LOG_TAG = "TaxoparksFragment";
     ArrayList<Taxopark> taxoparks = new ArrayList<>();
-    private AppCompatActivity mActivity;
+    private Context context;
     private ArrayAdapter taxoparksAdapter;
     public TaxoparksFragment() { }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        mActivity = (AppCompatActivity) activity;
-        taxoparks.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        taxoparksAdapter = new TaxoparksAdapter(mActivity);
-        setListAdapter(taxoparksAdapter);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        context = getContext();
+        taxoparks.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        taxoparksAdapter = new TaxoparksAdapter(context);
+        setListAdapter(taxoparksAdapter);
+
         View rootView = inflater.inflate(R.layout.fragment_taxoparks, container, false);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
@@ -56,15 +50,14 @@ public class TaxoparksFragment extends ListFragment {
         if (OrderFragment.spnTaxoparkAdapter != null)       OrderFragment.createTaxoparkSpinner();
         if (OrdersListFragment.spnTaxoparkAdapter != null)  OrdersListFragment.createTaxoparkSpinner();
         if (ShiftsListFragment.spnTaxoparkAdapter != null)  ShiftsListFragment.createTaxoparkSpinner();
+        if (ShiftTotalsActivity.spnTaxoparkAdapter != null) ShiftTotalsActivity.createTaxoparkSpinner();
+        if (GrandTotalsActivity.spnTaxoparkAdapter != null) GrandTotalsActivity.createTaxoparkSpinner();
     }
 
 
     class TaxoparksAdapter extends ArrayAdapter<Taxopark> {
-        private final Context context;
-
         public TaxoparksAdapter(Context context) {
             super(context, android.R.layout.simple_list_item_1, taxoparks);
-            this.context = context;
         }
 
         @Override
@@ -136,7 +129,7 @@ public class TaxoparksFragment extends ListFragment {
                 if (newName.equals(taxoparkIter.taxoparkName) && currentTaxopark.taxoparkID != taxoparkIter.taxoparkID) isInTheList = true;
             }
             if (isInTheList) {
-                Toast.makeText(mActivity, getResources().getString(R.string.taxopark) + " " + String.valueOf(newName) + " " +
+                Toast.makeText(context, getResources().getString(R.string.taxopark) + " " + String.valueOf(newName) + " " +
                         getResources().getString(R.string.isInTheList), Toast.LENGTH_SHORT).show();
                 taxoparkName.setText("");
             }

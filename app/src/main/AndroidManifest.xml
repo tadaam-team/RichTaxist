@@ -61,11 +61,11 @@
         </activity>
         <activity
             android:name=".gps.RouteActivity"
-            android:label="@string/routeMapScreenName" >
+            android:label="@string/routeMap" >
         </activity>
         <activity
             android:name=".SignInActivity"
-            android:label="@string/signIn" >
+            android:label="@string/signInScreenName" >
         </activity>
         <activity
             android:name=".ChatClient.ChatLoginActivity"

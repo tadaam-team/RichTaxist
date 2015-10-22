@@ -26,6 +26,8 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import tt.richTaxist.Enums.InputStyle;
+
 public class SignInActivity extends AppCompatActivity {
     private static final String LOG_TAG = "SignInActivity";
     private Context context;
@@ -279,6 +281,7 @@ public class SignInActivity extends AppCompatActivity {
         Storage.taxoparkID      = user.getInt("taxoparkID");
         Storage.billingID       = user.getInt("billingID");
         Storage.monthID         = user.getInt("monthID");
+        Storage.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Storage.emailVerified) {

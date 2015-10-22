@@ -2,7 +2,6 @@ package tt.richTaxist;
 
 import android.content.res.Configuration;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;

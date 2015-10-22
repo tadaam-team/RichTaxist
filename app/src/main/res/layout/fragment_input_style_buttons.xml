@@ -1,0 +1,18 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="tt.richTaxist.Bricks.DateTimeButtons">
+
+    <Button
+        style="@style/ButtonBordered"
+        android:text="@string/date"
+        android:id="@+id/tbInputStyle"
+        android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"/>
+    <Button
+        style="@style/ButtonBordered"
+        android:text="@string/time"
+        android:id="@+id/btnTime"
+        android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"/>
+</LinearLayout>
