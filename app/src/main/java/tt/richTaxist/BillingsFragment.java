@@ -112,7 +112,8 @@ public class BillingsFragment extends ListFragment {
             }
             else {
                 currentBilling.billingName = newName;
-                currentBilling.commission = Float.valueOf(commission.getText().toString());
+                if (!"".equals(commission.getText().toString()))
+                    currentBilling.commission = Float.valueOf(commission.getText().toString());
                 BillingsSQLHelper.dbOpenHelper.update(currentBilling);
                 if (OrderFragment.spnBillingAdapter != null) OrderFragment.createBillingSpinner();
             }

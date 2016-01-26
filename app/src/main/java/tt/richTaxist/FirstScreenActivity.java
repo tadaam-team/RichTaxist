@@ -155,7 +155,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnGrandTotals:
-                startActivity(new Intent(activity, GrandTotalsActivity.class));
+                Intent intent = new Intent(activity, GrandTotalsActivity.class);
+                intent.putExtra("author", "FirstScreenActivity");
+                startActivity(intent);
                 Log.d(LOG_TAG, "открываю итоги по зарплате");
                 break;
 

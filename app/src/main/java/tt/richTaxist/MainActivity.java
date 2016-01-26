@@ -167,7 +167,9 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
 
             case R.id.action_grand_totals:
-                startActivity(new Intent(context, GrandTotalsActivity.class));
+                Intent intent2 = new Intent(context, GrandTotalsActivity.class);
+                intent2.putExtra("author", "MainActivity");
+                startActivity(intent2);
                 finish();
                 return true;
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 
@@ -69,10 +70,18 @@ public class Shift {
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){
+            float commission;
             switch (order.typeOfPayment){
-                case CASH: revenueCash = order.price; break;
-                case CARD: revenueCard = order.price; break;
-                case TIP: revenueBonus = order.price; break;
+                case CASH: revenueCash += order.price;
+                    commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
+                    salaryOfficial += order.price * (1 - commission/100);
+                    break;
+                case CARD: revenueCard += order.price;
+                    commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
+                    salaryOfficial += order.price * (1 - commission/100);
+                    break;
+                case TIP: revenueBonus += order.price;
+                    break;
             }
         }
         revenueOfficial = revenueCash + revenueCard;
@@ -86,7 +95,7 @@ public class Shift {
         }
 
         toTheCashier = revenueCash - this.petrol;
-        salaryOfficial = (revenueOfficial / 2) - this.petrol;
+//        salaryOfficial = (revenueOfficial / 2) - this.petrol;
         salaryUnofficial = salaryOfficial + revenueBonus - carRent;
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();

@@ -1,6 +1,5 @@
 package tt.richTaxist.gps;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,11 +14,12 @@ import tt.richTaxist.DB.LocationsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Shift;
+import tt.richTaxist.gps.google.MapPathActivity;
 
 public class RouteActivity extends FragmentActivity {
     private static final String LOG_TAG = "Route activity";
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Fragment mapFragment;
+    private MapPathActivity mapFragment;
     private AsyncTask updateTask;
 
     @Override
@@ -29,7 +29,7 @@ public class RouteActivity extends FragmentActivity {
         setContentView(R.layout.gps_activity_route);
         setUpMapIfNeeded();
 
-        mapFragment = GPSHelper.getMapFragment();
+        mapFragment = new MapPathActivity();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.mapFragment, mapFragment);
         ft.commit();
@@ -42,7 +42,7 @@ public class RouteActivity extends FragmentActivity {
         final Calendar rangeEnd = Calendar.getInstance();
         if (currentShift.isClosed()) rangeEnd.setTime(currentShift.endShift);
 
-        ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByShift(currentShift));
+        mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByShift(currentShift));
         final TextView tvRangeStart = (TextView) findViewById(R.id.tvRangeStart);
         final TextView tvRangeEnd   = (TextView) findViewById(R.id.tvRangeEnd);
         tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
@@ -58,7 +58,7 @@ public class RouteActivity extends FragmentActivity {
                 rangeEnd.setTimeInMillis(maxValue);
                 tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
                 tvRangeEnd.setText(getStringDateTimeFromCal(rangeEnd));
-                ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
+                mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
             }
         });
 
@@ -66,40 +66,38 @@ public class RouteActivity extends FragmentActivity {
         FrameLayout layout = (FrameLayout) findViewById(R.id.seekBarPlaceHolderInRouteActivity);
         layout.addView(seekBar);
 
-        if (!currentShift.isClosed()){
 
-            updateTask = new AsyncTask() {
-                @Override
-                protected Object doInBackground(Object[] params) {
-                    while (true) {
-                        try {
-                            if (isCancelled()) break;
-                            TimeUnit.SECONDS.sleep(4);
-                            publishProgress();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            break;
-                        }
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void onProgressUpdate(Object[] values) {
-                    //super.onProgressUpdate(values);
-                    //Log.d(LOG_TAG,"Updating map");
+        updateTask = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                while (true) {
                     try {
-                        seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
-                        ((MapFragment) mapFragment).showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod
-                                (rangeStart.getTime(), Calendar.getInstance().getTime()));
-                    } catch (Exception e) {
+                        if (isCancelled()) break;
+                        TimeUnit.SECONDS.sleep(4);
+                        publishProgress();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
-                        updateTask.cancel(true);
+                        break;
                     }
                 }
-            };
-            updateTask.execute();
-        }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Object[] values) {
+                //super.onProgressUpdate(values);
+                //Log.d(LOG_TAG,"Updating map");
+                try {
+                    seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
+                    mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod
+                            (rangeStart.getTime(), Calendar.getInstance().getTime()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    updateTask.cancel(true);
+                }
+            }
+        };
+        updateTask.execute();
     }
 
     private String getStringDateTimeFromCal(Calendar cal){

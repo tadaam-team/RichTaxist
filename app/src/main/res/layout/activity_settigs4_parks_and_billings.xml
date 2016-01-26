@@ -13,15 +13,13 @@
         android:gravity="center"/>
 
     <fragment
-        android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
         android:name="tt.richTaxist.TaxoparksFragment"
         android:id="@+id/fragmentTaxoparks"
         tools:layout="@layout/fragment_taxoparks"/>
 
     <fragment
-        android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
         android:name="tt.richTaxist.BillingsFragment"
         android:id="@+id/fragmentBillings"
         android:layout_gravity="center_horizontal"

@@ -1,6 +1,7 @@
 package tt.richTaxist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,6 +16,7 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
+import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
@@ -30,6 +32,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
             gt_toTheCashier, gt_salaryOfficial, gt_salaryPlusBonus;
     private static Spinner spnTaxopark;
     public static ArrayAdapter spnTaxoparkAdapter;
+    private String author;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,8 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
             calculateGrandTotals(0);
             refreshGTControls();
         }
+        if (getIntent() != null) author = getIntent().getStringExtra("author");
+        else author = "";
     }
 
     private void initiateWidgets() {
@@ -207,13 +212,20 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
     //передаваемый интервал всегда меньше 1 смены, если юзер закрывает предыдущую смену перед тем как открывать новую
     private static void processPartlyShift(Calendar fromDate, Calendar toDate, int taxoparkID) {
         int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
-        revenueCashLocal = revenueCardLocal = revenueBonusLocal = 0;
+        revenueCashLocal = revenueCardLocal = revenueBonusLocal = salaryOfficialLocal = 0;
         ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersInRangeByTaxopark(fromDate, toDate, taxoparkID);
         if (orders.size() != 0) {
             for (Order order : orders) {
+                float commission;
                 switch (order.typeOfPayment) {
-                    case CASH: revenueCashLocal += order.price; break;
-                    case CARD: revenueCardLocal += order.price; break;
+                    case CASH: revenueCashLocal += order.price;
+                        commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
+                        salaryOfficialLocal += order.price * (1 - commission/100);
+                        break;
+                    case CARD: revenueCardLocal += order.price;
+                        commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
+                        salaryOfficialLocal += order.price * (1 - commission/100);
+                        break;
                     case TIP: revenueBonusLocal += order.price; break;
                 }
             }
@@ -221,7 +233,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
             revenueOfficialLocal    = revenueCashLocal + revenueCardLocal;
             petrolLocal             = (int) (revenueOfficialLocal * 0.13);
             toTheCashierLocal       = revenueCashLocal - petrolLocal;
-            salaryOfficialLocal     = (revenueOfficialLocal / 2) - petrolLocal;
+//            salaryOfficialLocal     = (revenueOfficialLocal / 2) - petrolLocal;
             salaryPlusBonusLocal    = salaryOfficialLocal + revenueBonusLocal;
 
             Log.d(LOG_TAG, "revenueOfficial: " + String.valueOf(revenueOfficial));
@@ -248,5 +260,16 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         gt_toTheCashier.    setText(String.format(Locale.GERMANY, "%,d", toTheCashier));
         gt_salaryOfficial.  setText(String.format(Locale.GERMANY, "%,d", salaryOfficial));
         gt_salaryPlusBonus. setText(String.format(Locale.GERMANY, "%,d", salaryPlusBonus));
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (author.equals("FirstScreenActivity")) {
+            startActivity(new Intent(context, FirstScreenActivity.class));
+        }
+        else if (author.equals("MainActivity")) {
+            startActivity(new Intent(context, MainActivity.class));
+        }
+        finish();
     }
 }
