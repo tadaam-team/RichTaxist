@@ -16,24 +16,24 @@ import tt.richTaxist.Units.Shift;
  * Created by AlexShredder on 29.06.2015.
  */
 public class ShiftsSQLHelper extends SQLHelper {
-    static final String TABLE_NAME              = "shifts";
-    static final String SHIFT_ID                = "shiftID";
-    static final String BEGIN_SHIFT             = "beginShift";
-    static final String END_SHIFT               = "endShift";
-    static final String REVENUE_OFFICIAL        = "revenueOfficial";
-    static final String REVENUE_CASH            = "revenueCash";
-    static final String REVENUE_CARD            = "revenueCard";
-    static final String PETROL                  = "petrol";
-    static final String PETROL_FILLED_BY_HANDS  = "petrolFilledByHands";
-    static final String TO_THE_CASHIER          = "toTheCashier";
-    static final String SALARY_OFFICIAL         = "salaryOfficial";
-    static final String REVENUE_BONUS           = "revenueBonus";
-    static final String CAR_RENT                = "carRent";
-    static final String SALARY_UNOFFICIAL       = "salaryUnofficial";
-    static final String WORK_HOURS_SPENT        = "workHoursSpent";
-    static final String SALARY_PER_HOUR         = "salaryPerHour";
-    static final String DISTANCE                = "distance";
-    static final String TRAVEL_TIME             = "travelTime";
+    public static final String TABLE_NAME              = "shifts";
+    public static final String SHIFT_ID                = "shiftID";
+    public static final String BEGIN_SHIFT             = "beginShift";
+    public static final String END_SHIFT               = "endShift";
+    public static final String REVENUE_OFFICIAL        = "revenueOfficial";
+    public static final String REVENUE_CASH            = "revenueCash";
+    public static final String REVENUE_CARD            = "revenueCard";
+    public static final String PETROL                  = "petrol";
+    public static final String PETROL_FILLED_BY_HANDS  = "petrolFilledByHands";
+    public static final String TO_THE_CASHIER          = "toTheCashier";
+    public static final String SALARY_OFFICIAL         = "salaryOfficial";
+    public static final String REVENUE_BONUS           = "revenueBonus";
+    public static final String CAR_RENT                = "carRent";
+    public static final String SALARY_UNOFFICIAL       = "salaryUnofficial";
+    public static final String WORK_HOURS_SPENT        = "workHoursSpent";
+    public static final String SALARY_PER_HOUR         = "salaryPerHour";
+    public static final String DISTANCE                = "distance";
+    public static final String TRAVEL_TIME             = "travelTime";
 
     public static ShiftsSQLHelper dbOpenHelper = new ShiftsSQLHelper(MainActivity.context);
 
@@ -179,7 +179,7 @@ public class ShiftsSQLHelper extends SQLHelper {
         return shift;
     }
 
-    private Shift loadShiftFromCursor(Cursor cursor){
+    public Shift loadShiftFromCursor(Cursor cursor){
         Date beginShift = null;
         Date endShift   = null;
         int shiftID     = cursor.getInt(cursor.getColumnIndex(SHIFT_ID));

@@ -50,7 +50,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 //        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_first_screen));
         MainActivity.context = context;
 
-        GPSHelper.startService(MainActivity.context);
+//        GPSHelper.startService(MainActivity.context);
 
         MainActivity.currentShift = ShiftsSQLHelper.dbOpenHelper.getLastShift();
         if (MainActivity.currentShift != null) {

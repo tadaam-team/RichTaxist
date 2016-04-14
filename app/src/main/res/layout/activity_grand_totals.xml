@@ -17,18 +17,16 @@
             android:text="@string/rangeStart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="start"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:gravity="center" />
 
         <TextView
             style="@style/Text"
             android:text="@string/rangeEnd"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
             android:layout_weight="1"
-            android:gravity="end"/>
+            android:gravity="center"/>
     </LinearLayout>
 
     <LinearLayout

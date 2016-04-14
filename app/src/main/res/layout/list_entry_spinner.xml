@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          style="@style/Text"
-          android:singleLine="true"
-          android:layout_width="match_parent"
-          android:layout_height="60dp"
-          android:ellipsize="marquee"
-          android:textColor="@color/button_material_dark"
-          android:text="1111"
-          android:gravity="center_vertical|end"/>
+    style="@style/Text"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:ellipsize="marquee"
+    android:textColor="@color/button_material_dark"
+    android:text="1111"
+    android:gravity="center_vertical|end"
+    android:id="@+id/row_content" />
