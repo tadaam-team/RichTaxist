@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Units;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -8,6 +8,9 @@ import java.util.Date;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.MainActivity;
+import tt.richTaxist.R;
+import tt.richTaxist.Storage;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -70,14 +73,12 @@ public class Shift {
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){
-            float commission;
+            float commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
             switch (order.typeOfPayment){
                 case CASH: revenueCash += order.price;
-                    commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
                     salaryOfficial += order.price * (1 - commission/100);
                     break;
                 case CARD: revenueCard += order.price;
-                    commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
                     salaryOfficial += order.price * (1 - commission/100);
                     break;
                 case TIP: revenueBonus += order.price;
@@ -87,7 +88,7 @@ public class Shift {
         revenueOfficial = revenueCash + revenueCard;
 
         if (petrol == 0) {//значит факт бензин еще не известен или уже заполнен
-            if (!petrolFilledByHands) this.petrol = (int) (revenueOfficial * 0.13);
+            if (!petrolFilledByHands) this.petrol = (int) (revenueOfficial * 0.15);
             /*иначе мы не трогаем введенный руками бензин*/
         }
         else{//нажата кнопка _st_petrol после ввода факт. бензина
@@ -95,7 +96,7 @@ public class Shift {
         }
 
         toTheCashier = revenueCash - this.petrol;
-//        salaryOfficial = (revenueOfficial / 2) - this.petrol;
+        salaryOfficial -= this.petrol;
         salaryUnofficial = salaryOfficial + revenueBonus - carRent;
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();

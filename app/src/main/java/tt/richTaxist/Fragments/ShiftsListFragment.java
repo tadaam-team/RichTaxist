@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Fragments;
 
 import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
@@ -25,10 +25,18 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
 import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfSpinner;
+import tt.richTaxist.FirstScreenActivity;
+import tt.richTaxist.MainActivity;
+import tt.richTaxist.R;
+import tt.richTaxist.ShiftTotalsActivity;
+import tt.richTaxist.Storage;
+import tt.richTaxist.SwipeDetector;
 import android.widget.LinearLayout.LayoutParams;
 
 public class ShiftsListFragment extends ListFragment implements DateTimeRangeFrag.OnDateTimeRangeFragmentInteractionListener {

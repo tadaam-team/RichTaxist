@@ -2,36 +2,38 @@ package tt.richTaxist;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-
-import tt.richTaxist.Bricks.DateTimeRangeFrag;
-import tt.richTaxist.DB.BillingsSQLHelper;
-import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfSpinner;
 
-public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRangeFrag.OnDateTimeRangeFragmentInteractionListener {
+public class GrandTotalsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "GrandTotalsActivity";
     private static Context context;
-    private static DateTimeRangeFrag dateTimeRangeFrag;
+    private static Shift firstShift, lastShift;
 
-    private static int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, salaryPlusBonus;
+    private static int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol, toTheCashier, salaryOfficial, carRent, salaryPlusBonus;
     private static EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
-            gt_toTheCashier, gt_salaryOfficial, gt_salaryPlusBonus;
-    private static Spinner spnTaxopark;
-    public static ArrayAdapter spnTaxoparkAdapter;
+            gt_toTheCashier, gt_salaryOfficial, gt_carRent, gt_salaryPlusBonus;
+    private static Spinner spnFirstShift, spnLastShift, spnTaxopark;
+    private static ShiftAdapter4Spinners shiftAdapter;
+    public static ArrayAdapter spnShiftAdapter, spnTaxoparkAdapter;
     private String author;
 
     @Override
@@ -40,9 +42,14 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         setContentView(R.layout.activity_grand_totals);
         context = getApplicationContext();
         Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_grand_totals));
+
+        ArrayList<Shift> list = new ArrayList<>();
+        list.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
+        firstShift = list.get(0);
+        lastShift = list.get(list.size() - 1);
+//        shiftAdapter = new ShiftAdapter4Spinners(context);
         initiateWidgets();
 
-        dateTimeRangeFrag = (DateTimeRangeFrag) getSupportFragmentManager().findFragmentById(R.id.dateTimeRangeFragment);
         if (!MainActivity.shiftsStorage.isEmpty()) {
             calculateGrandTotals(0);
             refreshGTControls();
@@ -52,6 +59,9 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
     }
 
     private void initiateWidgets() {
+        spnFirstShift       = (Spinner)  findViewById(R.id.spnFirstShift);
+        spnLastShift        = (Spinner)  findViewById(R.id.spnLastShift);
+        createShiftsSpinners();
         gt_revenueOfficial  = (EditText) findViewById(R.id.gt_revenueOfficial);
         gt_revenueCash      = (EditText) findViewById(R.id.gt_revenueCash);
         gt_revenueCard      = (EditText) findViewById(R.id.gt_revenueCard);
@@ -59,9 +69,35 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         gt_petrol           = (EditText) findViewById(R.id.gt_petrol);
         gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
         gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
+        gt_carRent          = (EditText) findViewById(R.id.gt_carRent);
         gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
         spnTaxopark         = (Spinner)  findViewById(R.id.spnTaxopark);
         createTaxoparkSpinner();
+    }
+
+    public static void createShiftsSpinners(){
+        spnFirstShift.setAdapter(shiftAdapter);
+        spnFirstShift.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                firstShift = (Shift) parent.getItemAtPosition(selectedItemPosition);
+                calculateGrandTotals(Storage.taxoparkID);
+                refreshGTControls();
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spnLastShift.setAdapter(shiftAdapter);
+        spnLastShift.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                lastShift = (Shift) parent.getItemAtPosition(selectedItemPosition);
+                calculateGrandTotals(Storage.taxoparkID);
+                refreshGTControls();
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     public static void createTaxoparkSpinner(){
@@ -84,94 +120,26 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
-    @Override
-    public void calculate(Calendar rangeStart, Calendar rangeEnd) {
-        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        calculateGrandTotals(Storage.taxoparkID);
-    }
-
-    @Override
-    public void refreshControls() {
-        refreshGTControls();
-    }
-
     private static int calculateGrandTotals(int taxoparkID) {
         //необходимая инициализация. значения сразу перезаписываются
-        Calendar firstShiftStart, firstShiftEnd, preLastShiftDate, lastShiftStart, lastShiftEnd;
-        firstShiftStart = firstShiftEnd = preLastShiftDate = lastShiftStart = lastShiftEnd = Calendar.getInstance();
+        Calendar firstShiftStart, firstShiftEnd, lastShiftStart, lastShiftEnd;
+        firstShiftStart = firstShiftEnd = lastShiftStart = lastShiftEnd = Calendar.getInstance();
+        revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial = carRent = salaryPlusBonus = 0;
 
-        revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial = salaryPlusBonus = 0;
-        ArrayList<Shift> shifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), true, taxoparkID);
-        if (shifts.size() == 0) {
-            //в интервал не попало начало ни одной смены
-            //не факт, что заказы вообще есть в этом интервале, но processPartlyShift с этим разберется сам
-            processPartlyShift(dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), taxoparkID);
-            Log.d(LOG_TAG, "no whole shifts to process");
-            return 1;
-        }
-
-        //надо отделить полные смены от не полных
-        //если в выборке только 2 неполные смены, то firstShift == lastShift
-        Shift firstShift = shifts.get(0);
         firstShiftStart.setTime(firstShift.beginShift);
         if (firstShift.isClosed()) firstShiftEnd.setTime(firstShift.endShift);
         Log.d(LOG_TAG, "---------------------------------------");
-        logDate("rangeStart", dateTimeRangeFrag.getRangeStart());
         logDate("firstShiftStart", firstShiftStart);
         logDate("firstShiftEnd", firstShiftEnd);
 
-        Shift lastShift = shifts.get(shifts.size() - 1);
         if (lastShift.isClosed()) lastShiftEnd.setTime(lastShift.endShift);
-        lastShiftStart.setTime(lastShift.beginShift);//только для лога
+        lastShiftStart.setTime(lastShift.beginShift);
         logDate("lastShiftStart", lastShiftStart);
         logDate("lastShiftEnd", lastShiftEnd);
-        logDate("rangeEnd", dateTimeRangeFrag.getRangeEnd());
 
-        //нам не нужно применять 13% если:
-        // 1) первая смена закрыта и следовательно есть данные по факт. бензину
-        // 2) выбранный rangeStart не отсекает часть первой смены, следовательно находится точно в firstShiftStart
-        // в идеале бы проверку запилить на предмет, есть ли в отсеченном куске заказ и применять 13% только, если он там есть
-        boolean firstShiftIsWhole = firstShift.isClosed() && dateTimeRangeFrag.getRangeStart().equals(firstShiftStart);
+        ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(firstShiftStart, lastShiftStart, true, taxoparkID);
+        processWholeShifts(wholeShifts);
 
-        //нам не нужно применять 13% если:
-        // 1) последняя смена закрыта и следовательно есть данные по факт. бензину
-        // 2) выбранный rangeEnd не отсекает часть последней смены, следовательно находится раньше lastShiftEnd
-        // в идеале бы проверку запилить на предмет, есть ли в отсеченном куске заказ и применять 13% только, если он там есть
-        //проверка lastShiftEnd.after(now) нужна на случай, если водитель уже добавил последний заказ будущим часом (числом),
-        //закрыл смену и хочет посмотреть итоги, но дата закрытия еще не наступила
-        Calendar now = Calendar.getInstance();
-        boolean lastShiftIsWhole = lastShift.isClosed() && (dateTimeRangeFrag.getRangeEnd().after(lastShiftEnd) || lastShiftEnd.after(now));
-
-        if (firstShiftIsWhole) {
-            if (!lastShiftIsWhole) {
-                lastShiftStart.setTime(lastShift.beginShift);
-                preLastShiftDate.setTimeInMillis(lastShiftStart.getTimeInMillis() - 1);
-                //получим список всегда целых смен с конца. здесь первая смена всегда целая
-                ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(firstShiftStart, preLastShiftDate, true, taxoparkID);
-
-                processWholeShifts(wholeShifts);
-                processPartlyShift(lastShiftStart, dateTimeRangeFrag.getRangeEnd(), taxoparkID);
-            } else {
-                processWholeShifts(shifts);
-            }
-        } else {
-            processPartlyShift(dateTimeRangeFrag.getRangeStart(), firstShiftStart, taxoparkID);
-            if (!lastShiftIsWhole) {
-                lastShiftStart.setTime(lastShift.beginShift);//он уже там
-                preLastShiftDate.setTimeInMillis(lastShiftStart.getTimeInMillis() - 1);
-                //получим список всегда целых смен с конца. здесь первая смена всегда не целая
-                //таких может и не оказаться, если в интервал попало всего 2 нецелые смены
-                if (preLastShiftDate.after(firstShiftStart)) {
-                    ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(firstShiftStart, preLastShiftDate, true, taxoparkID);
-                    processWholeShifts(wholeShifts);
-                }
-                processPartlyShift(lastShiftStart, dateTimeRangeFrag.getRangeEnd(), taxoparkID);
-            } else {
-                //rangeEnd лежит в пределах: endShift смены перед > rangeEnd > beginShift следующей смены
-                processWholeShifts(shifts);
-            }
-        }
         return 0;
     }
     private static void logDate (String dateName, Calendar dateToLog){
@@ -184,71 +152,18 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         }
     }
     private static void processWholeShifts(ArrayList<Shift> wholeShifts) {
-        int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
-        revenueOfficialLocal = revenueCashLocal = revenueCardLocal = revenueBonusLocal = petrolLocal = toTheCashierLocal = salaryOfficialLocal = salaryPlusBonusLocal = 0;
-
         for (Shift shift : wholeShifts) {
             Log.d(LOG_TAG, "shift.workHoursSpent: " + String.valueOf(shift.workHoursSpent));
-            revenueOfficialLocal += shift.revenueOfficial;
-            revenueCashLocal     += shift.revenueCash;
-            revenueCardLocal     += shift.revenueCard;
-            revenueBonusLocal    += shift.revenueBonus;
-            petrolLocal          += shift.petrol;
-            toTheCashierLocal    += shift.toTheCashier;
-            salaryOfficialLocal  += shift.salaryOfficial;
-            salaryPlusBonusLocal += shift.salaryUnofficial;
+            revenueOfficial += shift.revenueOfficial;
+            revenueCash     += shift.revenueCash;
+            revenueCard     += shift.revenueCard;
+            revenueBonus    += shift.revenueBonus;
+            petrol          += shift.petrol;
+            toTheCashier    += shift.toTheCashier;
+            salaryOfficial  += shift.salaryOfficial;
+            carRent         += shift.carRent;
+            salaryPlusBonus += shift.salaryUnofficial;
         }
-
-        revenueOfficial = revenueOfficialLocal;
-        revenueCash     = revenueCashLocal;
-        revenueCard     = revenueCardLocal;
-        revenueBonus    = revenueBonusLocal;
-        petrol          = petrolLocal;
-        toTheCashier    = toTheCashierLocal;
-        salaryOfficial  = salaryOfficialLocal;
-        salaryPlusBonus = salaryPlusBonusLocal;
-    }
-    //обработать не целую смену (а точнее список заказов, по которым arrivalDateTime лежит между датами)
-    //передаваемый интервал всегда меньше 1 смены, если юзер закрывает предыдущую смену перед тем как открывать новую
-    private static void processPartlyShift(Calendar fromDate, Calendar toDate, int taxoparkID) {
-        int revenueOfficialLocal, revenueCashLocal, revenueCardLocal, revenueBonusLocal, petrolLocal, toTheCashierLocal, salaryOfficialLocal, salaryPlusBonusLocal;
-        revenueCashLocal = revenueCardLocal = revenueBonusLocal = salaryOfficialLocal = 0;
-        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersInRangeByTaxopark(fromDate, toDate, taxoparkID);
-        if (orders.size() != 0) {
-            for (Order order : orders) {
-                float commission;
-                switch (order.typeOfPayment) {
-                    case CASH: revenueCashLocal += order.price;
-                        commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
-                        salaryOfficialLocal += order.price * (1 - commission/100);
-                        break;
-                    case CARD: revenueCardLocal += order.price;
-                        commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
-                        salaryOfficialLocal += order.price * (1 - commission/100);
-                        break;
-                    case TIP: revenueBonusLocal += order.price; break;
-                }
-            }
-
-            revenueOfficialLocal    = revenueCashLocal + revenueCardLocal;
-            petrolLocal             = (int) (revenueOfficialLocal * 0.13);
-            toTheCashierLocal       = revenueCashLocal - petrolLocal;
-//            salaryOfficialLocal     = (revenueOfficialLocal / 2) - petrolLocal;
-            salaryPlusBonusLocal    = salaryOfficialLocal + revenueBonusLocal;
-
-            Log.d(LOG_TAG, "revenueOfficial: " + String.valueOf(revenueOfficial));
-            revenueOfficial += revenueOfficialLocal;
-            Log.d(LOG_TAG, "revenueOfficial: " + String.valueOf(revenueOfficial));
-            revenueCash     += revenueCashLocal;
-            revenueCard     += revenueCardLocal;
-            revenueBonus    += revenueBonusLocal;
-            petrol          += petrolLocal;
-            toTheCashier    += toTheCashierLocal;
-            salaryOfficial  += salaryOfficialLocal;
-            salaryPlusBonus += salaryPlusBonusLocal;
-            //processPartlyShift не обрабатывает отработку не целой смены, т.к. алгоритм слишком сложен
-        }
-        //если в переданном куске нет заказов, то анализировать нечего, как нечего и прибавлять к (возможно) ранее посчитанным числам
     }
 
     private static void refreshGTControls(){
@@ -259,6 +174,7 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
         gt_petrol.          setText(String.format(Locale.GERMANY, "%,d", petrol));
         gt_toTheCashier.    setText(String.format(Locale.GERMANY, "%,d", toTheCashier));
         gt_salaryOfficial.  setText(String.format(Locale.GERMANY, "%,d", salaryOfficial));
+        gt_carRent.         setText(String.format(Locale.GERMANY, "%,d", carRent));
         gt_salaryPlusBonus. setText(String.format(Locale.GERMANY, "%,d", salaryPlusBonus));
     }
 
@@ -271,5 +187,35 @@ public class GrandTotalsActivity extends AppCompatActivity implements DateTimeRa
             startActivity(new Intent(context, MainActivity.class));
         }
         finish();
+    }
+
+
+    class ShiftAdapter4Spinners extends ArrayAdapter<Shift> {
+        private final Context context;
+
+        public ShiftAdapter4Spinners(Context context) {
+            super(context, android.R.layout.simple_list_item_1, MainActivity.shiftsStorage);
+            this.context = context;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            Shift shift = getItem(position);
+
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.list_entry_spinner, parent, false);
+            }
+
+            //установим, какие данные из Shift отобразятся в полях списка
+            Resources res = MainActivity.context.getResources();
+            TextView textViewMain = (TextView) convertView.findViewById(R.id.entryTextViewMain);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(shift.beginShift);
+            textViewMain.setText(String.format(res.getString(R.string.shift)+" %02d.%02d",
+                    calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1));
+
+            return convertView;
+        }
     }
 }

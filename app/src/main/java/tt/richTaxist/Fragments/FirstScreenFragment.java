@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Fragments;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout.LayoutParams;
+import tt.richTaxist.R;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
     private static final String LOG_TAG = "FirstScreenFragment";

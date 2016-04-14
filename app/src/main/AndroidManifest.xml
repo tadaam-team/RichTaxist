@@ -67,14 +67,6 @@
             android:name=".SignInActivity"
             android:label="@string/signInScreenName" >
         </activity>
-        <activity
-            android:name=".ChatClient.ChatLoginActivity"
-            android:label="@string/chat" >
-        </activity>
-        <activity
-            android:name=".ChatClient.ChatActivity"
-            android:label="@string/chat" >
-        </activity>
 
 
         <service

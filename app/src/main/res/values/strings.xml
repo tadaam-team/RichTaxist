@@ -107,7 +107,7 @@
     <string name="billingName">название системы</string>
     <string name="commission">комиссия</string>
     <string name="isInTheList">уже есть в списке</string>
-
+    <string name="cantBeRemoved">используется в сохраненных заказах и не может быть удалена</string>
 
     <string name="signInScreenName">Учетные записи</string>
     <string name="username">логин</string>

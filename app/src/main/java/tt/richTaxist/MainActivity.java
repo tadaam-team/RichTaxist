@@ -12,9 +12,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
-import tt.richTaxist.ChatClient.ChatLoginActivity;
+
+import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Enums.ActivityState;
+import tt.richTaxist.Fragments.OrderFragment;
+import tt.richTaxist.Fragments.OrdersListFragment;
 
 /**
  * Created by Tau on 08.06.2015.
@@ -91,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    static void sortOrdersStorage(){
+    public static void sortOrdersStorage(){
         for (int i = ordersStorage.size() - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 Date currentDate = ordersStorage.get(j).arrivalDateTime;
@@ -107,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    static void sortShiftsStorage(){
+    public static void sortShiftsStorage(){
         for (int i = shiftsStorage.size() - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 Date currentShiftStart = shiftsStorage.get(j).beginShift;
@@ -153,10 +157,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.main_menu:
                 startActivity(new Intent(context, FirstScreenActivity.class));
                 finish();
-                return true;
-
-            case R.id.action_chat:
-                startActivity(new Intent(context, ChatLoginActivity.class));
                 return true;
 
             case R.id.action_shift_totals:

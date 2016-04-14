@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.Order;
-import tt.richTaxist.Shift;
+import tt.richTaxist.Units.Order;
+import tt.richTaxist.Units.Shift;
 
 /**
  * Created by AlexShredder on 29.06.2015.

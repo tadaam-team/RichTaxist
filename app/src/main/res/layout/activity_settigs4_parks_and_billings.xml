@@ -14,13 +14,13 @@
 
     <fragment
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:name="tt.richTaxist.TaxoparksFragment"
+        android:name="tt.richTaxist.Fragments.TaxoparksFragment"
         android:id="@+id/fragmentTaxoparks"
         tools:layout="@layout/fragment_taxoparks"/>
 
     <fragment
         android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:name="tt.richTaxist.BillingsFragment"
+        android:name="tt.richTaxist.Fragments.BillingsFragment"
         android:id="@+id/fragmentBillings"
         android:layout_gravity="center_horizontal"
         tools:layout="@layout/fragment_billings"/>

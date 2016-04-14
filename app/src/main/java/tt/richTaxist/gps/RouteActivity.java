@@ -13,7 +13,7 @@ import tt.richTaxist.Bricks.RangeSeekBar;
 import tt.richTaxist.DB.LocationsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
-import tt.richTaxist.Shift;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.gps.google.MapPathActivity;
 
 public class RouteActivity extends FragmentActivity {

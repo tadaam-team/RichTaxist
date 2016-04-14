@@ -5,8 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
-import tt.richTaxist.Billing;
 import tt.richTaxist.MainActivity;
+import tt.richTaxist.Units.Billing;
 
 /**
  * Created by Tau on 04.10.2015.

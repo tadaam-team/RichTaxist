@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Units;
 
 import android.content.res.Resources;
 import java.util.Calendar;
@@ -6,13 +6,15 @@ import java.util.Date;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.MainActivity;
+import tt.richTaxist.R;
 
 /**
  * Created by Tau on 27.06.2015.
  */
 public class Order {
-    public static final String PARAM_DISTANCE = "tt.richTaxist.Order.DISTANCE";
-    public static final String PARAM_TRAVEL_TIME = "tt.richTaxist.Order.TRAVEL_TIME";
+    public static final String PARAM_DISTANCE = "tt.richTaxist.Units.Order.DISTANCE";
+    public static final String PARAM_TRAVEL_TIME = "tt.richTaxist.Units.Order.TRAVEL_TIME";
     public Date arrivalDateTime;
     public int price;
     public TypeOfPayment typeOfPayment;

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.Order;
+import tt.richTaxist.Units.Order;
 import tt.richTaxist.R;
-import tt.richTaxist.Shift;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Storage;
 
 /**

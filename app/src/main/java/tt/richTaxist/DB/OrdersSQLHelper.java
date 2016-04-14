@@ -4,15 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.Order;
-import tt.richTaxist.Shift;
 import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.Units.Billing;
+import tt.richTaxist.Units.Order;
+import tt.richTaxist.Units.Shift;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -113,6 +113,14 @@ public class OrdersSQLHelper extends SQLHelper {
             while (cursor.moveToNext());
         }
         return ordersList;
+    }
+
+    public boolean canWeDeleteBilling (Billing billing){
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE "
+                + BILLING_ID + "='" + String.valueOf(billing.billingID) + "'";
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        return cursor.getCount() == 0;
     }
 
 //    public Map<String,Object> getDistanceAndTimeByShift(Shift shift) {

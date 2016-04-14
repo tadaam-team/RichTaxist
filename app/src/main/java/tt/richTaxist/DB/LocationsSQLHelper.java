@@ -6,9 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.Date;
-
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.Shift;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.gps.Coordinates;
 
 /**

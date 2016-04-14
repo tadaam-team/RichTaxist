@@ -1,0 +1,14 @@
+*.iml
+*.apk
+local.properties
+.idea
+.gradle/
+build/
+/*/build/
+app/proguard-rules.pro
+gradle/
+gradle.properties
+gradlew
+gradlew.bat
+settings.gradle
+workspace.xml

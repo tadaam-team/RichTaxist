@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tt.richTaxist.OrderFragment"
+    tools:context=".Fragments.OrderFragment"
     android:id="@+id/orderFragment">
 
     <ScrollView
@@ -139,13 +139,13 @@
                     android:text="@string/taxopark"
                     android:id="@+id/btnTaxopark"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="30dp"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/billing"
                     android:id="@+id/btnBilling"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="30dp"
+                    android:layout_width="0dp" android:layout_height="wrap_content"
                     android:layout_weight="1"/>
             </TableRow>
 

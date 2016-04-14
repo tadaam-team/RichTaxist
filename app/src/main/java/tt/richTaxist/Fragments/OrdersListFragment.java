@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Fragments;
 
 import android.support.v4.app.ListFragment;
 import android.content.Context;
@@ -16,10 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
+import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.Enums.TypeOfSpinner;
+import tt.richTaxist.MainActivity;
+import tt.richTaxist.R;
+import tt.richTaxist.Storage;
+import tt.richTaxist.SwipeDetector;
 
 public class OrdersListFragment extends ListFragment {
     private static final String LOG_TAG = "OrdersListFragment";
@@ -125,9 +131,9 @@ public class OrdersListFragment extends ListFragment {
     }
 
     public interface OnOrderListFragmentInteractionListener {
-        public void refreshWidgets(Order order);
-        public void removeOrder(Order order);
-        public void switchToOrderFragment();
+        void refreshWidgets(Order order);
+        void removeOrder(Order order);
+        void switchToOrderFragment();
     }
 
 

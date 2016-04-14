@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Units;
 
 import tt.richTaxist.DB.BillingsSQLHelper;
 

@@ -24,7 +24,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import tt.richTaxist.Bricks.DF_NumberInput;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfSpinner;
 
@@ -58,7 +60,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         timeSetListener = ShiftTotalsActivity.this;
 
         currentShift = MainActivity.currentShift;
-        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
+        if (currentShift != null) currentShift.calculateShiftTotals(0, Storage.taxoparkID);
 
         //найдем даты начала и конца смены
         shiftStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);

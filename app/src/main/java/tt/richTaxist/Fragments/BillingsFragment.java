@@ -1,4 +1,4 @@
-package tt.richTaxist;
+package tt.richTaxist.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
+import tt.richTaxist.Units.Billing;
 import tt.richTaxist.DB.BillingsSQLHelper;
+import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.R;
 
 public class BillingsFragment extends ListFragment {
     private static final String LOG_TAG = "BillingsFragment";
@@ -90,10 +93,15 @@ public class BillingsFragment extends ListFragment {
             (convertView.findViewById(R.id.delBilling)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    billings.remove(billing);
-                    BillingsSQLHelper.dbOpenHelper.remove(billing);
-                    notifyDataSetChanged();
-                    if (OrderFragment.spnBillingAdapter != null) OrderFragment.createBillingSpinner();
+                    if (OrdersSQLHelper.dbOpenHelper.canWeDeleteBilling(billing)) {
+                        billings.remove(billing);
+                        BillingsSQLHelper.dbOpenHelper.remove(billing);
+                        notifyDataSetChanged();
+                        if (OrderFragment.spnBillingAdapter != null)
+                            OrderFragment.createBillingSpinner();
+                    }
+                    else Toast.makeText(context, getResources().getString(R.string.billing) + " " +
+                            getResources().getString(R.string.cantBeRemoved), Toast.LENGTH_LONG).show();
                 }
             });
             return convertView;

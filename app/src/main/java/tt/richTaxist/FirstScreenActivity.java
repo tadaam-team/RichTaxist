@@ -20,11 +20,13 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import tt.richTaxist.ChatClient.ChatLoginActivity;
 import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.InputStyle;
+import tt.richTaxist.Fragments.FirstScreenFragment;
+import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.RouteActivity;
 
@@ -73,7 +75,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         if (Storage.currentUser == null) {
             // Отправляем данные на Parse.com для проверки только если юзер еще не авторизован
             Log.d(LOG_TAG, "username: " + Storage.username + "password: " + Storage.password);
-            authorize(this);
+//            authorize(this);
         }
 
         //фрагментная логика
@@ -136,11 +138,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnSignIn:
                 startActivity(new Intent(activity, SignInActivity.class));
                 Log.d(LOG_TAG, "открываю экран учетных записей");
-                break;
-
-            case R.id.btnChat:
-                startActivity(new Intent(activity, ChatLoginActivity.class));
-                Log.d(LOG_TAG, "открываю чат");
                 break;
 
             case R.id.btnRoute:

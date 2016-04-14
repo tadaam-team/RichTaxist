@@ -7,48 +7,12 @@
     android:id="@+id/activity_grand_totals"
     android:layout_gravity="center">
 
-    <LinearLayout
+    <fragment
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/Text"
-            android:text="@string/rangeStart"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
-
-        <TextView
-            style="@style/Text"
-            android:text="@string/rangeEnd"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
-            android:layout_weight="1"
-            android:gravity="end"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spnFirstShift"
-            android:layout_weight="1"/>
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/spnLastShift"
-            android:layout_weight="1"/>
-
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:name="tt.richTaxist.Bricks.DateTimeRangeFrag"
+        tools:layout="@layout/fragment_date_time_range"
+        android:id="@+id/dateTimeRangeFragment"/>
 
     <ScrollView
         android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
@@ -179,24 +143,6 @@
                     android:gravity="end"
                     android:enabled="false"
                     android:hint="@string/zero"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView
-                    android:text="@string/carRent"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="2"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
-                    android:id="@+id/gt_carRent"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                    android:gravity="end"
-                    android:hint="@string/zero"
-                    android:enabled="false"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
 
