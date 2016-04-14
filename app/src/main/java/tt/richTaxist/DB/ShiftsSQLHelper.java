@@ -127,7 +127,9 @@ public class ShiftsSQLHelper extends SQLHelper {
         if (cursor.moveToFirst()) {
             do {
                 Shift shift = loadShiftFromCursor(cursor);
-                if (taxoparkID == 0 || checkTaxoparkInShift(shift, taxoparkID)) shiftsStorage.add(shift);
+                if (taxoparkID == 0 || checkTaxoparkInShift(shift, taxoparkID)) {
+                    shiftsStorage.add(shift);
+                }
             }
             while (cursor.moveToNext());
         }

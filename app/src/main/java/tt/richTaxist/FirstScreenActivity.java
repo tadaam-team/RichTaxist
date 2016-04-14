@@ -153,7 +153,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnGrandTotals:
                 Intent intent = new Intent(activity, GrandTotalsActivity.class);
-                intent.putExtra("author", "FirstScreenActivity");
+                intent.putExtra(GrandTotalsActivity.AUTHOR, "FirstScreenActivity");
                 startActivity(intent);
                 Log.d(LOG_TAG, "открываю итоги по зарплате");
                 break;

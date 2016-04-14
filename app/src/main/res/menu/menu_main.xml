@@ -16,11 +16,6 @@
 
 
     <item
-        android:id="@+id/action_chat"
-        android:title="@string/chat"
-        android:orderInCategory="300"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_shift_totals"
         android:title="@string/shiftTotals"
         android:orderInCategory="400"

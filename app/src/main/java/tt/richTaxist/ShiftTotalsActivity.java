@@ -37,28 +37,28 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.NumberInputDialogListener {
     private static final String LOG_TAG = "ShiftTotalsActivity";
     private static Context context;
-    private static Shift currentShift;
+    private Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
-    private static Calendar shiftStart, shiftEnd;
+    private Calendar shiftStart, shiftEnd;
     private String clickedButtonID;
     private String author;
 
-    private static Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, st_carRent, buttonContinueShift;
-    private static EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryUnofficial, st_workHoursSpent, st_salaryPerHour;
-    private static ToggleButton buttonShiftIsClosed;
-    private static Spinner spnTaxopark;
-    public static ArrayAdapter spnTaxoparkAdapter;
+    private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, st_carRent, buttonContinueShift;
+    private EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryUnofficial, st_workHoursSpent, st_salaryPerHour;
+    private ToggleButton buttonShiftIsClosed;
+    private Spinner spnTaxopark;
+    private Locale locale;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shift_totals);
-        context = getApplicationContext();
-        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_shift_totals));
+        Storage.measureScreenWidth(this, (ViewGroup) findViewById(R.id.activity_shift_totals));
         dateSetListener = ShiftTotalsActivity.this;
         timeSetListener = ShiftTotalsActivity.this;
 
+        locale = getResources().getConfiguration().locale;
         currentShift = MainActivity.currentShift;
         if (currentShift != null) currentShift.calculateShiftTotals(0, Storage.taxoparkID);
 
@@ -81,6 +81,12 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         refreshSTControls();
         if (getIntent() != null) author = getIntent().getStringExtra("author");
         else author = "";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createTaxoparkSpinner();
     }
 
     public void onButtonExitToMainMenuClick(View button) {
@@ -278,12 +284,12 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         createTaxoparkSpinner();
     }
 
-    public static void createTaxoparkSpinner(){
+    private void createTaxoparkSpinner(){
         ArrayList<Taxopark> list = new ArrayList<>();
         list.add(0, new Taxopark(0, "- - -", false, 0));
         list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
         //создать list_entry_spinner.xml пришлось, т.к. текст этого спиннера отображался белым и не был виден
-        spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner, list);
+        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(this, R.layout.list_entry_spinner, list);
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
@@ -298,26 +304,26 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
-    private static void refreshSTControls(){
+    private void refreshSTControls(){
         buttonShiftStartDate    .setText(getStringDateFromCal(shiftStart));
         buttonShiftEndDate      .setText(getStringDateFromCal(shiftEnd));
         buttonShiftStartTime    .setText(getStringTimeFromCal(shiftStart));
         buttonShiftEndTime      .setText(getStringTimeFromCal(shiftEnd));
 
-        st_revenueOfficial      .setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueOfficial));
-        st_revenueCash          .setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueCash));
-        st_revenueCard          .setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueCard));
-        st_revenueBonus         .setText(String.format(Locale.GERMANY, "%,d", currentShift.revenueBonus));
+        st_revenueOfficial      .setText(String.format(locale, "%,d", currentShift.revenueOfficial));
+        st_revenueCash          .setText(String.format(locale, "%,d", currentShift.revenueCash));
+        st_revenueCard          .setText(String.format(locale, "%,d", currentShift.revenueCard));
+        st_revenueBonus         .setText(String.format(locale, "%,d", currentShift.revenueBonus));
 
         Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
         if (Storage.taxoparkID == 0) {
-            st_petrol           .setText(String.format(Locale.GERMANY, "%,d", currentShift.petrol));
-            st_toTheCashier     .setText(String.format(Locale.GERMANY, "%,d", currentShift.toTheCashier));
-            st_salaryOfficial   .setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryOfficial));
-            st_carRent          .setText(String.format(Locale.GERMANY, "%,d", currentShift.carRent));
-            st_salaryUnofficial .setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryUnofficial));
+            st_petrol           .setText(String.format(locale, "%,d", currentShift.petrol));
+            st_toTheCashier     .setText(String.format(locale, "%,d", currentShift.toTheCashier));
+            st_salaryOfficial   .setText(String.format(locale, "%,d", currentShift.salaryOfficial));
+            st_carRent          .setText(String.format(locale, "%,d", currentShift.carRent));
+            st_salaryUnofficial .setText(String.format(locale, "%,d", currentShift.salaryUnofficial));
             st_workHoursSpent   .setText(String.valueOf(currentShift.workHoursSpent));
-            st_salaryPerHour    .setText(String.format(Locale.GERMANY, "%,d", currentShift.salaryPerHour));
+            st_salaryPerHour    .setText(String.format(locale, "%,d", currentShift.salaryPerHour));
         } else {
             st_petrol           .setText("- - -");
             st_toTheCashier     .setText("- - -");
@@ -329,12 +335,13 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         }
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
-    private static String getStringDateFromCal(Calendar date){
+    private String getStringDateFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
+        return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1,
+                cal.get(Calendar.YEAR) % 100);
     }
-    private static String getStringTimeFromCal(Calendar date){
+    private String getStringTimeFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
         return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));

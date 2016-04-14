@@ -54,7 +54,6 @@ public class TaxoparksFragment extends ListFragment {
         if (OrderFragment.spnTaxoparkAdapter != null)       OrderFragment.createTaxoparkSpinner();
         if (OrdersListFragment.spnTaxoparkAdapter != null)  OrdersListFragment.createTaxoparkSpinner();
         if (ShiftsListFragment.spnTaxoparkAdapter != null)  ShiftsListFragment.createTaxoparkSpinner();
-        if (ShiftTotalsActivity.spnTaxoparkAdapter != null) ShiftTotalsActivity.createTaxoparkSpinner();
     }
 
 
