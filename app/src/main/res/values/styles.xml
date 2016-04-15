@@ -8,7 +8,7 @@
 
         <item name="android:buttonStyle">@style/ButtonBordered</item>
         <item name="android:buttonStyleToggle">@style/ToggleButtonBordered</item>
-        <item name="android:textViewStyle">@style/Text</item>
+        <item name="android:textViewStyle">@style/TextView</item>
         <item name="android:windowBackground">@color/custom_theme_color</item>
         <item name="android:colorBackground">@color/custom_theme_color</item>
         <item name="android:textSize">16sp</item>
@@ -17,7 +17,10 @@
 <!--style params starting with "layout_" don't work by default. you need to add {style="@style/ButtonBordered"} to each widget-->
 <!--4=92;  3=124;  2=188;  1=380-->
     <style name="ButtonBordered" parent="android:style/Widget.Button">
-        <!--<item name="android:layout_margin">2dp</item>-->
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
     </style>
 
     <style name="ToggleButtonBordered" parent="android:style/Widget.Button.Toggle">
@@ -25,7 +28,11 @@
         <!--<item name="android:layout_margin">2dp</item>-->
     </style>
 
-    <style name="Text" parent="android:style/Widget.TextView">
+    <style name="TextView" parent="android:style/Widget.TextView">
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingRight">5dp</item>
         <!--<item name="android:layout_margin">2dp</item>-->
         <!--<item name="android:textSize">16sp</item>-->
     </style>

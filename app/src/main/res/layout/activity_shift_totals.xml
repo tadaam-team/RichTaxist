@@ -2,352 +2,324 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context=".ShiftTotalsActivity"
-    android:id="@+id/activity_shift_totals"
-    android:layout_gravity="center">
+    android:id="@+id/activity_shift_totals">
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
         <TextView
             android:text="@string/shiftStart"
-            style="@style/Text"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:gravity="start"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:gravity="center"/>
         <TextView
             android:text="@string/shiftEnd"
-            style="@style/Text"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|end"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="end"/>
+            android:gravity="center"/>
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
             android:text="@string/date"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonShiftStartDate"
-            android:layout_width="wrap_content" android:layout_height="60dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"/>
         <Button
             android:text="@string/time"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonShiftStartTime"
-            android:layout_width="wrap_content" android:layout_height="60dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"/>
         <Button
             android:text="@string/date"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonShiftEndDate"
-            android:layout_width="wrap_content" android:layout_height="60dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"/>
         <Button
             android:text="@string/time"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonShiftEndTime"
-            android:layout_width="wrap_content" android:layout_height="60dp"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_weight="1"/>
     </LinearLayout>
 
 
     <ScrollView
-        android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
         <TableLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/revenueOfficial"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_revenueOfficial"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/revenueCash"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_revenueCash"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/revenueCard"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_revenueCard"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/petrol"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|start"/>
                 <Button
                     android:id="@+id/st_petrol"
-                    style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical|end"
-                    android:paddingEnd="5dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:onClick="onPetrolClick"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:onClick="onPetrolClick"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/toTheCashier"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_toTheCashier"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/salaryOfficial"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_salaryOfficial"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:textColor="@android:color/holo_green_dark"
-                    android:textStyle="bold"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/revenueBonus"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_revenueBonus"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/carRent"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|start"/>
                 <Button
                     android:id="@+id/st_carRent"
-                    style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical|end"
-                    android:paddingEnd="5dp"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:onClick="onCarRentClick"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:onClick="onCarRentClick"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/salaryUnofficial"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
+                    android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
-                <EditText
+                <TextView
                     android:id="@+id/st_salaryPlusBonus"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/workHoursSpent"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_workHoursSpent"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/salaryPerHour"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="2"
-                    android:layout_gravity="center_vertical"/>
-                <EditText
+                    android:gravity="center_vertical|start"/>
+                <TextView
                     android:id="@+id/st_salaryPerHour"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent"
-                    android:inputType="numberDecimal"
-                    android:gravity="end"
-                    android:enabled="false"
-                    android:hint="@string/zero"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:gravity="center_vertical|end"
+                    android:hint="@string/zero"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/taxopark"
-                    style="@style/Text"
-                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"/>
                 <Spinner
                     android:id="@+id/spnTaxopark"
-                    android:layout_width="0dp" android:layout_height="match_parent" android:layout_weight="1"/>
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|end"/>
             </TableRow>
         </TableLayout>
     </ScrollView>
 
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
         <Button
             android:text="@string/exitToMainMenu"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonExitToMainMenu"
-            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
             android:onClick="onButtonExitToMainMenuClick"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"/>
+            android:gravity="center" />
         <ToggleButton
             android:id="@+id/buttonShiftIsClosed"
             style="@style/ToggleButtonBordered"
             android:textOff="@string/shiftIsOpen"
             android:textOn="@string/shiftIsClosed"
-            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
             android:drawableRight="@drawable/ic_lock_selector"
             android:drawableEnd="@drawable/ic_lock_selector"
             android:onClick="onButtonShiftIsClosedClick"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"/>
+            android:gravity="center"/>
         <Button
             android:text="@string/continueShift"
-            style="@style/ButtonBordered"
             android:id="@+id/buttonContinueShift"
-            android:layout_width="0dp" android:layout_height="60dp"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
             android:onClick="onContinueShiftClick"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"/>
+            android:gravity="center"/>
     </LinearLayout>
 </LinearLayout>

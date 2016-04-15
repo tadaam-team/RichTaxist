@@ -5,13 +5,6 @@
     android:layout_gravity="center"
     android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/summInputMsg"
-        android:id="@+id/textView"
-        android:layout_gravity="center_horizontal"/>
-
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
@@ -22,20 +15,18 @@
 
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
         <Button
-            style="@style/ButtonBordered"
-            android:layout_width="92dp" android:layout_height="60dp"
+            android:layout_width="92dp"
+            android:layout_height="50dp"
             android:text="@string/ok"
-            android:id="@+id/btnOk"
-            android:onClick="onOkClick"/>
+            android:id="@+id/btnOk"/>
         <Button
-            style="@style/ButtonBordered"
-            android:layout_width="92dp" android:layout_height="60dp"
+            android:layout_width="92dp"
+            android:layout_height="50dp"
             android:text="@string/cancel"
-            android:id="@+id/btnCancel"
-            android:onClick="onCancelClick"/>
+            android:id="@+id/btnCancel"/>
     </LinearLayout>
-
 </LinearLayout>

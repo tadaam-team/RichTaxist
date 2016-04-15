@@ -18,7 +18,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/showListHint"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -36,7 +35,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/listsSortOrder"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -54,7 +52,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/timePickClicks"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -72,7 +69,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/hideTaxometer"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -89,7 +85,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/viewOfDateTimePicker"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -107,7 +102,6 @@
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
                     android:text="@string/timePickerInterval"
-                    style="@style/Text"
                     android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
@@ -127,41 +121,6 @@
                     android:onClick="onParksAndBillingsClick"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
-
-
-
-            <!--<TableRow-->
-                <!--android:layout_width="match_parent" android:layout_height="wrap_content">-->
-                <!--<TextView-->
-                    <!--android:text="@string/extraFunctions"-->
-                    <!--style="@style/Text"-->
-                    <!--android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"-->
-                    <!--android:gravity="center_horizontal"-->
-                    <!--android:layout_marginTop="20dp"-->
-                    <!--android:textStyle="italic"-->
-                    <!--android:layout_gravity="center_vertical"/>-->
-            <!--</TableRow>-->
-
-            <!--<TableRow-->
-                <!--android:layout_width="match_parent" android:layout_height="wrap_content">-->
-                <!--<Button-->
-                    <!--android:text="@string/exportShifts"-->
-                    <!--style="@style/ButtonBordered"-->
-                    <!--android:layout_width="0dp" android:layout_height="0dp"-->
-                    <!--android:background="#6dff0000"-->
-                    <!--android:onClick="onExportImportShiftsClick"-->
-                    <!--android:layout_weight="0"-->
-                    <!--android:layout_gravity="center_vertical"/>-->
-                <!--<Button-->
-                    <!--android:text="@string/socials"-->
-                    <!--style="@style/ButtonBordered"-->
-                    <!--android:layout_width="0dp" android:layout_height="0dp"-->
-                    <!--android:background="#6dff0000"-->
-                    <!--android:onClick="onSocialsClick"-->
-                    <!--android:layout_weight="0"-->
-                    <!--android:layout_gravity="center_vertical"/>-->
-            <!--</TableRow>-->
-
         </TableLayout>
     </ScrollView>
 </LinearLayout>

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -36,7 +36,6 @@ import tt.richTaxist.Enums.TypeOfSpinner;
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.NumberInputDialogListener {
     private static final String LOG_TAG = "ShiftTotalsActivity";
-    private static Context context;
     private Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
@@ -44,8 +43,10 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private String clickedButtonID;
     private String author;
 
-    private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime, st_petrol, st_carRent, buttonContinueShift;
-    private EditText st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus, st_toTheCashier, st_salaryOfficial, st_salaryUnofficial, st_workHoursSpent, st_salaryPerHour;
+    private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime,
+            st_petrol, st_carRent, buttonContinueShift;
+    private TextView st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus,
+            st_toTheCashier, st_salaryOfficial, st_salaryUnofficial, st_workHoursSpent, st_salaryPerHour;
     private ToggleButton buttonShiftIsClosed;
     private Spinner spnTaxopark;
     private Locale locale;
@@ -111,7 +112,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener, rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
+                DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener,
+                        rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
                 startDatePD.setYearRange(2015, 2020);
                 startDatePD.setCloseOnSingleTapDay(true);
@@ -122,7 +124,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
+                TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener,
+                        rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
                 startTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 startTimePD.show(getSupportFragmentManager(), "timepicker");
@@ -132,7 +135,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener, rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
+                DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener,
+                        rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
                 endDatePD.setYearRange(2015, 2020);
                 endDatePD.setCloseOnSingleTapDay(true);
@@ -143,7 +147,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
+                TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener,
+                        rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
                 endTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
                 endTimePD.show(getSupportFragmentManager(), "timepicker");
@@ -267,17 +272,17 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime    = (Button)   findViewById(R.id.buttonShiftStartTime);
         buttonShiftEndDate      = (Button)   findViewById(R.id.buttonShiftEndDate);
         buttonShiftEndTime      = (Button)   findViewById(R.id.buttonShiftEndTime);
-        st_revenueOfficial      = (EditText) findViewById(R.id.st_revenueOfficial);
-        st_revenueCash          = (EditText) findViewById(R.id.st_revenueCash);
-        st_revenueCard          = (EditText) findViewById(R.id.st_revenueCard);
-        st_revenueBonus         = (EditText) findViewById(R.id.st_revenueBonus);
+        st_revenueOfficial      = (TextView) findViewById(R.id.st_revenueOfficial);
+        st_revenueCash          = (TextView) findViewById(R.id.st_revenueCash);
+        st_revenueCard          = (TextView) findViewById(R.id.st_revenueCard);
+        st_revenueBonus         = (TextView) findViewById(R.id.st_revenueBonus);
         st_petrol               = (Button)   findViewById(R.id.st_petrol);
-        st_toTheCashier         = (EditText) findViewById(R.id.st_toTheCashier);
-        st_salaryOfficial       = (EditText) findViewById(R.id.st_salaryOfficial);
+        st_toTheCashier         = (TextView) findViewById(R.id.st_toTheCashier);
+        st_salaryOfficial       = (TextView) findViewById(R.id.st_salaryOfficial);
         st_carRent              = (Button)   findViewById(R.id.st_carRent);
-        st_salaryUnofficial     = (EditText) findViewById(R.id.st_salaryPlusBonus);
-        st_workHoursSpent       = (EditText) findViewById(R.id.st_workHoursSpent);
-        st_salaryPerHour        = (EditText) findViewById(R.id.st_salaryPerHour);
+        st_salaryUnofficial     = (TextView) findViewById(R.id.st_salaryPlusBonus);
+        st_workHoursSpent       = (TextView) findViewById(R.id.st_workHoursSpent);
+        st_salaryPerHour        = (TextView) findViewById(R.id.st_salaryPerHour);
         buttonShiftIsClosed     = (ToggleButton) findViewById(R.id.buttonShiftIsClosed);
         buttonContinueShift     = (Button)   findViewById(R.id.buttonContinueShift);
         spnTaxopark             = (Spinner)  findViewById(R.id.spnTaxopark);

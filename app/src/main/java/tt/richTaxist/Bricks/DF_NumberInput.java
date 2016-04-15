@@ -16,7 +16,6 @@ import android.widget.Toast;
 import tt.richTaxist.R;
 
 public class DF_NumberInput extends DialogFragment implements TextView.OnEditorActionListener {
-    private Activity superActivity;//ссылка на контейнер класса Activity, в котором сейчас находится этот фрагмент
     private NumberInputDialogListener mListener;
     private EditText mEditText;
     public DF_NumberInput() {}
@@ -33,9 +32,8 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_dialog_number_input, container);
-        superActivity = getActivity();
         mEditText = (EditText) rootView.findViewById(R.id.editTextName);
-//        getDialog().setTitle("Введите фактический\nчек за бензин");
+        getDialog().setTitle(getResources().getString(R.string.summInputMsg));
 
         rootView.findViewById(R.id.btnOk).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +66,7 @@ public class DF_NumberInput extends DialogFragment implements TextView.OnEditorA
                 String authorTag = getTag();
                 mListener.onFinishEditDialog(answer, authorTag);
             } catch (NumberFormatException e){
-                Toast.makeText(superActivity, "только целое число, пожалуйста", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "только целое число, пожалуйста", Toast.LENGTH_SHORT).show();
             }
             getDialog().dismiss();
             return true;

@@ -19,7 +19,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.DateTimeButtons;
-import tt.richTaxist.Bricks.DateTimeSpinners;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
@@ -32,8 +31,7 @@ import tt.richTaxist.Settings4ParksAndBillingsActivity;
 import tt.richTaxist.Storage;
 
 public class OrderFragment extends Fragment implements
-        DateTimeButtons.OnDateTimeButtonsFragmentInteractionListener,
-        DateTimeSpinners.OnDateTimeSpinnersFragmentInteractionListener {
+        DateTimeButtons.OnDateTimeButtonsFragmentInteractionListener {
     private static final String LOG_TAG = "OrderFragment";
     private static Context context;
     private OnOrderFragmentInteractionListener mListener;
@@ -123,7 +121,6 @@ public class OrderFragment extends Fragment implements
         Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Storage.billingID);
     }
 
-    // ниже приведен недоделанный обработчик опции выбора, вводить дату/время спиннерами или кнопками
     @Override
     public void onResume() {
         super.onResume();
@@ -168,11 +165,7 @@ public class OrderFragment extends Fragment implements
             etNote.setText("");
         }
 
-// ниже приведен недоделанный обработчик опции выбора, вводить дату/время спиннерами или кнопками
         FragmentManager fragmentManager = getChildFragmentManager();
-        DateTimeSpinners spinnersFragment = (DateTimeSpinners) fragmentManager.findFragmentByTag("spinnersFragment");
-        if (spinnersFragment != null && spinnersFragment.isAdded())
-            spinnersFragment.setDateTime(arrivalDateTime);
         DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
         if (buttonsFragment != null && buttonsFragment.isAdded())
             buttonsFragment.setDateTime(arrivalDateTime);
@@ -221,8 +214,7 @@ public class OrderFragment extends Fragment implements
         void addOrder(Order order);
     }
 
-    // ниже приведен недоделанный обработчик опции выбора, вводить дату/время спиннерами или кнопками
-    public void refreshInputStyle() {
+    private void refreshInputStyle() {
         FragmentManager fragmentManager = getChildFragmentManager();
         DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
         if (buttonsFragment == null) {
@@ -231,37 +223,9 @@ public class OrderFragment extends Fragment implements
             bundle.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
             buttonsFragment.setArguments(bundle);
         }
-//        DateTimeSpinners spinnersFragment = (DateTimeSpinners) fragmentManager.findFragmentByTag("spinnersFragment");
-//        if (spinnersFragment == null) {
-//            spinnersFragment = new DateTimeSpinners();
-//            Bundle bundle = new Bundle();
-//            bundle.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-//            spinnersFragment.setArguments(bundle);
-//        }
-
-        FragmentTransaction transaction;
-
-        //очистим экран
-        transaction = fragmentManager.beginTransaction();
-        if (buttonsFragment.isAdded()) transaction.remove(buttonsFragment);
-//        if (spinnersFragment.isAdded()) transaction.remove(spinnersFragment);
-        transaction.commit();
-        fragmentManager.executePendingTransactions();
-
-        switch (Storage.inputStyle){
-            case BUTTON:
-                transaction = fragmentManager.beginTransaction();
-//                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-                transaction.add(R.id.dateTimePlaceHolder, buttonsFragment, "buttonsFragment");
-                transaction.commit();
-                break;
-
-//            case SPINNER:
-//                transaction = fragmentManager.beginTransaction();
-//                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-//                transaction.add(R.id.dateTimePlaceHolder, spinnersFragment, "spinnersFragment");
-//                transaction.commit();
-//                break;
-        }
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        ft.replace(R.id.dateTimePlaceHolder, buttonsFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
     }
 }

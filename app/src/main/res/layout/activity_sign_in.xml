@@ -19,13 +19,13 @@
                 <TableRow
                     android:layout_width="match_parent" android:layout_height="wrap_content">
                     <TextView
-                        android:text="@string/username" style="@style/Text"
+                        android:text="@string/username"
                         android:id="@+id/tvUsername"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
                         android:layout_weight="1"/>
                     <EditText
-                        android:id="@+id/editUserName" style="@style/Text"
+                        android:id="@+id/editUserName"
                         android:inputType="text"
                         android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="40"/>
@@ -34,13 +34,13 @@
                 <TableRow
                     android:layout_width="match_parent" android:layout_height="wrap_content">
                     <TextView
-                        android:text="@string/password" style="@style/Text"
+                        android:text="@string/password"
                         android:id="@+id/tvPassword"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
                         android:layout_weight="1"/>
                     <EditText
-                        android:id="@+id/editPassword" style="@style/Text"
+                        android:id="@+id/editPassword"
                         android:inputType="textPassword"
                         android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="40"/>
@@ -49,13 +49,13 @@
                 <TableRow
                     android:layout_width="match_parent" android:layout_height="wrap_content">
                     <TextView
-                        android:text="@string/email" style="@style/Text"
+                        android:text="@string/email"
                         android:id="@+id/tvEmail"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|right"
                         android:layout_weight="1"/>
                     <EditText
-                        android:id="@+id/editEmail" style="@style/Text"
+                        android:id="@+id/editEmail"
                         android:inputType="textEmailAddress"
                         android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="40"/>
@@ -117,7 +117,7 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="2dp">
                 <TextView
-                    android:text="@string/signUpDefault" style="@style/Text"
+                    android:text="@string/signUpDefault"
                     android:id="@+id/textViewUser_Secret"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_gravity="top"

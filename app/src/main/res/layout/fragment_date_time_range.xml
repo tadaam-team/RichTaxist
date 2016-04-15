@@ -9,12 +9,10 @@
         android:orientation="horizontal">
         <TextView
             android:text="@string/rangeStart"
-            style="@style/Text"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:gravity="start"/>
         <TextView
             android:text="@string/rangeEnd"
-            style="@style/Text"
             android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
             android:gravity="end"/>
     </LinearLayout>
