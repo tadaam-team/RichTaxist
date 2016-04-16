@@ -34,24 +34,28 @@
         <Button
             android:text="@string/date"
             android:id="@+id/buttonShiftStartDate"
+            style="@style/ButtonBordered"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_weight="1"/>
         <Button
             android:text="@string/time"
             android:id="@+id/buttonShiftStartTime"
+            style="@style/ButtonBordered"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_weight="1"/>
         <Button
             android:text="@string/date"
             android:id="@+id/buttonShiftEndDate"
+            style="@style/ButtonBordered"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_weight="1"/>
         <Button
             android:text="@string/time"
             android:id="@+id/buttonShiftEndTime"
+            style="@style/ButtonBordered"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_weight="1"/>
@@ -132,6 +136,7 @@
                     android:gravity="center_vertical|start"/>
                 <Button
                     android:id="@+id/st_petrol"
+                    style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -205,6 +210,7 @@
                     android:gravity="center_vertical|start"/>
                 <Button
                     android:id="@+id/st_carRent"
+                    style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -296,6 +302,7 @@
         <Button
             android:text="@string/exitToMainMenu"
             android:id="@+id/buttonExitToMainMenu"
+            style="@style/ButtonBordered"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"
@@ -316,6 +323,7 @@
         <Button
             android:text="@string/continueShift"
             android:id="@+id/buttonContinueShift"
+            style="@style/ButtonBordered"
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_weight="1"

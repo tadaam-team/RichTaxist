@@ -6,6 +6,7 @@
     android:gravity="center">
 
     <Button
+        style="@style/ButtonBordered"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:text="-"

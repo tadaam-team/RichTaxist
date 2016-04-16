@@ -1,0 +1,28 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="@dimen/button_inset_horizontal_material"
+    android:insetTop="@dimen/button_inset_vertical_material"
+    android:insetRight="@dimen/button_inset_horizontal_material"
+    android:insetBottom="@dimen/button_inset_vertical_material">
+    <layer-list>
+        <!--последовательность слоев в layer-list: первый item в списке - самый дальний-->
+        <!--таким образом тень нужно добавлять еще выше-->
+        <item android:drawable="@drawable/btn_selector" />
+        <item>
+            <!--item shape необходим исключительно для обозначения границ ripple-эффекта-->
+            <shape android:shape="rectangle">
+                <!--<corners android:radius="@dimen/control_corner_material" />-->
+                <!--<padding-->
+                    <!--android:left="@dimen/button_padding_horizontal_material"-->
+                    <!--android:top="@dimen/button_padding_vertical_material"-->
+                    <!--android:right="@dimen/button_padding_horizontal_material"-->
+                    <!--android:bottom="@dimen/button_padding_vertical_material" />-->
+                <!--граница-->
+                <!--<stroke-->
+                    <!--android:width="1dp"-->
+                    <!--android:color="@color/secondary_text" />-->
+                <!--цвет заливки-->
+                <!--<solid android:color="@color/custom_background_color" />-->
+            </shape>
+        </item>
+    </layer-list>
+</inset>

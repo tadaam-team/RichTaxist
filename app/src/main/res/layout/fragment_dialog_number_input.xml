@@ -19,11 +19,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
         <Button
+            style="@style/ButtonBordered"
             android:layout_width="92dp"
             android:layout_height="50dp"
             android:text="@string/ok"
             android:id="@+id/btnOk"/>
         <Button
+            style="@style/ButtonBordered"
             android:layout_width="92dp"
             android:layout_height="50dp"
             android:text="@string/cancel"

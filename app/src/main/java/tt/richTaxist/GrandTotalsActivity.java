@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
@@ -38,7 +38,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol,
             toTheCashier, salaryOfficial, carRent, salaryPlusBonus, salaryPerHour;
     private double workHoursSpent;
-    private EditText gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
+    private TextView gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
             gt_toTheCashier, gt_salaryOfficial, gt_carRent, gt_salaryPlusBonus, gt_workHoursSpent, gt_salaryPerHour;
     private Spinner spnFirstShift, spnLastShift, spnTaxopark;
     private Locale locale;
@@ -69,17 +69,17 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private void initiateWidgets() {
         spnFirstShift       = (Spinner)  findViewById(R.id.spnFirstShift);
         spnLastShift        = (Spinner)  findViewById(R.id.spnLastShift);
-        gt_revenueOfficial  = (EditText) findViewById(R.id.gt_revenueOfficial);
-        gt_revenueCash      = (EditText) findViewById(R.id.gt_revenueCash);
-        gt_revenueCard      = (EditText) findViewById(R.id.gt_revenueCard);
-        gt_revenueBonus     = (EditText) findViewById(R.id.gt_revenueBonus);
-        gt_petrol           = (EditText) findViewById(R.id.gt_petrol);
-        gt_toTheCashier     = (EditText) findViewById(R.id.gt_toTheCashier);
-        gt_salaryOfficial   = (EditText) findViewById(R.id.gt_salaryOfficial);
-        gt_carRent          = (EditText) findViewById(R.id.gt_carRent);
-        gt_salaryPlusBonus  = (EditText) findViewById(R.id.gt_salaryPlusBonus);
-        gt_workHoursSpent   = (EditText) findViewById(R.id.gt_workHoursSpent);
-        gt_salaryPerHour    = (EditText) findViewById(R.id.gt_salaryPerHour);
+        gt_revenueOfficial  = (TextView) findViewById(R.id.gt_revenueOfficial);
+        gt_revenueCash      = (TextView) findViewById(R.id.gt_revenueCash);
+        gt_revenueCard      = (TextView) findViewById(R.id.gt_revenueCard);
+        gt_revenueBonus     = (TextView) findViewById(R.id.gt_revenueBonus);
+        gt_petrol           = (TextView) findViewById(R.id.gt_petrol);
+        gt_toTheCashier     = (TextView) findViewById(R.id.gt_toTheCashier);
+        gt_salaryOfficial   = (TextView) findViewById(R.id.gt_salaryOfficial);
+        gt_carRent          = (TextView) findViewById(R.id.gt_carRent);
+        gt_salaryPlusBonus  = (TextView) findViewById(R.id.gt_salaryPlusBonus);
+        gt_workHoursSpent   = (TextView) findViewById(R.id.gt_workHoursSpent);
+        gt_salaryPerHour    = (TextView) findViewById(R.id.gt_salaryPerHour);
         spnTaxopark         = (Spinner)  findViewById(R.id.spnTaxopark);
     }
 
