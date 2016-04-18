@@ -87,6 +87,7 @@ public class Storage {
         }
     }
 
+    //TODO: extend Spinner and add to it methods from here. also consider creating static field in it
     public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
         switch (typeOfSpinner) {
             case TAXOPARK:

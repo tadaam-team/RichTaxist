@@ -36,6 +36,7 @@ import tt.richTaxist.Enums.TypeOfSpinner;
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.NumberInputDialogListener {
     private static final String LOG_TAG = "ShiftTotalsActivity";
+    public static final String EXTRA_AUTHOR = "author";
     private Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;

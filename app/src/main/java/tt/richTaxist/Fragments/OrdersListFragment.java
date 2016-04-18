@@ -156,12 +156,12 @@ public class OrdersListFragment extends ListFragment {
             }
 
             //установим, какие данные из Order отобразятся в полях списка
-            TextView textViewMain = (TextView) convertView.findViewById(R.id.entryTextViewMain);
+            TextView textViewMain = (TextView) convertView.findViewById(R.id.tv_Main);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(order.arrivalDateTime);
             textViewMain.setText(String.format("подача: %02d:%02d", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
 
-            TextView textViewAdditional = (TextView) convertView.findViewById(R.id.entryTextViewAdditional);
+            TextView textViewAdditional = (TextView) convertView.findViewById(R.id.tv_Additional);
             textViewAdditional.setText(String.format("цена: %d", order.price));
 
             //назначим картинку обрабатываемой строке списка

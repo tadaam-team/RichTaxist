@@ -69,7 +69,7 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
         swipeDetector = new SwipeDetector();
         mListView.setOnTouchListener(swipeDetector);
 
-        FragmentManager fragmentManager = getChildFragmentManager();//getFragmentManager()????
+        FragmentManager fragmentManager = getChildFragmentManager();
         if (((FirstScreenActivity) mActivity).activityState == ActivityState.PORT_2 ||
                 ((FirstScreenActivity) mActivity).activityState == ActivityState.LAND_2) {
             //применяется только когда лист единственный на экране
@@ -77,7 +77,7 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
             if (dateTimeRangeFrag == null) {
                 dateTimeRangeFrag = new DateTimeRangeFrag();
                 FragmentTransaction ft = fragmentManager.beginTransaction();
-                ft.add(R.id.container_shift_list, dateTimeRangeFrag, "dateTimeRangeFrag");
+                ft.add(R.id.date_time_input_placeholder, dateTimeRangeFrag, "dateTimeRangeFrag");
                 ft.commit();
             }
         }
@@ -125,6 +125,7 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
 
     @Override
     public void calculate(Calendar rangeStart, Calendar rangeEnd) {
+        //been executed each time upon input finish of date/time start/end
         MainActivity.shiftsStorage.clear();
         Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
         MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
@@ -221,13 +222,13 @@ public class ShiftsListFragment extends ListFragment implements DateTimeRangeFra
 
             //установим, какие данные из Shift отобразятся в полях списка
             Resources res = MainActivity.context.getResources();
-            TextView textViewMain = (TextView) convertView.findViewById(R.id.entryTextViewMain);
+            TextView textViewMain = (TextView) convertView.findViewById(R.id.tv_Main);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(shift.beginShift);
             textViewMain.setText(String.format(res.getString(R.string.shift)+" %02d.%02d",
                     calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1));
 
-            TextView textViewAdditional = (TextView) convertView.findViewById(R.id.entryTextViewAdditional);
+            TextView textViewAdditional = (TextView) convertView.findViewById(R.id.tv_Additional);
             textViewAdditional.setText(String.format(res.getString(R.string.salaryOfficialShort) + ": %d,\n" +
                     res.getString(R.string.salaryUnofficialShort) + ": %d", shift.salaryOfficial, shift.salaryUnofficial));
 

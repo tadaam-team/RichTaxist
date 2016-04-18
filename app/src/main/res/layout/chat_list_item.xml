@@ -6,7 +6,7 @@
     android:gravity="center">
 
     <TextView
-        android:text="@string/entryTextExampleMain"
+        android:text="@string/textExampleMain"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:id="@+id/chat_item_text_view"
         android:padding="5dp"

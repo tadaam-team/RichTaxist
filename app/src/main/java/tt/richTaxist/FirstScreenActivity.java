@@ -26,8 +26,7 @@ import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.Fragments.FirstScreenFragment;
-import tt.richTaxist.Fragments.ShiftsListFragment;
-import tt.richTaxist.gps.GPSHelper;
+import tt.richTaxist.Fragments.ShiftsListFragmentRecycler;
 import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
@@ -38,7 +37,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     public static ArrayAdapter shiftAdapterMA;
     private FragmentManager fragmentManager;
     private FirstScreenFragment fragment1;
-    private ShiftsListFragment fragment2;
+    private ShiftsListFragmentRecycler fragment2;
     public ActivityState activityState;
 
     @Override
@@ -87,8 +86,8 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
         fragment1 = (FirstScreenFragment) fragmentManager.findFragmentByTag("fragment1");
         if (fragment1 == null) fragment1 = new FirstScreenFragment();
-        fragment2 = (ShiftsListFragment) fragmentManager.findFragmentByTag("fragment2");
-        if (fragment2 == null) fragment2 = new ShiftsListFragment();
+        fragment2 = (ShiftsListFragmentRecycler) fragmentManager.findFragmentByTag("fragment2");
+        if (fragment2 == null) fragment2 = new ShiftsListFragmentRecycler();
 
         activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
     }

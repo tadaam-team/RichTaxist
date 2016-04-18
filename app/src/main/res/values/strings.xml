@@ -147,8 +147,8 @@
     <string name="activityStatePORT_1">портрет только с главным фрагментом</string>
     <string name="activityStatePORT_2">портрет только со списком</string>
 
-    <string name="entryTextExampleMain">пример основного текста</string>
-    <string name="entryTextExampleAdditional">пример поясняющего текста</string>
+    <string name="textExampleMain">пример основного текста</string>
+    <string name="textExampleAdditional">пример поясняющего текста</string>
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
