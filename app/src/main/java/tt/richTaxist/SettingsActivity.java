@@ -83,7 +83,6 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
         Storage.saveSettings(context);
         if (MainActivity.currentShift != null) {
             MainActivity.sortOrdersStorage();
-            if (MainActivity.orderAdapterMA != null) MainActivity.orderAdapterMA.notifyDataSetChanged();
             MainActivity.sortShiftsStorage();
             if (FirstScreenActivity.shiftAdapterMA != null) FirstScreenActivity.shiftAdapterMA.notifyDataSetChanged();
 //            изменения типа ввода кнопка/спиннер обрабатываются в OrderFragment.onResume()

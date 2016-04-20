@@ -11,15 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.LinearLayout.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
@@ -54,7 +53,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         mActivity = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
         //TODO: remove crutch
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
+        LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
@@ -62,16 +61,16 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         //TODO: get correct dataSource
 //        ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark();
 
-        adapter = new RecyclerViewAdapter(MainActivity.shiftsStorage);
+        adapter = new RecyclerViewAdapter(MainActivity.shiftsStorage, RecyclerViewAdapter.AdapterDataType.SHIFT);
         recyclerView.setAdapter(adapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 //        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
         adapter.setListener(new RecyclerViewAdapter.Listener() {
             @Override
-            public void onClick(Shift selectedShift) {
+            public void onClick(Object selectedObject) {
                 //TODO: rough violation of encapsulation
-                MainActivity.currentShift = selectedShift;
+                MainActivity.currentShift = (Shift) selectedObject;
                 MainActivity.ordersStorage.clear();
                 MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
                 Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
@@ -84,7 +83,8 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
             }
 
             @Override
-            public void onClickDelete(Shift selectedShift) {
+            public void onClickDelete(Object selectedObject) {
+                Shift selectedShift = (Shift) selectedObject;
                 if (!selectedShift.hasOrders()) {
                     deleteShift(selectedShift);
                 } else {

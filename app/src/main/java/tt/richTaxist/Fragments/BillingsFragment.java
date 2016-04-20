@@ -42,7 +42,6 @@ public class BillingsFragment extends ListFragment {
                 billings.add(billing);
                 BillingsSQLHelper.dbOpenHelper.create(billing);
                 billingsAdapter.notifyDataSetChanged();
-                if (OrderFragment.spnBillingAdapter != null) OrderFragment.createBillingSpinner();
             }
         });
         return rootView;
@@ -97,8 +96,6 @@ public class BillingsFragment extends ListFragment {
                         billings.remove(billing);
                         BillingsSQLHelper.dbOpenHelper.remove(billing);
                         notifyDataSetChanged();
-                        if (OrderFragment.spnBillingAdapter != null)
-                            OrderFragment.createBillingSpinner();
                     }
                     else Toast.makeText(context, getResources().getString(R.string.billing) + " " +
                             getResources().getString(R.string.cantBeRemoved), Toast.LENGTH_LONG).show();
@@ -123,7 +120,6 @@ public class BillingsFragment extends ListFragment {
                 if (!"".equals(commission.getText().toString()))
                     currentBilling.commission = Float.valueOf(commission.getText().toString());
                 BillingsSQLHelper.dbOpenHelper.update(currentBilling);
-                if (OrderFragment.spnBillingAdapter != null) OrderFragment.createBillingSpinner();
             }
         }
     }

@@ -8,6 +8,5 @@
     android:id="@+id/container_main"
     android:layout_gravity="center">
 
-
 </LinearLayout>
 

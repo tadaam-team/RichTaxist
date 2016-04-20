@@ -15,9 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.GrandTotalsActivity;
 import tt.richTaxist.R;
-import tt.richTaxist.ShiftTotalsActivity;
 
 public class TaxoparksFragment extends ListFragment {
     private static final String LOG_TAG = "TaxoparksFragment";
@@ -44,15 +42,9 @@ public class TaxoparksFragment extends ListFragment {
                 taxoparks.add(taxopark);
                 TaxoparksSQLHelper.dbOpenHelper.create(taxopark);
                 taxoparksAdapter.notifyDataSetChanged();
-                refreshSpinners();
             }
         });
         return rootView;
-    }
-
-    private void refreshSpinners(){
-        if (OrderFragment.spnTaxoparkAdapter != null)       OrderFragment.createTaxoparkSpinner();
-        if (OrdersListFragment.spnTaxoparkAdapter != null)  OrdersListFragment.createTaxoparkSpinner();
     }
 
 
@@ -71,7 +63,7 @@ public class TaxoparksFragment extends ListFragment {
 
             final EditText etTaxoparkName = (EditText) convertView.findViewById(R.id.etTaxoparkName);
             etTaxoparkName.setText(taxopark.taxoparkName);
-            //моментами сохранения считаются либо нажатие enter либо потеря фокуса EditText-ом
+            //моментом сохранения считается нажатие enter
             etTaxoparkName.setOnKeyListener(new View.OnKeyListener() {
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -81,12 +73,6 @@ public class TaxoparksFragment extends ListFragment {
                     return false;
                 }
             });
-//            etTaxoparkName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//                @Override
-//                public void onFocusChange(View view, boolean hasFocus) {
-//                    if (!hasFocus) saveTaxoparkName(taxopark, etTaxoparkName);
-//                }
-//            });
 
             //если таксопарк по умолчанию не назначен ни для одного члена списка, назначим текущий парк парком по умолчанию
             boolean defaultTaxoparkDefined = false;
@@ -107,7 +93,6 @@ public class TaxoparksFragment extends ListFragment {
                     taxopark.isDefault = true;
                     TaxoparksSQLHelper.dbOpenHelper.update(taxopark);
                     notifyDataSetChanged();
-                    refreshSpinners();
                 }
             });
 
@@ -117,7 +102,6 @@ public class TaxoparksFragment extends ListFragment {
                     taxoparks.remove(taxopark);
                     TaxoparksSQLHelper.dbOpenHelper.remove(taxopark);
                     notifyDataSetChanged();
-                    refreshSpinners();
                 }
             });
             return convertView;
@@ -137,7 +121,6 @@ public class TaxoparksFragment extends ListFragment {
             else {
                 currentTaxopark.taxoparkName = newName;
                 TaxoparksSQLHelper.dbOpenHelper.update(currentTaxopark);
-                refreshSpinners();
             }
         }
     }

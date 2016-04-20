@@ -58,7 +58,7 @@ public class Order {
         calendar.setTime(arrivalDateTime);
         Resources res = MainActivity.context.getResources();
         String text = String.format(res.getString(R.string.arrivalDateTime) + ": %02d.%02d.%02d %02d:%02d,\n" +
-                        res.getString(R.string.costInputHint) + ": %d, " +
+                        res.getString(R.string.price) + ": %d, " +
                         res.getString(R.string.payType) + ": %s,\n" +
                         res.getString(R.string.taxopark) + ": %s, " +
                         res.getString(R.string.billing) + ": %s",
@@ -66,7 +66,7 @@ public class Order {
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString(),
                 TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(taxoparkID),
                 BillingsSQLHelper.dbOpenHelper.getBillingByID(billingID));
-        if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.noteInputHint) + ": %s", note);
+        if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.note) + ": %s", note);
         return text;
     }
 }

@@ -73,7 +73,7 @@
                 android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
                 <EditText
                     android:id="@+id/etPrice"
-                    android:hint="@string/costInputHint"
+                    android:hint="@string/price"
                     android:layout_width="0dp" android:layout_height="60dp"
                     android:gravity="center"
                     android:layout_weight="1"
@@ -103,7 +103,7 @@
 
             <EditText
                 android:id="@+id/etNote"
-                android:hint="@string/noteInputHint"
+                android:hint="@string/note"
                 android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="2dp" android:layout_marginBottom="20dp"

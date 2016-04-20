@@ -32,15 +32,17 @@ import tt.richTaxist.Storage;
 
 public class OrderFragment extends Fragment implements
         DateTimeButtons.OnDateTimeButtonsFragmentInteractionListener {
+    public static final String FRAGMENT_TAG = "OrderFragment";
     private static final String LOG_TAG = "OrderFragment";
     private static Context context;
     private OnOrderFragmentInteractionListener mListener;
 
+    private Order order;
     public static Calendar arrivalDateTime;
     private RadioGroup typeOfPaymentUI;
     private EditText etPrice, etNote;
-    private static Spinner spnTaxopark, spnBilling;
-    public static ArrayAdapter spnTaxoparkAdapter, spnBillingAdapter;
+    private Spinner spnTaxopark, spnBilling;
+    private ArrayAdapter spnTaxoparkAdapter, spnBillingAdapter;
     private final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
 
     public OrderFragment() { }
@@ -76,9 +78,11 @@ public class OrderFragment extends Fragment implements
         rootView.findViewById(R.id.btnAddNewOrder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Storage.hideTaxometer)
+                if (Storage.hideTaxometer){
                     startActivityForResult(new Intent(context, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
-                else createNewOrder(0, 0);
+                } else {
+                    createNewOrder(0, 0);
+                }
             }
         });
         rootView.findViewById(R.id.btnClearForm).setOnClickListener(new View.OnClickListener() {
@@ -103,28 +107,31 @@ public class OrderFragment extends Fragment implements
                 startActivity(new Intent(context, Settings4ParksAndBillingsActivity.class));
             }
         });
-        createTaxoparkSpinner();
-        createBillingSpinner();
         return rootView;
-    }
-
-    public static void createTaxoparkSpinner(){
-        spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
-                TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
-    }
-    public static void createBillingSpinner(){
-        spnBillingAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
-                BillingsSQLHelper.dbOpenHelper.getAllBillings());
-        spnBilling.setAdapter(spnBillingAdapter);
-        Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Storage.billingID);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        createTaxoparkSpinner();
+        createBillingSpinner();
         refreshInputStyle();
+        if (order != null) {
+            refreshWidgets(order);
+        }
+    }
+
+    public void createTaxoparkSpinner(){
+        spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
+                TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+    }
+    public void createBillingSpinner(){
+        spnBillingAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
+                BillingsSQLHelper.dbOpenHelper.getAllBillings());
+        spnBilling.setAdapter(spnBillingAdapter);
+        Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Storage.billingID);
     }
 
     @Override
@@ -137,14 +144,19 @@ public class OrderFragment extends Fragment implements
 
     private TypeOfPayment getRadioState(){
         switch (typeOfPaymentUI.getCheckedRadioButtonId()){
-            case R.id.choiceCash:  return TypeOfPayment.CASH;
+            case R.id.choiceCash:   return TypeOfPayment.CASH;
             case R.id.choiceCard:   return TypeOfPayment.CARD;
             case R.id.choiceBonus:  return TypeOfPayment.TIP;
             default:                throw new IllegalArgumentException("ошибка обработки типа оплаты");
         }
     }
 
-    //этот метод получает заказ из листа, когда юзер делает свайп влево и обнуляет поля ввода, если переданный заказ == null
+    //этот метод получает заказ из листа, когда юзер делает свайп влево
+    public void setOrder(Order order){
+        this.order = order;
+    }
+
+    //этот метод обнуляет поля ввода, если переданный заказ == null
     public void refreshWidgets(Order receivedOrder){
         if (receivedOrder != null) {
             arrivalDateTime.setTime(receivedOrder.arrivalDateTime);

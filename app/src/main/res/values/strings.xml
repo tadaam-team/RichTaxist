@@ -22,15 +22,17 @@
 
 
     <string name="mainScreenName">Заказ</string>
+    <string name="order">заказ</string>
     <string name="noOrdersMSG">нет сохранённых заказов</string>
     <string name="addNewOrder">Добавить заказ</string>
     <string name="clearForm">Очистить форму</string>
     <string name="formClearedMSG">форма очищена</string>
     <string name="arrivalDateTime">Подача</string>
+    <string name="arrivalDateTimeLow">подача</string>
     <string name="date">Дата</string>
     <string name="time">Время</string>
-    <string name="costInputHint">цена</string>
-    <string name="noteInputHint">заметка</string>
+    <string name="price">цена</string>
+    <string name="note">заметка</string>
     <string name="ordersList">Список заказов</string>
     <string name="shiftTotals">Итоги смены</string>
 

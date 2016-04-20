@@ -1,24 +1,22 @@
 package tt.richTaxist;
 
 import android.content.res.Configuration;
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
-
+import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.Units.Shift;
-import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Fragments.OrderFragment;
-import tt.richTaxist.Fragments.OrdersListFragment;
 
 /**
  * Created by Tau on 08.06.2015.
@@ -32,13 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     public static Shift currentShift;
     public final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
     public final static ArrayList<Order> ordersStorage = new ArrayList<>();
-
-    public static ArrayAdapter orderAdapterMA;
-    public static FragmentManager fragmentManager;
-    private OrderFragment fragment1;
-    private OrdersListFragment fragment2;
-    private ActivityState activityState;
-
+    private boolean deviceIsInLandscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,31 +41,48 @@ public class MainActivity extends AppCompatActivity implements
         Storage.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         //фрагментная логика
-        fragmentManager = getSupportFragmentManager();
-        if (savedInstanceState != null) {
-            int activityStateID = savedInstanceState.getInt("activityState");
-            activityState = ActivityState.getById(activityStateID);
+        deviceIsInLandscape = (findViewById(R.id.container_orders_list) != null);
+        if (deviceIsInLandscape){
+            //if deviceIsInLandscape then OrderFragment is statically added
+            addOrdersListFragment();
+        } else {
+            addOrderFragment();
         }
+    }
 
-        fragment1 = (OrderFragment) fragmentManager.findFragmentByTag("fragment1");
-        if (fragment1 == null) fragment1 = new OrderFragment();
-        fragment2 = (OrdersListFragment) fragmentManager.findFragmentByTag("fragment2");
-        if (fragment2 == null) fragment2 = new OrdersListFragment();
+    private void addOrdersListFragment(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        OrdersListFragment ordersListFragment = new OrdersListFragment();
+        ft.replace(R.id.container_orders_list, ordersListFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
+    }
 
-        activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
+    private void addOrderFragment(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        OrderFragment orderFragment = new OrderFragment();
+        ft.replace(R.id.container_main, orderFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (deviceIsInLandscape) {
+            addOrdersListFragment();
+        }
     }
 
     public void addOrder(Order order){
         ordersStorage.add(order);
         OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
-        if (orderAdapterMA != null) orderAdapterMA.notifyDataSetChanged();
         currentShift.calculateShiftTotals(0, Storage.taxoparkID);
+        if (deviceIsInLandscape) {
+            addOrdersListFragment();
+        }
         Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
-    }
-
-    public void refreshWidgets(Order order){
-        if (fragment1 != null) fragment1.refreshWidgets(order);
     }
 
     public void removeOrder(Order order){
@@ -81,17 +90,20 @@ public class MainActivity extends AppCompatActivity implements
         OrdersSQLHelper.dbOpenHelper.remove(order);
     }
 
-    public void switchToOrderFragment(){
-        switch (activityState){
-            case LAND_2:
-                activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
-                break;
-            case PORT_2:
-                activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
-                break;
-            //также возможной точкой вызова этого метода является LAND_2_1, но в этом случае никаких операций по смене фрагментов не нужно
+    public void returnToOrderFragment(Order order) {
+        OrderFragment orderFragment;
+        if (deviceIsInLandscape){
+            //if deviceIsInLandscape then OrderFragment is statically added
+            orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentByTag(OrderFragment.FRAGMENT_TAG);
+            orderFragment.setOrder(order);
+            orderFragment.refreshWidgets(order);
+        } else {
+            orderFragment = new OrderFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.container_main, orderFragment);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();
+            orderFragment.setOrder(order);
         }
     }
 
@@ -128,12 +140,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("activityState", activityState.id);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -144,12 +150,22 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_show_orders_list:
                 //Обработчик нажатия кнопки "Список заказов"
-                if (ordersStorage.size() == 0)
-                    Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
-                else {
-                    if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
-                    else activityState = ActivityState.PORT_2;
-                    activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
+                //TODO: hide such option in landscape
+                if (!deviceIsInLandscape) {
+                    //handle this click only in portrait
+                    if (ordersStorage.size() == 0)
+                        Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
+                    else {
+                        OrdersListFragment ordersList = (OrdersListFragment)
+                                getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
+                        if (ordersList == null) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ordersList = new OrdersListFragment();
+                            ft.replace(R.id.container_main, ordersList);
+                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                            ft.commit();
+                        }
+                    }
                 }
                 return true;
 
@@ -183,18 +199,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        switch (activityState){
-            case LAND_2:
-                activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
-                break;
-            case PORT_2:
-                activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_main, fragment1, fragment2);
-                break;
-            default:
-                startActivity(new Intent(context, FirstScreenActivity.class));
-                finish();
-        }
+        startActivity(new Intent(context, FirstScreenActivity.class));
+        finish();
     }
 }
