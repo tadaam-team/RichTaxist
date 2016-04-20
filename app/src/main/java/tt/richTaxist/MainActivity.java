@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -98,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements
             orderFragment.setOrder(order);
             orderFragment.refreshWidgets(order);
         } else {
+            //next line removes record of OrdersListFragmentTransaction from backStack
+            getSupportFragmentManager().popBackStackImmediate();
             orderFragment = new OrderFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container_main, orderFragment);
@@ -144,27 +145,31 @@ public class MainActivity extends AppCompatActivity implements
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_show_orders_list).setVisible(!deviceIsInLandscape);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id){
             case R.id.action_show_orders_list:
-                //Обработчик нажатия кнопки "Список заказов"
-                //TODO: hide such option in landscape
-                if (!deviceIsInLandscape) {
-                    //handle this click only in portrait
-                    if (ordersStorage.size() == 0)
-                        Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
-                    else {
-                        OrdersListFragment ordersList = (OrdersListFragment)
-                                getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
-                        if (ordersList == null) {
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ordersList = new OrdersListFragment();
-                            ft.replace(R.id.container_main, ordersList);
-                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                            ft.commit();
-                        }
+                //item is shown only in portrait
+                if (ordersStorage.size() == 0)
+                    Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
+                else {
+                    OrdersListFragment ordersListFragment = (OrdersListFragment)
+                            getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
+                    if (ordersListFragment == null) {
+                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                        ordersListFragment = new OrdersListFragment();
+                        ft.replace(R.id.container_main, ordersListFragment);
+                        ft.addToBackStack("OrdersListFragmentTransaction");
+                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                        ft.commit();
                     }
                 }
                 return true;
@@ -192,14 +197,17 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_settings:
                 startActivity(new Intent(context, SettingsActivity.class));
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(context, FirstScreenActivity.class));
-        finish();
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            startActivity(new Intent(context, FirstScreenActivity.class));
+            finish();
+        } else {
+            getSupportFragmentManager().popBackStack();
+        }
     }
 }

@@ -7,22 +7,28 @@
     android:id="@+id/orderFragment">
 
     <ScrollView
-        android:layout_width="match_parent" android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <LinearLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_marginBottom="2dp" android:layout_marginTop="2dp">
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp">
                 <TextView
                     android:text="@string/arrivalDateTime"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     />
                 <LinearLayout
                     android:id="@+id/dateTimePlaceHolder"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:minHeight="60dp">
                 </LinearLayout>
@@ -30,24 +36,30 @@
 
 
             <LinearLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp">
 
                 <TextView
                     android:text="@string/payType"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"/>
 
                 <RadioGroup
                     android:id="@+id/payTypeRadioGroup"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
                     <RadioButton
                         android:text="@string/payTypeCash"
                         android:id="@+id/choiceCash"
-                        android:layout_width="0dp" android:layout_height="60dp"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
                         android:checked="true"
                         android:layout_marginLeft="2dp" android:layout_marginRight="2dp"
                         android:layout_weight="1"/>
@@ -68,17 +80,22 @@
 
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical">
                 <EditText
                     android:id="@+id/etPrice"
                     android:hint="@string/price"
-                    android:layout_width="0dp" android:layout_height="60dp"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:inputType="number"/>
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:enabled="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" />
 
                 <requestFocus
                     android:layout_width="0dp"
@@ -89,54 +106,66 @@
                     android:text="@string/addNewOrder"
                     style="@style/ButtonBordered"
                     android:id="@+id/btnAddNewOrder"
-                    android:layout_width="0dp" android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"/>
                 <Button
                     android:text="@string/clearForm"
                     style="@style/ButtonBordered"
                     android:id="@+id/btnClearForm"
-                    android:layout_width="0dp" android:layout_height="60dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1"/>
             </TableRow>
 
             <EditText
                 android:id="@+id/etNote"
                 android:hint="@string/note"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginTop="2dp" android:layout_marginBottom="20dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="20dp"
                 android:inputType="textMultiLine"
                 android:minHeight="60dp"/>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical">
                 <Button
                     android:text="@string/taxopark"
                     android:id="@+id/btnTaxopark"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/billing"
                     android:id="@+id/btnBilling"
                     style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"/>
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" android:layout_marginBottom="2dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:gravity="center_vertical">
                 <Spinner
-                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/spnTaxopark"
                     android:spinnerMode="dialog"/>
                 <Spinner
-                    android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/spnBilling"
                     android:spinnerMode="dialog"/>
