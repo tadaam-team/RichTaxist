@@ -11,6 +11,7 @@
     <string name="grandTotals">Заработано</string>
     <string name="exit">Закрыть\nпрограмму</string>
     <string name="noShiftsMSG">сохранённых смен не найдено</string>
+    <string name="allowedOnlyInPortraitMSG">разрешено только в портретном режиме</string>
 
 
     <string name="shiftsListScreenName">Список смен</string>
@@ -61,7 +62,7 @@
     <string name="revenueBonus">Чаевые</string>
     <string name="carRent">Аренда машины</string>
     <string name="salaryUnofficial">Зарплата с чаем</string>
-    <string name="salaryUnofficialShort">зп + чай</string>
+    <string name="salaryUnofficialFormatter">зп: %d</string>
     <string name="workHoursSpent">Отработано часов</string>
     <string name="salaryPerHour">Зарплата в час</string>
     <string name="closeShift">Закрыть смену</string>

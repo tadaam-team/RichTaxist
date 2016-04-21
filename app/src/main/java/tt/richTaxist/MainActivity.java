@@ -51,16 +51,15 @@ public class MainActivity extends AppCompatActivity implements
 
     private void addOrdersListFragment(){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        OrdersListFragment ordersListFragment = new OrdersListFragment();
-        ft.replace(R.id.container_orders_list, ordersListFragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        OrdersListFragment fragment = new OrdersListFragment();
+        ft.replace(R.id.container_orders_list, fragment);
         ft.commit();
     }
 
     private void addOrderFragment(){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        OrderFragment orderFragment = new OrderFragment();
-        ft.replace(R.id.container_main, orderFragment);
+        OrderFragment fragment = new OrderFragment();
+        ft.replace(R.id.container_main, fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
     }
@@ -158,9 +157,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_show_orders_list:
                 //item is shown only in portrait
-                if (ordersStorage.size() == 0)
-                    Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
-                else {
+                if (ordersStorage.size() != 0){
                     OrdersListFragment ordersListFragment = (OrdersListFragment)
                             getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
                     if (ordersListFragment == null) {
@@ -171,6 +168,8 @@ public class MainActivity extends AppCompatActivity implements
                         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                         ft.commit();
                     }
+                } else {
+                    Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
                 }
                 return true;
 

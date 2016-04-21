@@ -41,6 +41,7 @@ import tt.richTaxist.Units.Taxopark;
  */
 
 public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.OnDateTimeRangeFragmentInteractionListener {
+    public static final String FRAGMENT_TAG = "ShiftsListFragment";
     private static final String LOG_TAG = "ShiftsListFragment";
     private FragmentActivity mActivity;
     private RecyclerViewAdapter adapter;
@@ -52,10 +53,6 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
-        //TODO: remove crutch
-        LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
-        rootView.setLayoutParams(layoutParams);
-
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
         //TODO: get correct dataSource

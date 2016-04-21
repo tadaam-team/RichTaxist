@@ -114,7 +114,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener, rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
-                startDatePD.setYearRange(2015, 2020);
+                startDatePD.setYearRange(2015, 2025);
                 startDatePD.setCloseOnSingleTapDay(true);
                 startDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeStartDate";
@@ -135,7 +135,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener, rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
-                endDatePD.setYearRange(2015, 2020);
+                endDatePD.setYearRange(2015, 2025);
                 endDatePD.setCloseOnSingleTapDay(true);
                 endDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeEndDate";

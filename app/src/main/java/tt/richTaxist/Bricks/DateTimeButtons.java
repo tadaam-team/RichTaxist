@@ -54,7 +54,7 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
                 DatePickerDialog datePD = DatePickerDialog.newInstance(dateSetListener,
                         dateTimeLocal.get(Calendar.YEAR), dateTimeLocal.get(Calendar.MONTH), dateTimeLocal.get(Calendar.DAY_OF_MONTH), false);
                 datePD.setVibrate(false);
-                datePD.setYearRange(2015, 2020);
+                datePD.setYearRange(2015, 2025);
                 datePD.setCloseOnSingleTapDay(true);
                 datePD.show(getChildFragmentManager(), "datepicker");
             }

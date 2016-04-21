@@ -1,7 +1,6 @@
 package tt.richTaxist;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -116,7 +115,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener,
                         rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
-                startDatePD.setYearRange(2015, 2020);
+                startDatePD.setYearRange(2015, 2025);
                 startDatePD.setCloseOnSingleTapDay(true);
                 startDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonShiftStartDate";
@@ -139,7 +138,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener,
                         rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
-                endDatePD.setYearRange(2015, 2020);
+                endDatePD.setYearRange(2015, 2025);
                 endDatePD.setCloseOnSingleTapDay(true);
                 endDatePD.show(getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonShiftEndDate";
@@ -344,13 +343,13 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private String getStringDateFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1,
+        return String.format(locale, "%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1,
                 cal.get(Calendar.YEAR) % 100);
     }
     private String getStringTimeFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
 

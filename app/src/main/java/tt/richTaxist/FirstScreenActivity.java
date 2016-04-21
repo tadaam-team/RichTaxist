@@ -6,10 +6,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.app.NotificationManager;
 import android.content.res.Configuration;
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -35,10 +35,8 @@ public class FirstScreenActivity extends AppCompatActivity implements
     static Context context;
     private static final String LOG_TAG = "FirstScreenActivity";
     public static ArrayAdapter shiftAdapterMA;
-    private FragmentManager fragmentManager;
-    private FirstScreenFragment fragment1;
-    private ShiftsListFragment fragment2;
     public ActivityState activityState;
+    private boolean deviceIsInLandscape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,20 +76,38 @@ public class FirstScreenActivity extends AppCompatActivity implements
         }
 
         //фрагментная логика
-        fragmentManager = getSupportFragmentManager();
-        if (savedInstanceState != null) {
-            int activityStateID = savedInstanceState.getInt("activityState");
-            activityState = ActivityState.getById(activityStateID);
+        deviceIsInLandscape = (findViewById(R.id.container_shifts_list) != null);
+        if (deviceIsInLandscape){
+            //if deviceIsInLandscape then FirstScreenFragment is statically added
+            addShiftsListFragment();
+        } else {
+            addFirstScreenFragment();
         }
-
-        fragment1 = (FirstScreenFragment) fragmentManager.findFragmentByTag("fragment1");
-        if (fragment1 == null) fragment1 = new FirstScreenFragment();
-        fragment2 = (ShiftsListFragment) fragmentManager.findFragmentByTag("fragment2");
-        if (fragment2 == null) fragment2 = new ShiftsListFragment();
-
-        activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
     }
 
+    private void addShiftsListFragment(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ShiftsListFragment fragment = new ShiftsListFragment();
+        ft.replace(R.id.container_shifts_list, fragment);
+        ft.commit();
+    }
+
+    private void addFirstScreenFragment(){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FirstScreenFragment fragment = new FirstScreenFragment();
+        ft.replace(R.id.container_first_screen, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //TODO: this should be done in callback handler from settings action
+        if (deviceIsInLandscape) {
+            addShiftsListFragment();
+        }
+    }
 
     @Override
     public void onButtonSelected(int buttonIndex){
@@ -120,13 +136,24 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnOpenShift:
                 //Обработчик нажатия кнопки "Список смен"
-                if (MainActivity.currentShift != null){
-                    if (Storage.deviceIsInLandscape) activityState = ActivityState.LAND_2;
-                    else activityState = ActivityState.PORT_2;
-                    activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
+                if (!deviceIsInLandscape) {
+                    if (MainActivity.currentShift != null){
+                        ShiftsListFragment shiftsListFragment = (ShiftsListFragment)
+                                getSupportFragmentManager().findFragmentByTag(ShiftsListFragment.FRAGMENT_TAG);
+                        if (shiftsListFragment == null) {
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            shiftsListFragment = new ShiftsListFragment();
+                            ft.replace(R.id.container_first_screen, shiftsListFragment);
+                            ft.addToBackStack("OrdersListFragmentTransaction");
+                            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                            ft.commit();
+                        }
+                    } else {
+                        Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(activity, R.string.allowedOnlyInPortraitMSG, Toast.LENGTH_SHORT).show();
                 }
-                else
-                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnSettings:
@@ -165,12 +192,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(), "кнопка не определена", Toast.LENGTH_LONG).show();
                 break;
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("activityState", activityState.id);
     }
 
     //пока не могу найти способ не задваивать метод авторизации
@@ -295,17 +316,10 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
-        switch (activityState){
-            case LAND_2:
-                activityState = ActivityState.LAND_2_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
-                break;
-            case PORT_2:
-                activityState = ActivityState.PORT_1;
-                activityState = Storage.manageFragments(fragmentManager, activityState, R.id.container_first_screen, fragment1, fragment2);
-                break;
-            default:
-                Storage.openQuitDialog(this);
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            Storage.openQuitDialog(this);
+        } else {
+            getSupportFragmentManager().popBackStack();
         }
     }
 }

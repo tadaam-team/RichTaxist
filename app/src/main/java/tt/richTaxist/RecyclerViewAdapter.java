@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
@@ -42,10 +43,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position){
+    public void onBindViewHolder(final ViewHolder holder, int position){
         //Заполнение заданного представления данными
         CardView cardView = holder.cardView;
         Resources res = cardView.getContext().getResources();
+        Locale locale = res.getConfiguration().locale;
         Shift shift = null;
         Order order = null;
         if (adapterDataType == AdapterDataType.SHIFT) {
@@ -74,13 +76,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         if (shift != null) {
             Calendar beginShiftCal = Calendar.getInstance();
             beginShiftCal.setTime(shift.beginShift);
-            tv_Main.setText(String.format("%02d.%02d", beginShiftCal.get(Calendar.DAY_OF_MONTH), beginShiftCal.get(Calendar.MONTH) + 1));
-            tv_Additional.setText(String.format(res.getString(R.string.salaryUnofficialShort) + ": %d", shift.salaryUnofficial));
+            tv_Main.setText(String.format(locale, "%02d.%02d %02d:%02d", beginShiftCal.get(Calendar.DAY_OF_MONTH), beginShiftCal.get(Calendar.MONTH) + 1,
+                    beginShiftCal.get(Calendar.HOUR_OF_DAY), beginShiftCal.get(Calendar.MINUTE)));
+            tv_Additional.setText(String.format(locale, res.getString(R.string.salaryUnofficialFormatter), shift.salaryUnofficial));
         } else if(order != null) {
             Calendar arrivalCal = Calendar.getInstance();
             arrivalCal.setTime(order.arrivalDateTime);
-            tv_Main.setText(String.format("%02d:%02d", arrivalCal.get(Calendar.HOUR_OF_DAY), arrivalCal.get(Calendar.MINUTE)));
-            tv_Additional.setText(String.format("%d", order.price));
+            tv_Main.setText(String.format(locale, "%02d:%02d", arrivalCal.get(Calendar.HOUR_OF_DAY), arrivalCal.get(Calendar.MINUTE)));
+            tv_Additional.setText(String.format(locale, "%d", order.price));
         }
 
         //установим слушатели
@@ -89,7 +92,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClick(objects.get(position));
+                    listener.onClick(objects.get(holder.getAdapterPosition()));
                 }
             }
         });
@@ -99,7 +102,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClickDelete(objects.get(position));
+                    listener.onClickDelete(objects.get(holder.getAdapterPosition()));
                 }
             }
         });

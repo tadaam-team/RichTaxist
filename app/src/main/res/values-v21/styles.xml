@@ -25,10 +25,10 @@
 
     <!--style params starting with "layout_" don't work by default. you need to add {style="@style/ButtonBordered"} to each widget-->
     <style name="ButtonBordered" parent="android:Widget.Button">
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:paddingLeft">7dp</item>
-        <item name="android:paddingRight">7dp</item>
+        <item name="android:paddingTop">@dimen/view_paddings_tb</item>
+        <item name="android:paddingBottom">@dimen/view_paddings_tb</item>
+        <item name="android:paddingLeft">@dimen/view_paddings_lr</item>
+        <item name="android:paddingRight">@dimen/view_paddings_lr</item>
         <item name="android:background">@drawable/btn_ripple</item>
         <!--<item name="android:background">@android:drawable/btn_default</item>-->
         <!--<item name="android:colorButtonNormal">@color/colorPrimary</item>-->
@@ -37,17 +37,17 @@
     </style>
 
     <style name="ToggleButtonBordered" parent="android:Widget.Button.Toggle">
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:paddingLeft">7dp</item>
-        <item name="android:paddingRight">7dp</item>
+        <item name="android:paddingTop">@dimen/view_paddings_tb</item>
+        <item name="android:paddingBottom">@dimen/view_paddings_tb</item>
+        <item name="android:paddingLeft">@dimen/view_paddings_lr</item>
+        <item name="android:paddingRight">@dimen/view_paddings_lr</item>
         <item name="android:background">@drawable/btn_ripple</item>
     </style>
 
     <style name="TextView" parent="android:Widget.TextView">
-        <item name="android:paddingTop">2dp</item>
-        <item name="android:paddingBottom">2dp</item>
-        <item name="android:paddingLeft">5dp</item>
-        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingTop">@dimen/view_paddings_tb</item>
+        <item name="android:paddingBottom">@dimen/view_paddings_tb</item>
+        <item name="android:paddingLeft">@dimen/view_paddings_lr</item>
+        <item name="android:paddingRight">@dimen/view_paddings_lr</item>
     </style>
 </resources>

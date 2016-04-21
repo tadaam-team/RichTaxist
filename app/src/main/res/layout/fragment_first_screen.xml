@@ -22,7 +22,7 @@
                     android:text="@string/openLastShift"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
             </TableRow>
 
@@ -35,14 +35,14 @@
                     android:id="@+id/btnNewShift"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/shiftsList"
                     android:id="@+id/btnOpenShift"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
             </TableRow>
 
@@ -55,14 +55,14 @@
                     android:id="@+id/btnSettings"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/signIn"
                     android:id="@+id/btnSignIn"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
             </TableRow>
 
@@ -75,14 +75,14 @@
                     android:id="@+id/btnGrandTotals"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/exit"
                     android:id="@+id/btnExit"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
-                    android:layout_height="80dp"
+                    android:layout_height="70dp"
                     android:layout_weight="1"/>
             </TableRow>
 

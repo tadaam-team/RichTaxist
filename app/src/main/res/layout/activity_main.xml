@@ -4,9 +4,7 @@
     tools:context=".MainActivity"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:gravity="center_horizontal"
-    android:id="@+id/container_main"
-    android:layout_gravity="center">
+    android:id="@+id/container_main">
 
 </LinearLayout>
 
