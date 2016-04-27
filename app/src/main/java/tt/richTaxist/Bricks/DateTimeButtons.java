@@ -13,7 +13,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 import tt.richTaxist.R;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 
 public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
     private Context context;
@@ -67,7 +67,7 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
                 TimePickerDialog timePD = TimePickerDialog.newInstance(timeSetListener,
                         dateTimeLocal.get(Calendar.HOUR_OF_DAY), dateTimeLocal.get(Calendar.MINUTE), true, false);
                 timePD.setVibrate(false);
-                timePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
+                timePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
                 timePD.show(getChildFragmentManager(), "timepicker");
             }
         });

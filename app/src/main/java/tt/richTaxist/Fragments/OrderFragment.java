@@ -28,7 +28,7 @@ import tt.richTaxist.MainActivity;
 import tt.richTaxist.OrderActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Settings4ParksAndBillingsActivity;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 
 public class OrderFragment extends Fragment implements
         DateTimeButtons.OnDateTimeButtonsFragmentInteractionListener {
@@ -78,7 +78,7 @@ public class OrderFragment extends Fragment implements
         rootView.findViewById(R.id.btnAddNewOrder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Storage.hideTaxometer){
+                if (Util.hideTaxometer){
                     startActivityForResult(new Intent(context, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
                 } else {
                     createNewOrder(0, 0);
@@ -89,8 +89,8 @@ public class OrderFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
-                Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
+                Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+                Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
                 Toast.makeText(context, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,21 +125,21 @@ public class OrderFragment extends Fragment implements
         spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
                 TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
     }
     public void createBillingSpinner(){
         spnBillingAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
                 BillingsSQLHelper.dbOpenHelper.getAllBillings());
         spnBilling.setAdapter(spnBillingAdapter);
-        Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Storage.billingID);
+        Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Util.billingID);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        Storage.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
+        Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        Util.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
     }
 
     private TypeOfPayment getRadioState(){
@@ -168,8 +168,8 @@ public class OrderFragment extends Fragment implements
                 default:    typeOfPaymentUI.clearCheck();
             }
             etNote.setText(receivedOrder.note);
-            Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
-            Storage.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
+            Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
+            Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
         } else{
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
@@ -209,11 +209,11 @@ public class OrderFragment extends Fragment implements
             note = "";
         }
 
-        Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        Storage.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
+        Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        Util.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
 
         Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
-                distance, travelTime, Storage.taxoparkID, Storage.billingID);
+                distance, travelTime, Util.taxoparkID, Util.billingID);
         mListener.addOrder(newOrder);
         refreshWidgets(null);
     }

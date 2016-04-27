@@ -10,7 +10,7 @@ import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -101,7 +101,7 @@ public class Shift {
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
-        workHoursSpent = Storage.RoundResult(workHoursSpent, 2);
+        workHoursSpent = Util.RoundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryUnofficial / workHoursSpent);
         ShiftsSQLHelper.dbOpenHelper.update(this);
     }

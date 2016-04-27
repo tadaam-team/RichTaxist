@@ -19,7 +19,7 @@ import tt.richTaxist.MainActivity;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 
 /**
  * Created by Tau on 13.10.2015.
@@ -83,7 +83,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
         if (!list.isEmpty()) {
             //отсечем заведомо пустой кусок шкалы между 01.01.2015 и минимальной датой в list
             Object object;
-            if (Storage.youngIsOnTop) object = list.get(list.size() - 1);
+            if (Util.youngIsOnTop) object = list.get(list.size() - 1);
             else object = list.get(0);
 
             if (object instanceof Shift)        rangeStart.setTime(((Shift) object).beginShift);
@@ -125,7 +125,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
-                startTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
+                startTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
                 startTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeStartTime";
             }
@@ -146,7 +146,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
-                endTimePD.setCloseOnSingleTapMinute(Storage.twoTapTimePick);
+                endTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
                 endTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeEndTime";
             }

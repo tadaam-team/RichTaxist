@@ -36,13 +36,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
-//        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_main));
-        Storage.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+//        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_main));
+        Util.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         //фрагментная логика
         deviceIsInLandscape = (findViewById(R.id.container_orders_list) != null);
         if (deviceIsInLandscape){
             //if deviceIsInLandscape then OrderFragment is statically added
+            //we can't statically add OrdersListFragment because OrdersListFragment.adapter.notifyDataSetChanged()
+            //doesn't work properly with RecyclerView
             addOrdersListFragment();
         } else {
             addOrderFragment();
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
         ordersStorage.add(order);
         OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
-        currentShift.calculateShiftTotals(0, Storage.taxoparkID);
+        currentShift.calculateShiftTotals(0, Util.taxoparkID);
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
                 Date nextDate = ordersStorage.get(j + 1).arrivalDateTime;
                 //ниже проверяем НАРУШЕНИЕ порядка, а не его правильность. если проверка true, то переставляем
                 //before = самый свежий должен быть наверху, after = самый старый должен быть наверху
-                if (Storage.youngIsOnTop ? !currentDate.after(nextDate) : !currentDate.before(nextDate)) {
+                if (Util.youngIsOnTop ? !currentDate.after(nextDate) : !currentDate.before(nextDate)) {
                     Order tmp = ordersStorage.get(j);
                     ordersStorage.set(j, ordersStorage.get(j + 1));
                     ordersStorage.set(j + 1, tmp);
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements
                 Date nextShiftStart = shiftsStorage.get(j + 1).beginShift;
                 //ниже проверяем НАРУШЕНИЕ порядка, а не его правильность. если проверка true, то переставляем
                 //before = самый свежий должен быть наверху, after = самый старый должен быть наверху
-                if (Storage.youngIsOnTop ? !currentShiftStart.after(nextShiftStart) : !currentShiftStart.before(nextShiftStart)) {
+                if (Util.youngIsOnTop ? !currentShiftStart.after(nextShiftStart) : !currentShiftStart.before(nextShiftStart)) {
                     Shift tmp = shiftsStorage.get(j);
                     shiftsStorage.set(j, shiftsStorage.get(j + 1));
                     shiftsStorage.set(j + 1, tmp);

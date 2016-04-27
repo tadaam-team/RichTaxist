@@ -17,7 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Spinner;
-import android.widget.TextView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -51,7 +51,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grand_totals);
-        Storage.measureScreenWidth(this, (ViewGroup) findViewById(R.id.activity_grand_totals));
+        Util.measureScreenWidth(this, (ViewGroup) findViewById(R.id.activity_grand_totals));
 
         locale = getResources().getConfiguration().locale;
         ArrayList<Shift> list = new ArrayList<>();
@@ -151,7 +151,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         createShiftSpinner(true, spnFirstShift);
         createShiftSpinner(false, spnLastShift);
         createTaxoparkSpinner();
-        calculateGrandTotals(Storage.taxoparkID);
+        calculateGrandTotals(Util.taxoparkID);
         refreshGTControls();
     }
 
@@ -168,7 +168,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
                 }
                 cursor.close();
 
-                calculateGrandTotals(Storage.taxoparkID);
+                calculateGrandTotals(Util.taxoparkID);
                 refreshGTControls();
             }
 
@@ -208,13 +208,13 @@ public class GrandTotalsActivity extends AppCompatActivity {
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-                calculateGrandTotals(Storage.taxoparkID);
+                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                calculateGrandTotals(Util.taxoparkID);
                 refreshGTControls();
             }
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override

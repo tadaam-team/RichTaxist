@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout.LayoutParams;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,14 +24,12 @@ import tt.richTaxist.Bricks.DateTimeRangeFrag;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.TypeOfSpinner;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.ShiftTotalsActivity;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Units.Taxopark;
 
@@ -47,6 +44,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
     private RecyclerViewAdapter adapter;
     private Spinner spnTaxopark;
     private DateTimeRangeFrag dateTimeRangeFrag;
+    private boolean isListSingleVisible;
 
     @Nullable
     @Override
@@ -93,8 +91,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         FragmentManager fragmentManager = getChildFragmentManager();
         MainActivity.sortShiftsStorage();
         dateTimeRangeFrag = (DateTimeRangeFrag) fragmentManager.findFragmentByTag("dateTimeRangeFrag");
-        if (((FirstScreenActivity) mActivity).activityState == ActivityState.PORT_2 ||
-                ((FirstScreenActivity) mActivity).activityState == ActivityState.LAND_2) {
+        if (isListSingleVisible) {
             //когда лист единственный на экране, фрагмент следует создать
             if (dateTimeRangeFrag == null) {
                 dateTimeRangeFrag = new DateTimeRangeFrag();
@@ -111,6 +108,10 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
             }
         }
         return rootView;
+    }
+
+    public void setSoloView(boolean isListSingleVisible){
+        this.isListSingleVisible = isListSingleVisible;
     }
 
     private void openShiftDeleteDialog(final Shift shift) {
@@ -150,18 +151,18 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
                 if (MainActivity.currentShift != null && dateTimeRangeFrag != null) {
                     MainActivity.shiftsStorage.clear();
                     MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Storage.youngIsOnTop, Storage.taxoparkID));
+                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, Util.taxoparkID));
                     adapter.notifyDataSetChanged();
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
-        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override
@@ -169,7 +170,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         //been executed each time upon input finish of date/time start/end
         MainActivity.shiftsStorage.clear();
         MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                rangeStart, rangeEnd, Storage.youngIsOnTop, Storage.taxoparkID));
+                rangeStart, rangeEnd, Util.youngIsOnTop, Util.taxoparkID));
     }
     @Override
     public void refreshControls() {

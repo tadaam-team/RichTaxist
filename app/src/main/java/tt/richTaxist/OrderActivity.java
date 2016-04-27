@@ -50,7 +50,7 @@ public class OrderActivity extends AppCompatActivity{
         setContentView(R.layout.activity_order);
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         context = getApplicationContext();
-        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_order));
+        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_order));
 
         distance = 0;
         travelTime = 0;

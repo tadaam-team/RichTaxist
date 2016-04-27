@@ -22,20 +22,20 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         context = getApplicationContext();
-        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_settings));
+        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_settings));
 
         //транслируем сохраненное состояние настроек в виджеты при открытии
-        ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Storage.showListHint);
-        ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Storage.youngIsOnTop);
-        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Storage.twoTapTimePick);
-        ((ToggleButton) findViewById(R.id.tbHideTaxometer)) .setChecked(!Storage.hideTaxometer);
-        ((ToggleButton) findViewById(R.id.tbInputStyle))    .setChecked(Storage.inputStyle.id != InputStyle.SPINNER.id);
+        ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Util.showListHint);
+        ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Util.youngIsOnTop);
+        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Util.twoTapTimePick);
+        ((ToggleButton) findViewById(R.id.tbHideTaxometer)) .setChecked(!Util.hideTaxometer);
+        ((ToggleButton) findViewById(R.id.tbInputStyle))    .setChecked(Util.inputStyle.id != InputStyle.SPINNER.id);
 
         btnTimePickerInterval = (Button) findViewById(R.id.btnTimePickerInterval);
-        if (Storage.inputStyle.id == InputStyle.SPINNER.id)
+        if (Util.inputStyle.id == InputStyle.SPINNER.id)
             btnTimePickerInterval.setEnabled(true);
         else btnTimePickerInterval.setEnabled(false);
-        btnTimePickerInterval.setText(String.valueOf(Storage.timePickerStep));
+        btnTimePickerInterval.setText(String.valueOf(Util.timePickerStep));
         btnTimePickerInterval.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
 
     @Override
     public void onFinishInputDialog(int inputNumber) {
-        Storage.timePickerStep = inputNumber;
+        Util.timePickerStep = inputNumber;
         btnTimePickerInterval.setText(String.valueOf(inputNumber));
     }
 
@@ -56,14 +56,14 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
     //имена переменных же, как и их предпочтительные значения наоборот предполагают true
     //также сбивает с толку предпросмотр XML, показывающий textOff
     //чтобы устранить это противоречие к опросу ToggleButton и его инициализации добавлен !
-    public void onTBListHintClick(View view)       { Storage.showListHint     = !((ToggleButton) view).isChecked(); }
-    public void onTBListsSortOrderClick(View view) { Storage.youngIsOnTop     = !((ToggleButton) view).isChecked(); }
-    public void onTBTimePickClicksClick(View view) { Storage.twoTapTimePick   = !((ToggleButton) view).isChecked(); }
-    public void onTBHideTaxometerClick(View view)  { Storage.hideTaxometer    = !((ToggleButton) view).isChecked(); }
+    public void onTBListHintClick(View view)       { Util.showListHint     = !((ToggleButton) view).isChecked(); }
+    public void onTBListsSortOrderClick(View view) { Util.youngIsOnTop     = !((ToggleButton) view).isChecked(); }
+    public void onTBTimePickClicksClick(View view) { Util.twoTapTimePick   = !((ToggleButton) view).isChecked(); }
+    public void onTBHideTaxometerClick(View view)  { Util.hideTaxometer    = !((ToggleButton) view).isChecked(); }
 
     public void onTBInputStyleClick(View view) {
-        if (!((ToggleButton) view).isChecked()) Storage.inputStyle = InputStyle.SPINNER;
-        else Storage.inputStyle = InputStyle.BUTTON;
+        if (!((ToggleButton) view).isChecked()) Util.inputStyle = InputStyle.SPINNER;
+        else Util.inputStyle = InputStyle.BUTTON;
         btnTimePickerInterval.setEnabled(!((ToggleButton) view).isChecked());
     }
 
@@ -80,7 +80,7 @@ public class SettingsActivity extends AppCompatActivity implements DF_ChooseFrom
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Storage.saveSettings(context);
+        Util.saveSettings(context);
         if (MainActivity.currentShift != null) {
             MainActivity.sortOrdersStorage();
             MainActivity.sortShiftsStorage();

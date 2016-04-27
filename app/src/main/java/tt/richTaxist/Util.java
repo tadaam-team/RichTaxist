@@ -3,17 +3,12 @@ package tt.richTaxist;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 import com.parse.ParseUser;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,7 +20,6 @@ import tt.richTaxist.Units.Billing;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.ActivityState;
 import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.gps.GPSHelper;
@@ -33,7 +27,7 @@ import tt.richTaxist.gps.GPSHelper;
 /**
  * Created by Tau on 09.07.2015.
  */
-public class Storage {
+public class Util {
     public static ParseUser currentUser;
     public static String username = "";
     public static String password = "";
@@ -56,21 +50,21 @@ public class Storage {
     public static Boolean userHasAccess = false;
     //TODO: проверять каждые 6 часов, что с пользователем все хорошо.
     // Если плохо, сбрасывать доступ, но так чтобы это отразилось на следующем опросе состояния, а не выкидывать его из платного процесса
-    public static long sessionLength = 0;
+//    public static long sessionLength = 0;
 
     public static boolean deviceIsInLandscape;
-    private static final String LOG_TAG = "Storage";
-    public static Storage instance;
+    private static final String LOG_TAG = "Util";
+    public static Util instance;
     private static Context context;
 
 
-    public static Storage init(Context context){
-        if (instance == null) instance = new Storage(context);
+    public static Util init(Context context){
+        if (instance == null) instance = new Util(context);
         return instance;
     }
 
-    private Storage(Context context) {
-        this.context = context;
+    private Util(Context context) {
+        Util.context = context;
         loadSettingsFromFile();
     }
 
@@ -140,77 +134,6 @@ public class Storage {
                 break;
         }
         adapter.notifyDataSetChanged();
-    }
-
-    public static ActivityState manageFragments(FragmentManager fragmentManager, ActivityState activityState,
-                                                int containerId, Fragment fragment1, Fragment fragment2){
-        if (fragment1 == null || fragment2 == null) {
-            throw new NullPointerException("you shall not pass null fragments to manageFragments method");
-        }
-
-        if (Storage.deviceIsInLandscape) {
-            if (activityState == null) activityState = ActivityState.LAND_2_1;//точка входа ландшафт
-            else if (activityState == ActivityState.PORT_1) activityState = ActivityState.LAND_2_1;
-        }
-        else {
-            if (activityState == null) activityState = ActivityState.PORT_1;//точка входа портрет
-            else if (activityState == ActivityState.LAND_2_1) activityState = ActivityState.PORT_1;
-        }
-
-        FragmentTransaction transaction;
-
-        //очистим экран
-        transaction = fragmentManager.beginTransaction();
-//        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);//нельзя!!
-        if (fragment1.isAdded()) transaction.remove(fragment1);
-        if (fragment2.isAdded()) transaction.remove(fragment2);
-        transaction.commit();
-        fragmentManager.executePendingTransactions();
-
-        Log.d(LOG_TAG, "activityState: " + String.valueOf(activityState));
-        switch (activityState){
-            case LAND_2_1:
-                transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-                transaction.add(containerId, fragment2, "fragment2");
-                transaction.add(containerId, fragment1, "fragment1");
-                transaction.commit();
-
-                if (Storage.showListHint) {
-                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
-                    listHint.setGravity(Gravity.TOP, 0, 0);
-                    listHint.show();
-                }
-                break;
-
-            case LAND_2:
-                transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-                transaction.add(containerId, fragment2, "fragment2");
-                transaction.commit();
-                break;
-
-            case PORT_1:
-                transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-                transaction.add(containerId, fragment1, "fragment1");
-                transaction.commit();
-                break;
-
-            case PORT_2:
-                transaction = fragmentManager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out);
-                transaction.add(containerId, fragment2, "fragment2");
-                transaction.commit();
-
-                if (Storage.showListHint) {
-                    Toast listHint = Toast.makeText(context, R.string.listHint, Toast.LENGTH_SHORT);
-                    listHint.setGravity(Gravity.TOP, 0, 0);
-                    listHint.show();
-                }
-                break;
-        }
-        return activityState;
     }
 
     public static void saveSettings(Context context){//to cloud and file

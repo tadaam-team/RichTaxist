@@ -19,7 +19,7 @@ import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
-import tt.richTaxist.Storage;
+import tt.richTaxist.Util;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Taxopark;
 
@@ -92,13 +92,13 @@ public class OrdersListFragment extends Fragment {
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Storage.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
                 MainActivity.ordersStorage.clear();
-                if (Storage.taxoparkID == 0) {
+                if (Util.taxoparkID == 0) {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
                 } else {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(
-                            MainActivity.currentShift.shiftID, Storage.taxoparkID));
+                            MainActivity.currentShift.shiftID, Util.taxoparkID));
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -106,7 +106,7 @@ public class OrdersListFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        Storage.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     public interface OnOrderListFragmentInteractionListener {

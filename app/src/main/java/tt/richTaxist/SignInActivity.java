@@ -10,8 +10,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -46,11 +46,11 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         context = getApplicationContext();
-        Storage.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_sign_in));
+        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_sign_in));
 
         initiateWidgets();
         mProgress.setVisibility(View.INVISIBLE);
-        if (Storage.currentUser != null) showLogInORLogOut(false, true);
+        if (Util.currentUser != null) showLogInORLogOut(false, true);
         else showLogInORLogOut(true, false);
         //TODO: убрать клавиатуру при входе на экран
 //        View focused = getCurrentFocus();
@@ -82,20 +82,20 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onSignUpClick(View v) {
-        Storage.username = etUsername.getText().toString();
-        Storage.password = etPassword.getText().toString();
+        Util.username = etUsername.getText().toString();
+        Util.password = etPassword.getText().toString();
         String mEmail = etEmail.getText().toString();
 
-        if ("".equals(Storage.username) || "".equals(Storage.password) || "".equals(mEmail)) {
+        if ("".equals(Util.username) || "".equals(Util.password) || "".equals(mEmail)) {
             Toast.makeText(context, "Заполните логин, пароль и почту", Toast.LENGTH_SHORT).show();
         } else {
             showProgress(true);
             // Сохраняем данные нового пользователя на Parse.com
             ParseUser user = new ParseUser();
-            user.setUsername(Storage.username);
-            user.setPassword(Storage.password);
+            user.setUsername(Util.username);
+            user.setPassword(Util.password);
             user.setEmail(mEmail);
-            user.put("IMEI", Storage.deviceIMEI);
+            user.put("IMEI", Util.deviceIMEI);
 
             SignUpCallback signUpCallback = new SignUpCallback() {
                 public void done(ParseException error) {
@@ -125,9 +125,9 @@ public class SignInActivity extends AppCompatActivity {
 
     public void onLoginClick(View v) {
         showProgress(true);
-        Storage.username = etUsername.getText().toString();
-        Storage.password = etPassword.getText().toString();
-        if ("".equals(Storage.username) || "".equals(Storage.password)) {
+        Util.username = etUsername.getText().toString();
+        Util.password = etPassword.getText().toString();
+        if ("".equals(Util.username) || "".equals(Util.password)) {
             showProgress(false);
             showLogInORLogOut(true, false);
             Toast.makeText(context, "Для входа введите логин и пароль", Toast.LENGTH_SHORT).show();
@@ -145,10 +145,10 @@ public class SignInActivity extends AppCompatActivity {
             case 4: msg = "СПАСИБО!!"; break;
             case 5: msg = "можете погладить с обратной стороны телефона"; break;
             case 6:
-                if (Storage.currentUser != null && Storage.emailVerified) {
-                    if (!Storage.premiumUser){
-                        Storage.premiumUser = true;
-                        Storage.userHasAccess = true;
+                if (Util.currentUser != null && Util.emailVerified) {
+                    if (!Util.premiumUser){
+                        Util.premiumUser = true;
+                        Util.userHasAccess = true;
 
                         showLogInORLogOut(false, true);//по сути это костыль вместо refreshWidgets()
                         msg = "премиум подписка подключена";
@@ -166,11 +166,11 @@ public class SignInActivity extends AppCompatActivity {
         etPassword.setText("");
         etEmail.setText("");
 
-        Storage.currentUser = null;
-        Storage.username = "";
-        Storage.password = "";
-        Storage.resetSettings();
-        Storage.saveSettings(context);
+        Util.currentUser = null;
+        Util.username = "";
+        Util.password = "";
+        Util.resetSettings();
+        Util.saveSettings(context);
         showLogInORLogOut(true, false);
         //onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
     }
@@ -178,9 +178,9 @@ public class SignInActivity extends AppCompatActivity {
 
     public void onClaimChangeDeviceClick(View v) {
         showProgress(true);
-        Log.d(LOG_TAG, "IMEI before detach: " + Storage.currentUser.getString("IMEI"));
-        Storage.currentUser.put("IMEI", "detached");
-        Storage.currentUser.saveInBackground();
+        Log.d(LOG_TAG, "IMEI before detach: " + Util.currentUser.getString("IMEI"));
+        Util.currentUser.put("IMEI", "detached");
+        Util.currentUser.saveInBackground();
         showProgress(false);
         showLogInORLogOut(true, false);
         Toast.makeText(context, "Запрос принят. Заново войдите чтобы привязать это устройство к учетной записи", Toast.LENGTH_LONG).show();
@@ -220,12 +220,12 @@ public class SignInActivity extends AppCompatActivity {
         buttonClaim.setEnabled(showLogOut);
         buttonContribute.setEnabled(showLogOut);
         buttonLogOut.setEnabled(showLogOut);
-        if (Storage.currentUser != null){
-            tvWelcome.setText("Здравствуйте, " + Storage.currentUser.getUsername());
-            cbUserActive    .setChecked(Storage.currentUser.isAuthenticated());
-            cbEmailVerified .setChecked(Storage.currentUser.getBoolean("emailVerified"));
-            cbIMEICorrect   .setChecked(Storage.deviceIMEI.equals(Storage.currentUser.getString("IMEI")));
-            cbPremiumUser   .setChecked(Storage.premiumUser);
+        if (Util.currentUser != null){
+            tvWelcome.setText("Здравствуйте, " + Util.currentUser.getUsername());
+            cbUserActive    .setChecked(Util.currentUser.isAuthenticated());
+            cbEmailVerified .setChecked(Util.currentUser.getBoolean("emailVerified"));
+            cbIMEICorrect   .setChecked(Util.deviceIMEI.equals(Util.currentUser.getString("IMEI")));
+            cbPremiumUser   .setChecked(Util.premiumUser);
         }
         else {
             tvWelcome.setText("");
@@ -245,7 +245,7 @@ public class SignInActivity extends AppCompatActivity {
         LogInCallback logInCallback = new LogInCallback() {
             public void done(ParseUser user, ParseException error) {
                 if (user != null) {
-                    Storage.userHasAccess = verifyUser(user);
+                    Util.userHasAccess = verifyUser(user);
                 } else {
                     Log.d(LOG_TAG, "error code " + error.getCode());
                     String msg;
@@ -260,8 +260,8 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         };
-        if (Storage.username != null && !Storage.username.equals(""))
-            ParseUser.logInInBackground(Storage.username, Storage.password, logInCallback);
+        if (Util.username != null && !Util.username.equals(""))
+            ParseUser.logInInBackground(Util.username, Util.password, logInCallback);
     }
 
 
@@ -271,20 +271,20 @@ public class SignInActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "user logged in");
 
 
-        Storage.currentUser     = user;
-        Storage.premiumUser     = user.getBoolean("premiumUser");
-        Storage.emailVerified   = user.getBoolean("emailVerified");
-        Storage.showListHint    = user.getBoolean("showListHint");
-        Storage.youngIsOnTop    = user.getBoolean("youngIsOnTop");
-        Storage.twoTapTimePick  = user.getBoolean("twoTapTimePick");
-        Storage.hideTaxometer   = user.getBoolean("hideTaxometer");
-        Storage.taxoparkID      = user.getInt("taxoparkID");
-        Storage.billingID       = user.getInt("billingID");
-        Storage.monthID         = user.getInt("monthID");
-        Storage.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
+        Util.currentUser     = user;
+        Util.premiumUser     = user.getBoolean("premiumUser");
+        Util.emailVerified   = user.getBoolean("emailVerified");
+        Util.showListHint    = user.getBoolean("showListHint");
+        Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
+        Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
+        Util.hideTaxometer   = user.getBoolean("hideTaxometer");
+        Util.taxoparkID      = user.getInt("taxoparkID");
+        Util.billingID       = user.getInt("billingID");
+        Util.monthID         = user.getInt("monthID");
+        Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
-        if (!Storage.emailVerified) {
+        if (!Util.emailVerified) {
             //для бесплатного доступа вообще то необязательно подтверждать почту или сверять IMEI,
             // но для дисциплины напомним юзеру, что надо подтвердить
             Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
@@ -296,7 +296,7 @@ public class SignInActivity extends AppCompatActivity {
         //пользователь авторизован и почта подтверждена--------------------------------------------
 
 
-        if (!Storage.premiumUser){
+        if (!Util.premiumUser){
             //если премиум доступа нет, то и нет смысла проверять IMEI
             Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
                     "\nПриятной работы", Toast.LENGTH_LONG).show();
@@ -308,8 +308,8 @@ public class SignInActivity extends AppCompatActivity {
 
         if (user.getString("IMEI") == null || user.getString("IMEI").equals("detached")) {
             //IMEI еще не привязан или отвязан по запросу
-            Storage.currentUser.put("IMEI", Storage.deviceIMEI);
-            Storage.currentUser.saveInBackground();
+            Util.currentUser.put("IMEI", Util.deviceIMEI);
+            Util.currentUser.saveInBackground();
             showProgress(false);
             showLogInORLogOut(false, true);
             Toast.makeText(context, "Вы привязали это устройство" +
@@ -323,7 +323,7 @@ public class SignInActivity extends AppCompatActivity {
         //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
 
 
-        if (!Storage.deviceIMEI.equals(user.getString("IMEI"))) {
+        if (!Util.deviceIMEI.equals(user.getString("IMEI"))) {
             String header = "Здравствуйте, " + user.getUsername();
             String msg = "Вы вошли в систему с другого устройства." +
                     "\nСейчас платные опции недоступны." +
@@ -331,27 +331,26 @@ public class SignInActivity extends AppCompatActivity {
                     "\nперейдите в меню \"Учетные записи\"" +
                     "\nи нажмите \"Сменить устройство\"";
 
-            //для новых апи показываем длинное сообщение в виде уведомления, для старых апи показываем тост
-            if (Build.VERSION.SDK_INT >= 16){
-                Intent intent = new Intent(context, SignInActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            //подготовим очередь возврата, используя уже существующий стек вызововов MainActivity и добавив к нему целевой интент
+            Intent intent = new Intent(context, SignInActivity.class);
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+            stackBuilder.addParentStack(FirstScreenActivity.class);
+            stackBuilder.addNextIntent(intent);
+            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-                Notification.Builder builder = new Notification.Builder(context)
-                        .setTicker(header)
-                        .setContentTitle(header)
-                        .setContentText(msg)
-                        .setWhen(System.currentTimeMillis())
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setSmallIcon(R.drawable.ic_taxi);
+            Notification.Builder builder = new Notification.Builder(context)
+                    .setTicker(header)
+                    .setContentTitle(header)
+                    .setContentText(msg)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(pendingIntent)
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.ic_taxi);
 
-                Notification notification = new Notification.BigTextStyle(builder).bigText(msg).build();
-                notification.sound = Uri.parse("android.resource://tt.richTaxist/raw/notification");
-                NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                notificationManager.notify(1, notification);
-            } else
-                Toast.makeText(getApplicationContext(), header + msg, Toast.LENGTH_LONG).show();
+            Notification notification = new Notification.BigTextStyle(builder).bigText(msg).build();
+            notification.sound = Uri.parse("android.resource://tt.richTaxist/raw/notification");
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.notify(1, notification);
 
             showProgress(false);
             showLogInORLogOut(false, true);
@@ -371,6 +370,6 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Storage.saveSettings(context);
+        Util.saveSettings(context);
     }
 }

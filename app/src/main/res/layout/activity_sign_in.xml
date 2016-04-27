@@ -66,13 +66,13 @@
                     <Button
                         android:text="@string/signUp" style="@style/ButtonBordered"
                         android:id="@+id/buttonSignUp"
-                        android:layout_width="0dp" android:layout_height="80dp"
+                        android:layout_width="0dp" android:layout_height="60dp"
                         android:onClick="onSignUpClick"
                         android:layout_weight="1"
                         android:layout_gravity="center_vertical"/>
                     <Button
                         android:id="@+id/buttonLogIn" style="@style/ButtonBordered"
-                        android:layout_width="0dp" android:layout_height="80dp"
+                        android:layout_width="0dp" android:layout_height="60dp"
                         android:text="@string/logIn"
                         android:onClick="onLoginClick"
                         android:layout_weight="1"
@@ -86,7 +86,7 @@
                 android:orientation="horizontal">
                 <Button
                     android:id="@+id/buttonClaimChangeDevice" style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_column="0"
                     android:text="@string/claimChangeDevice"
                     android:onClick="onClaimChangeDeviceClick"
@@ -94,7 +94,7 @@
                     android:layout_gravity="center_vertical"/>
                 <Button
                     android:id="@+id/buttonContribute" style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_column="1"
                     android:text="@string/contribute"
                     android:onClick="onContributeClick"
@@ -102,7 +102,7 @@
                     android:layout_gravity="center_vertical"/>
                 <Button
                     android:id="@+id/buttonLogOut" style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="80dp"
+                    android:layout_width="0dp" android:layout_height="60dp"
                     android:layout_column="2"
                     android:text="@string/logOut"
                     android:onClick="onLogoutClick"
