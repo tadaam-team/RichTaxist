@@ -23,8 +23,7 @@
                 <TextView
                     android:text="@string/arrivalDateTime"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content" />
                 <LinearLayout
                     android:id="@+id/dateTimePlaceHolder"
                     android:layout_width="match_parent"
@@ -157,13 +156,13 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:gravity="center_vertical">
-                <Spinner
+                <tt.richTaxist.Bricks.CustomSpinner
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/spnTaxopark"
                     android:spinnerMode="dialog"/>
-                <Spinner
+                <tt.richTaxist.Bricks.CustomSpinner
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

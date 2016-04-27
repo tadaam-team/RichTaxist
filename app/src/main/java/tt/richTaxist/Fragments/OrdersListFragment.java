@@ -9,27 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
-import java.util.ArrayList;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.DB.OrdersSQLHelper;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
-import tt.richTaxist.Util;
 import tt.richTaxist.Units.Order;
-import tt.richTaxist.Units.Taxopark;
 
 public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
     private static final String LOG_TAG = "OrdersListFragment";
     private OnOrderListFragmentInteractionListener mListener;
-    public RecyclerViewAdapter adapter;
-    private Spinner spnTaxopark;
+    public RecyclerViewAdapter rvAdapter;
+    private CustomSpinner spnTaxopark;
 
     public OrdersListFragment() { }
 
@@ -47,22 +41,22 @@ public class OrdersListFragment extends Fragment {
         MainActivity.sortOrdersStorage();
         View rootView = inflater.inflate(R.layout.fragment_orders_list, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
-        spnTaxopark = (Spinner) rootView.findViewById(R.id.spnTaxopark);
+        spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
         //TODO: get correct dataSource
 //        OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark();
-        adapter = new RecyclerViewAdapter(MainActivity.ordersStorage, RecyclerViewAdapter.AdapterDataType.ORDER);
-        recyclerView.setAdapter(adapter);
+        rvAdapter = new RecyclerViewAdapter(MainActivity.ordersStorage, RecyclerViewAdapter.AdapterDataType.ORDER);
+        recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 //        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
-        adapter.setListener(new RecyclerViewAdapter.Listener() {
+        rvAdapter.setListener(new RecyclerViewAdapter.Listener() {
             @Override
             public void onClick(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
                 mListener.removeOrder(selectedOrder);
                 //исправленная запись вернется в список по нажатию "ДОБАВИТЬ ЗАКАЗ"
-                adapter.notifyDataSetChanged();
+                rvAdapter.notifyDataSetChanged();
                 Toast.makeText(getActivity(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
                 mListener.returnToOrderFragment(selectedOrder);
             }
@@ -71,7 +65,7 @@ public class OrdersListFragment extends Fragment {
             public void onClickDelete(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
                 mListener.removeOrder(selectedOrder);
-                adapter.notifyDataSetChanged();
+                rvAdapter.notifyDataSetChanged();
                 Toast.makeText(getActivity(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
             }
         });
@@ -86,14 +80,10 @@ public class OrdersListFragment extends Fragment {
     }
 
     public void createTaxoparkSpinner(){
-        ArrayList<Taxopark> list = new ArrayList<>();
-        list.add(0, new Taxopark(0, "- - -", false, 0));
-        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_entry_spinner, list);
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 MainActivity.ordersStorage.clear();
                 if (CustomSpinner.taxoparkID == 0) {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
@@ -101,13 +91,10 @@ public class OrdersListFragment extends Fragment {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(
                             MainActivity.currentShift.shiftID, CustomSpinner.taxoparkID));
                 }
-                adapter.notifyDataSetChanged();
+                rvAdapter.notifyDataSetChanged();
             }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
-        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     public interface OnOrderListFragmentInteractionListener {

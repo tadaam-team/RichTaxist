@@ -11,19 +11,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeButtons;
-import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.Units.Order;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.OrderActivity;
@@ -42,8 +40,7 @@ public class OrderFragment extends Fragment implements
     public static Calendar arrivalDateTime;
     private RadioGroup typeOfPaymentUI;
     private EditText etPrice, etNote;
-    private Spinner spnTaxopark, spnBilling;
-    private ArrayAdapter spnTaxoparkAdapter, spnBillingAdapter;
+    private CustomSpinner spnTaxopark, spnBilling;
     private final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
 
     public OrderFragment() { }
@@ -61,14 +58,15 @@ public class OrderFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
+        //TODO: check if it is needed
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 2.0f);
         rootView.setLayoutParams(layoutParams);
 
         typeOfPaymentUI = (RadioGroup)  rootView.findViewById(R.id.payTypeRadioGroup);
         etPrice         = (EditText)    rootView.findViewById(R.id.etPrice);
         etNote          = (EditText)    rootView.findViewById(R.id.etNote);
-        spnTaxopark     = (Spinner)     rootView.findViewById(R.id.spnTaxopark);
-        spnBilling      = (Spinner)     rootView.findViewById(R.id.spnBilling);
+        spnTaxopark     = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
+        spnBilling      = (CustomSpinner) rootView.findViewById(R.id.spnBilling);
 
         arrivalDateTime = Calendar.getInstance();
         if (savedInstanceState != null) {
@@ -90,8 +88,8 @@ public class OrderFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
-                CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
+                spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -1);
+                spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, 0);
                 Toast.makeText(context, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
         });
@@ -123,24 +121,28 @@ public class OrderFragment extends Fragment implements
     }
 
     public void createTaxoparkSpinner(){
-        spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
-                TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+        spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, false);
+        spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
+        });
     }
     public void createBillingSpinner(){
-        spnBillingAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
-                BillingsSQLHelper.dbOpenHelper.getAllBillings());
-        spnBilling.setAdapter(spnBillingAdapter);
-        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, CustomSpinner.billingID);
+        spnBilling.createSpinner(TypeOfSpinner.BILLING, false);
+        spnBilling.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
+                spnBilling.saveSpinner(TypeOfSpinner.BILLING);
+            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
+        });
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        CustomSpinner.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
     }
 
     private TypeOfPayment getRadioState(){
@@ -169,8 +171,8 @@ public class OrderFragment extends Fragment implements
                 default:    typeOfPaymentUI.clearCheck();
             }
             etNote.setText(receivedOrder.note);
-            CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
-            CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
+            spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, receivedOrder.taxoparkID);
+            spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, receivedOrder.billingID);
         } else{
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
@@ -210,8 +212,8 @@ public class OrderFragment extends Fragment implements
             note = "";
         }
 
-        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        CustomSpinner.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
+        spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
+        spnBilling.saveSpinner(TypeOfSpinner.BILLING);
 
         Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
                 distance, travelTime, CustomSpinner.taxoparkID, CustomSpinner.billingID);

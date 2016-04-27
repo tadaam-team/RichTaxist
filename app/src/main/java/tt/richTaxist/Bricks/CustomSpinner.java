@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
@@ -16,9 +17,12 @@ import tt.richTaxist.Units.Taxopark;
  */
 public class CustomSpinner extends Spinner {
     private static final String LOG_TAG = "CustomSpinner";
+    //TODO: make them non static
     public static int taxoparkID = -1;
     public static int billingID = -1;
     public static int monthID = -1;
+    private ArrayAdapter<Taxopark> spnTaxoparkAdapter;
+    private ArrayAdapter<Billing> spnBillingAdapter;
 
     public CustomSpinner(Context context) {
         super(context);
@@ -32,35 +36,23 @@ public class CustomSpinner extends Spinner {
         super(context, attrs, defStyleAttr);
     }
 
-    public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
+    public void saveSpinner(TypeOfSpinner typeOfSpinner){
         switch (typeOfSpinner) {
             case TAXOPARK:
-                try { taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "taxopark not defined");
-                    taxoparkID = -1;
-                }
+                taxoparkID = ((Taxopark) getSelectedItem()).taxoparkID;
                 break;
 
             case BILLING:
-                try { billingID = ((Billing) spinner.getSelectedItem()).billingID;
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "billing not defined");
-                    billingID = -1;
-                }
+                billingID = ((Billing) getSelectedItem()).billingID;
                 break;
 
             case MONTH:
-                try { monthID = (int) spinner.getSelectedItemId();
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "month not defined");
-                    monthID = -1;
-                }
+                monthID = (int) getSelectedItemId();
                 break;
         }
     }
 
-    public static void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, ArrayAdapter adapter, Spinner spinner, int id){
+    public void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, int id){
         switch (typeOfSpinner){
             case TAXOPARK:
                 //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
@@ -71,34 +63,56 @@ public class CustomSpinner extends Spinner {
                         }
                     }
                 }
-
                 Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
-                int indexInSpinner = adapter.getPosition(taxopark);
-                spinner.setSelection(indexInSpinner);
+                int tIndexInSpinner = 0;
+                if (taxopark != null){
+                    tIndexInSpinner = spnTaxoparkAdapter.getPosition(taxopark);
+                }
+                Log.d(LOG_TAG, "tIndexInSpinner: " + String.valueOf(tIndexInSpinner));
+                setSelection(tIndexInSpinner);
                 break;
 
             case BILLING:
                 Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(id);
-                indexInSpinner = adapter.getPosition(billing);
-                spinner.setSelection(indexInSpinner);
+                int bIndexInSpinner = 0;
+                if (billing != null){
+                    bIndexInSpinner = spnBillingAdapter.getPosition(billing);
+                }
+                Log.d(LOG_TAG, "bIndexInSpinner: " + String.valueOf(bIndexInSpinner));
+                setSelection(bIndexInSpinner);
                 break;
 
             case MONTH:
-                spinner.setSelection(monthID);
+                Toast.makeText(getContext(), "setPositionOfSpinner for MONTH is not defined", Toast.LENGTH_LONG).show();
                 break;
         }
-        adapter.notifyDataSetChanged();
     }
 
-    public void createTaxoparkSpinner(boolean addBlankListEntry){
-        ArrayList<Taxopark> list = new ArrayList<>();
-        if (addBlankListEntry){
-            list.add(0, new Taxopark(0, "- - -", false, 0));
+    public void createSpinner(TypeOfSpinner typeOfSpinner, boolean addBlankListEntry){
+        switch (typeOfSpinner) {
+            case TAXOPARK:
+                ArrayList<Taxopark> listOfTaxoparks = new ArrayList<>();
+                if (addBlankListEntry){
+                    listOfTaxoparks.add(0, new Taxopark(0, "- - -", false, 0));
+                }
+                listOfTaxoparks.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+                spnTaxoparkAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, listOfTaxoparks);
+                setAdapter(spnTaxoparkAdapter);
+                setPositionOfSpinner(TypeOfSpinner.TAXOPARK, addBlankListEntry ? 0 : -1);
+                break;
+
+            case BILLING:
+                ArrayList<Billing> listOfBillings = new ArrayList<>();
+                listOfBillings.addAll(BillingsSQLHelper.dbOpenHelper.getAllBillings());
+                spnBillingAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, listOfBillings);
+                setAdapter(spnBillingAdapter);
+                setPositionOfSpinner(TypeOfSpinner.BILLING, addBlankListEntry ? 0 : -1);
+                break;
+
+            case MONTH:
+                Toast.makeText(getContext(), "createTaxoparkSpinner for MONTH is not defined", Toast.LENGTH_LONG).show();
+                break;
         }
-        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, list);
-        setAdapter(spnTaxoparkAdapter);
-        setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, this, 0);
     }
 
     public enum TypeOfSpinner {

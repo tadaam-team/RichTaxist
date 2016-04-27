@@ -96,6 +96,7 @@ public class Util {
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("twoTapTimePick", twoTapTimePick);
             currentUser.put("hideTaxometer", hideTaxometer);
+            //TODO: no need to save it
             currentUser.put("taxoparkID", CustomSpinner.taxoparkID);
             currentUser.put("billingID", CustomSpinner.billingID);
             currentUser.put("monthID", CustomSpinner.monthID);
@@ -162,9 +163,6 @@ public class Util {
         youngIsOnTop    = true;
         twoTapTimePick  = true;
         hideTaxometer   = true;
-        CustomSpinner.taxoparkID = 1;
-        CustomSpinner.billingID  = 0;
-        CustomSpinner.monthID    = 0;
 
         userHasAccess   = false;
         inputStyle = InputStyle.BUTTON;

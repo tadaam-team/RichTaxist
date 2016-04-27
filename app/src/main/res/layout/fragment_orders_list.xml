@@ -6,7 +6,7 @@
     tools:context=".Fragments.OrdersListFragment"
     android:orientation="vertical">
 
-    <Spinner
+    <tt.richTaxist.Bricks.CustomSpinner
         android:id="@+id/spnTaxopark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

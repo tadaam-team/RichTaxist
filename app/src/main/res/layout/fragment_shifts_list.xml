@@ -17,7 +17,7 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Spinner
+        <tt.richTaxist.Bricks.CustomSpinner
             android:id="@+id/spnTaxopark"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

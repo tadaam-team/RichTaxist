@@ -229,6 +229,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Util.hideTaxometer   = user.getBoolean("hideTaxometer");
+        //TODO: no need to load it
         CustomSpinner.taxoparkID = user.getInt("taxoparkID");
         CustomSpinner.billingID  = user.getInt("billingID");
         CustomSpinner.monthID    = user.getInt("monthID");

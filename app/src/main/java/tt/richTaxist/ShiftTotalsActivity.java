@@ -8,16 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,8 +24,6 @@ import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DF_NumberInput;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
-import tt.richTaxist.Units.Taxopark;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -45,11 +40,11 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private String author;
 
     private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime,
-            st_petrol, st_carRent, buttonContinueShift;
-    private TextView st_revenueOfficial, st_revenueCash, st_revenueCard, st_revenueBonus,
-            st_toTheCashier, st_salaryOfficial, st_salaryUnofficial, st_workHoursSpent, st_salaryPerHour;
+            tv_petrol, tv_carRent, buttonContinueShift;
+    private TextView tv_revenueOfficial, tv_revenueCash, tv_revenueCard, tv_revenueBonus,
+            tv_toTheCashier, tv_salaryOfficial, tv_salaryUnofficial, tv_workHoursSpent, tv_salaryPerHour;
     private ToggleButton buttonShiftIsClosed;
-    private Spinner spnTaxopark;
+    private CustomSpinner spnTaxopark;
     private Locale locale;
 
     @Override
@@ -275,41 +270,33 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime    = (Button)   findViewById(R.id.buttonShiftStartTime);
         buttonShiftEndDate      = (Button)   findViewById(R.id.buttonShiftEndDate);
         buttonShiftEndTime      = (Button)   findViewById(R.id.buttonShiftEndTime);
-        st_revenueOfficial      = (TextView) findViewById(R.id.st_revenueOfficial);
-        st_revenueCash          = (TextView) findViewById(R.id.st_revenueCash);
-        st_revenueCard          = (TextView) findViewById(R.id.st_revenueCard);
-        st_revenueBonus         = (TextView) findViewById(R.id.st_revenueBonus);
-        st_petrol               = (Button)   findViewById(R.id.st_petrol);
-        st_toTheCashier         = (TextView) findViewById(R.id.st_toTheCashier);
-        st_salaryOfficial       = (TextView) findViewById(R.id.st_salaryOfficial);
-        st_carRent              = (Button)   findViewById(R.id.st_carRent);
-        st_salaryUnofficial     = (TextView) findViewById(R.id.st_salaryPlusBonus);
-        st_workHoursSpent       = (TextView) findViewById(R.id.st_workHoursSpent);
-        st_salaryPerHour        = (TextView) findViewById(R.id.st_salaryPerHour);
+        tv_revenueOfficial      = (TextView) findViewById(R.id.tv_revenueOfficial);
+        tv_revenueCash          = (TextView) findViewById(R.id.tv_revenueCash);
+        tv_revenueCard          = (TextView) findViewById(R.id.tv_revenueCard);
+        tv_revenueBonus         = (TextView) findViewById(R.id.tv_revenueBonus);
+        tv_petrol               = (Button)   findViewById(R.id.tv_petrol);
+        tv_toTheCashier         = (TextView) findViewById(R.id.tv_toTheCashier);
+        tv_salaryOfficial       = (TextView) findViewById(R.id.tv_salaryOfficial);
+        tv_carRent              = (Button)   findViewById(R.id.tv_carRent);
+        tv_salaryUnofficial     = (TextView) findViewById(R.id.tv_salaryPlusBonus);
+        tv_workHoursSpent       = (TextView) findViewById(R.id.tv_workHoursSpent);
+        tv_salaryPerHour        = (TextView) findViewById(R.id.tv_salaryPerHour);
         buttonShiftIsClosed     = (ToggleButton) findViewById(R.id.buttonShiftIsClosed);
         buttonContinueShift     = (Button)   findViewById(R.id.buttonContinueShift);
-        spnTaxopark             = (Spinner)  findViewById(R.id.spnTaxopark);
+        spnTaxopark             = (CustomSpinner) findViewById(R.id.spnTaxopark);
         createTaxoparkSpinner();
     }
 
     private void createTaxoparkSpinner(){
-        ArrayList<Taxopark> list = new ArrayList<>();
-        list.add(0, new Taxopark(0, "- - -", false, 0));
-        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        //создать list_entry_spinner.xml пришлось, т.к. текст этого спиннера отображался белым и не был виден
-        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(this, R.layout.list_entry_spinner, list);
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
                 refreshSTControls();
             }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
-        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     private void refreshSTControls(){
@@ -318,28 +305,27 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buttonShiftStartTime    .setText(getStringTimeFromCal(shiftStart));
         buttonShiftEndTime      .setText(getStringTimeFromCal(shiftEnd));
 
-        st_revenueOfficial      .setText(String.format(locale, "%,d", currentShift.revenueOfficial));
-        st_revenueCash          .setText(String.format(locale, "%,d", currentShift.revenueCash));
-        st_revenueCard          .setText(String.format(locale, "%,d", currentShift.revenueCard));
-        st_revenueBonus         .setText(String.format(locale, "%,d", currentShift.revenueBonus));
+        tv_revenueOfficial      .setText(String.format(locale, "%,d", currentShift.revenueOfficial));
+        tv_revenueCash          .setText(String.format(locale, "%,d", currentShift.revenueCash));
+        tv_revenueCard          .setText(String.format(locale, "%,d", currentShift.revenueCard));
+        tv_revenueBonus         .setText(String.format(locale, "%,d", currentShift.revenueBonus));
 
-        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
         if (CustomSpinner.taxoparkID == 0) {
-            st_petrol           .setText(String.format(locale, "%,d", currentShift.petrol));
-            st_toTheCashier     .setText(String.format(locale, "%,d", currentShift.toTheCashier));
-            st_salaryOfficial   .setText(String.format(locale, "%,d", currentShift.salaryOfficial));
-            st_carRent          .setText(String.format(locale, "%,d", currentShift.carRent));
-            st_salaryUnofficial .setText(String.format(locale, "%,d", currentShift.salaryUnofficial));
-            st_workHoursSpent   .setText(String.valueOf(currentShift.workHoursSpent));
-            st_salaryPerHour    .setText(String.format(locale, "%,d", currentShift.salaryPerHour));
+            tv_petrol           .setText(String.format(locale, "%,d", currentShift.petrol));
+            tv_toTheCashier     .setText(String.format(locale, "%,d", currentShift.toTheCashier));
+            tv_salaryOfficial   .setText(String.format(locale, "%,d", currentShift.salaryOfficial));
+            tv_carRent          .setText(String.format(locale, "%,d", currentShift.carRent));
+            tv_salaryUnofficial .setText(String.format(locale, "%,d", currentShift.salaryUnofficial));
+            tv_workHoursSpent   .setText(String.valueOf(currentShift.workHoursSpent));
+            tv_salaryPerHour    .setText(String.format(locale, "%,d", currentShift.salaryPerHour));
         } else {
-            st_petrol           .setText("- - -");
-            st_toTheCashier     .setText("- - -");
-            st_salaryOfficial   .setText("- - -");
-            st_carRent          .setText("- - -");
-            st_salaryUnofficial .setText("- - -");
-            st_workHoursSpent   .setText("- - -");
-            st_salaryPerHour    .setText("- - -");
+            tv_petrol           .setText("- - -");
+            tv_toTheCashier     .setText("- - -");
+            tv_salaryOfficial   .setText("- - -");
+            tv_carRent          .setText("- - -");
+            tv_salaryUnofficial .setText("- - -");
+            tv_workHoursSpent   .setText("- - -");
+            tv_salaryPerHour    .setText("- - -");
         }
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }

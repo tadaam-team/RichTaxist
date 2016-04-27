@@ -82,7 +82,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_revenueOfficial"
+                    android:id="@+id/tv_revenueOfficial"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -100,7 +100,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_revenueCash"
+                    android:id="@+id/tv_revenueCash"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -118,7 +118,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_revenueCard"
+                    android:id="@+id/tv_revenueCard"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -136,7 +136,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <Button
-                    android:id="@+id/st_petrol"
+                    android:id="@+id/tv_petrol"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
@@ -156,7 +156,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_toTheCashier"
+                    android:id="@+id/tv_toTheCashier"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -174,7 +174,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_salaryOfficial"
+                    android:id="@+id/tv_salaryOfficial"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -192,7 +192,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_revenueBonus"
+                    android:id="@+id/tv_revenueBonus"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -210,7 +210,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <Button
-                    android:id="@+id/st_carRent"
+                    android:id="@+id/tv_carRent"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
@@ -231,7 +231,7 @@
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
                 <TextView
-                    android:id="@+id/st_salaryPlusBonus"
+                    android:id="@+id/tv_salaryPlusBonus"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -249,7 +249,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_workHoursSpent"
+                    android:id="@+id/tv_workHoursSpent"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -267,7 +267,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/st_salaryPerHour"
+                    android:id="@+id/tv_salaryPerHour"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -284,7 +284,7 @@
                     android:layout_height="40dp"
                     android:layout_weight="1"
                     android:gravity="center_vertical|start"/>
-                <Spinner
+                <tt.richTaxist.Bricks.CustomSpinner
                     android:id="@+id/spnTaxopark"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"

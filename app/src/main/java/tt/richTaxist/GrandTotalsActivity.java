@@ -35,8 +35,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol,
             toTheCashier, salaryOfficial, carRent, salaryPlusBonus, salaryPerHour;
     private double workHoursSpent;
-    private TextView gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
-            gt_toTheCashier, gt_salaryOfficial, gt_carRent, gt_salaryPlusBonus, gt_workHoursSpent, gt_salaryPerHour;
+    private TextView tv_revenueOfficial, tv_revenueCash, tv_revenueCard, tv_revenueBonus, tv_petrol,
+            tv_toTheCashier, tv_salaryOfficial, tv_carRent, tv_salaryPlusBonus, tv_workHoursSpent, tv_salaryPerHour;
     private Spinner spnFirstShift, spnLastShift;
     private CustomSpinner spnTaxopark;
     private Locale locale;
@@ -67,17 +67,17 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private void initiateWidgets() {
         spnFirstShift       = (Spinner)  findViewById(R.id.spnFirstShift);
         spnLastShift        = (Spinner)  findViewById(R.id.spnLastShift);
-        gt_revenueOfficial  = (TextView) findViewById(R.id.gt_revenueOfficial);
-        gt_revenueCash      = (TextView) findViewById(R.id.gt_revenueCash);
-        gt_revenueCard      = (TextView) findViewById(R.id.gt_revenueCard);
-        gt_revenueBonus     = (TextView) findViewById(R.id.gt_revenueBonus);
-        gt_petrol           = (TextView) findViewById(R.id.gt_petrol);
-        gt_toTheCashier     = (TextView) findViewById(R.id.gt_toTheCashier);
-        gt_salaryOfficial   = (TextView) findViewById(R.id.gt_salaryOfficial);
-        gt_carRent          = (TextView) findViewById(R.id.gt_carRent);
-        gt_salaryPlusBonus  = (TextView) findViewById(R.id.gt_salaryPlusBonus);
-        gt_workHoursSpent   = (TextView) findViewById(R.id.gt_workHoursSpent);
-        gt_salaryPerHour    = (TextView) findViewById(R.id.gt_salaryPerHour);
+        tv_revenueOfficial  = (TextView) findViewById(R.id.tv_revenueOfficial);
+        tv_revenueCash      = (TextView) findViewById(R.id.tv_revenueCash);
+        tv_revenueCard      = (TextView) findViewById(R.id.tv_revenueCard);
+        tv_revenueBonus     = (TextView) findViewById(R.id.tv_revenueBonus);
+        tv_petrol           = (TextView) findViewById(R.id.tv_petrol);
+        tv_toTheCashier     = (TextView) findViewById(R.id.tv_toTheCashier);
+        tv_salaryOfficial   = (TextView) findViewById(R.id.tv_salaryOfficial);
+        tv_carRent          = (TextView) findViewById(R.id.tv_carRent);
+        tv_salaryPlusBonus  = (TextView) findViewById(R.id.tv_salaryPlusBonus);
+        tv_workHoursSpent   = (TextView) findViewById(R.id.tv_workHoursSpent);
+        tv_salaryPerHour    = (TextView) findViewById(R.id.tv_salaryPerHour);
         spnTaxopark         = (CustomSpinner)  findViewById(R.id.spnTaxopark);
     }
 
@@ -116,17 +116,17 @@ public class GrandTotalsActivity extends AppCompatActivity {
     }
 
     private void refreshGTControls(){
-        gt_revenueOfficial  .setText(String.format(locale, "%,d", revenueOfficial));
-        gt_revenueCash      .setText(String.format(locale, "%,d", revenueCash));
-        gt_revenueCard      .setText(String.format(locale, "%,d", revenueCard));
-        gt_revenueBonus     .setText(String.format(locale, "%,d", revenueBonus));
-        gt_petrol           .setText(String.format(locale, "%,d", petrol));
-        gt_toTheCashier     .setText(String.format(locale, "%,d", toTheCashier));
-        gt_salaryOfficial   .setText(String.format(locale, "%,d", salaryOfficial));
-        gt_carRent          .setText(String.format(locale, "%,d", carRent));
-        gt_salaryPlusBonus  .setText(String.format(locale, "%,d", salaryPlusBonus));
-        gt_workHoursSpent   .setText(String.valueOf(workHoursSpent));
-        gt_salaryPerHour    .setText(String.format(locale, "%,d", salaryPerHour));
+        tv_revenueOfficial  .setText(String.format(locale, "%,d", revenueOfficial));
+        tv_revenueCash      .setText(String.format(locale, "%,d", revenueCash));
+        tv_revenueCard      .setText(String.format(locale, "%,d", revenueCard));
+        tv_revenueBonus     .setText(String.format(locale, "%,d", revenueBonus));
+        tv_petrol           .setText(String.format(locale, "%,d", petrol));
+        tv_toTheCashier     .setText(String.format(locale, "%,d", toTheCashier));
+        tv_salaryOfficial   .setText(String.format(locale, "%,d", salaryOfficial));
+        tv_carRent          .setText(String.format(locale, "%,d", carRent));
+        tv_salaryPlusBonus  .setText(String.format(locale, "%,d", salaryPlusBonus));
+        tv_workHoursSpent   .setText(String.valueOf(workHoursSpent));
+        tv_salaryPerHour    .setText(String.format(locale, "%,d", salaryPerHour));
     }
 
     @Override
@@ -160,9 +160,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
                 calculateGrandTotals(CustomSpinner.taxoparkID);
                 refreshGTControls();
             }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
         if (!spinnerRefersToFirstShift) {
             spinner.setSelection(spinner.getCount() - 1);
@@ -189,14 +187,14 @@ public class GrandTotalsActivity extends AppCompatActivity {
     }
 
     private void createTaxoparkSpinner(){
-        spnTaxopark.createTaxoparkSpinner(true);
+        spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 calculateGrandTotals(CustomSpinner.taxoparkID);
                 refreshGTControls();
             }
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
     }
 

@@ -65,7 +65,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_revenueOfficial"
+                    android:id="@+id/tv_revenueOfficial"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -83,7 +83,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_revenueCash"
+                    android:id="@+id/tv_revenueCash"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -101,7 +101,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_revenueCard"
+                    android:id="@+id/tv_revenueCard"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -119,7 +119,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_petrol"
+                    android:id="@+id/tv_petrol"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -137,7 +137,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_toTheCashier"
+                    android:id="@+id/tv_toTheCashier"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -155,7 +155,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_salaryOfficial"
+                    android:id="@+id/tv_salaryOfficial"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -173,7 +173,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_revenueBonus"
+                    android:id="@+id/tv_revenueBonus"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -191,7 +191,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_carRent"
+                    android:id="@+id/tv_carRent"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -209,7 +209,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_salaryPlusBonus"
+                    android:id="@+id/tv_salaryPlusBonus"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -227,7 +227,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_workHoursSpent"
+                    android:id="@+id/tv_workHoursSpent"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
@@ -245,7 +245,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical|start"/>
                 <TextView
-                    android:id="@+id/gt_salaryPerHour"
+                    android:id="@+id/tv_salaryPerHour"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1"
