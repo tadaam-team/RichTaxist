@@ -13,11 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Spinner;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,8 +26,6 @@ import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
-import tt.richTaxist.Units.Taxopark;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
 
 public class GrandTotalsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "GrandTotalsActivity";
@@ -41,7 +37,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private double workHoursSpent;
     private TextView gt_revenueOfficial, gt_revenueCash, gt_revenueCard, gt_revenueBonus, gt_petrol,
             gt_toTheCashier, gt_salaryOfficial, gt_carRent, gt_salaryPlusBonus, gt_workHoursSpent, gt_salaryPerHour;
-    private Spinner spnFirstShift, spnLastShift, spnTaxopark;
+    private Spinner spnFirstShift, spnLastShift;
+    private CustomSpinner spnTaxopark;
     private Locale locale;
     private String author = "";
 
@@ -81,33 +78,24 @@ public class GrandTotalsActivity extends AppCompatActivity {
         gt_salaryPlusBonus  = (TextView) findViewById(R.id.gt_salaryPlusBonus);
         gt_workHoursSpent   = (TextView) findViewById(R.id.gt_workHoursSpent);
         gt_salaryPerHour    = (TextView) findViewById(R.id.gt_salaryPerHour);
-        spnTaxopark         = (Spinner)  findViewById(R.id.spnTaxopark);
+        spnTaxopark         = (CustomSpinner)  findViewById(R.id.spnTaxopark);
     }
 
     private void calculateGrandTotals(int taxoparkID) {
         Calendar firstShiftStart = Calendar.getInstance();
         firstShiftStart.setTime(firstShift.beginShift);
-        logDate("firstShiftStart", firstShiftStart);
-
         Calendar lastShiftStart = Calendar.getInstance();
         lastShiftStart.setTime(lastShift.beginShift);
-        logDate("lastShiftStart", lastShiftStart);
 
         ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
                 firstShiftStart, lastShiftStart, true, taxoparkID);
         processWholeShifts(wholeShifts);
+//        Util.logDate("firstShiftStart", firstShiftStart);
+//        Util.logDate("lastShiftStart", lastShiftStart);
+//        Log.d(LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
+//        Log.d(LOG_TAG, "wholeShifts.size(): " + String.valueOf(wholeShifts.size()));
     }
-    private void logDate(String dateName, Calendar dateToLog){
-        String log = String.format("%02d.%02d.%04d %02d:%02d:%02d", dateToLog.get(Calendar.DAY_OF_MONTH),
-                dateToLog.get(Calendar.MONTH) + 1, dateToLog.get(Calendar.YEAR), dateToLog.get(Calendar.HOUR_OF_DAY),
-                dateToLog.get(Calendar.MINUTE), dateToLog.get(Calendar.SECOND));
-        if (dateName.length() >= 20) {
-            Log.d(LOG_TAG, dateName + log);
-        } else {
-            while (dateName.length() < 20) dateName += '.';
-            Log.d(LOG_TAG, dateName + log);
-        }
-    }
+
     private void processWholeShifts(ArrayList<Shift> wholeShifts) {
         revenueOfficial = revenueCash = revenueCard = revenueBonus = petrol = toTheCashier = salaryOfficial
                 = carRent = salaryPlusBonus = salaryPerHour = 0;
@@ -201,12 +189,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     }
 
     private void createTaxoparkSpinner(){
-        ArrayList<Taxopark> list = new ArrayList<>();
-        list.add(0, new Taxopark(0, "- - -", false, 0));
-        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
-        //создать list_entry_spinner.xml пришлось, т.к. текст этого спиннера отображался белым и не был виден
-        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(this, R.layout.list_entry_spinner, list);
-        spnTaxopark.setAdapter(spnTaxoparkAdapter);
+        spnTaxopark.createTaxoparkSpinner(true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
@@ -215,7 +198,6 @@ public class GrandTotalsActivity extends AppCompatActivity {
             }
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override

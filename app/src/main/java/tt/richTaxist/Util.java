@@ -13,6 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Properties;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Enums.InputStyle;
@@ -69,6 +71,19 @@ public class Util {
         if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
             ViewGroup.LayoutParams params = layout.getLayoutParams();
             params.width = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
+        }
+    }
+
+    public static void logDate(String dateName, Calendar dateToLog){
+        Locale locale = context.getResources().getConfiguration().locale;
+        String log = String.format(locale, "%02d.%02d.%04d %02d:%02d:%02d", dateToLog.get(Calendar.DAY_OF_MONTH),
+                dateToLog.get(Calendar.MONTH) + 1, dateToLog.get(Calendar.YEAR), dateToLog.get(Calendar.HOUR_OF_DAY),
+                dateToLog.get(Calendar.MINUTE), dateToLog.get(Calendar.SECOND));
+        if (dateName.length() >= 20) {
+            Log.d(LOG_TAG, dateName + log);
+        } else {
+            while (dateName.length() < 20) dateName += '.';
+            Log.d(LOG_TAG, dateName + log);
         }
     }
 

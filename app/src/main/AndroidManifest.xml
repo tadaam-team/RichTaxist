@@ -38,10 +38,8 @@
         </activity>
         <activity
             android:name=".GrandTotalsActivity"
-            android:label="@string/grandTotalsScreenName">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="tt.richTaxist.FirstScreenActivity" />
+            android:label="@string/grandTotalsScreenName"
+            android:parentActivityName=".FirstScreenActivity">
         </activity>
         <activity
             android:name=".SettingsActivity"

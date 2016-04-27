@@ -1,11 +1,14 @@
 package tt.richTaxist.Bricks;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import java.util.ArrayList;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.R;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Taxopark;
 /**
@@ -19,6 +22,14 @@ public class CustomSpinner extends Spinner {
 
     public CustomSpinner(Context context) {
         super(context);
+    }
+    //inflate a view from XML
+    public CustomSpinner(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+    //inflate a view from XML and apply a class-specific base style
+    public CustomSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
     }
 
     public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
@@ -77,6 +88,17 @@ public class CustomSpinner extends Spinner {
                 break;
         }
         adapter.notifyDataSetChanged();
+    }
+
+    public void createTaxoparkSpinner(boolean addBlankListEntry){
+        ArrayList<Taxopark> list = new ArrayList<>();
+        if (addBlankListEntry){
+            list.add(0, new Taxopark(0, "- - -", false, 0));
+        }
+        list.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        ArrayAdapter spnTaxoparkAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, list);
+        setAdapter(spnTaxoparkAdapter);
+        setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, this, 0);
     }
 
     public enum TypeOfSpinner {
