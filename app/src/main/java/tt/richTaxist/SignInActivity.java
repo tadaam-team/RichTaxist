@@ -25,7 +25,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
+import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Enums.InputStyle;
 
 public class SignInActivity extends AppCompatActivity {
@@ -278,9 +278,9 @@ public class SignInActivity extends AppCompatActivity {
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Util.hideTaxometer   = user.getBoolean("hideTaxometer");
-        Util.taxoparkID      = user.getInt("taxoparkID");
-        Util.billingID       = user.getInt("billingID");
-        Util.monthID         = user.getInt("monthID");
+        CustomSpinner.taxoparkID = user.getInt("taxoparkID");
+        CustomSpinner.billingID  = user.getInt("billingID");
+        CustomSpinner.monthID    = user.getInt("monthID");
         Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе

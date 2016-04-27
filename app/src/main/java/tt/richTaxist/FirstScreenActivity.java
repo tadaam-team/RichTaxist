@@ -20,6 +20,8 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.Units.Shift;
@@ -227,9 +229,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Util.hideTaxometer   = user.getBoolean("hideTaxometer");
-        Util.taxoparkID      = user.getInt("taxoparkID");
-        Util.billingID       = user.getInt("billingID");
-        Util.monthID         = user.getInt("monthID");
+        CustomSpinner.taxoparkID = user.getInt("taxoparkID");
+        CustomSpinner.billingID  = user.getInt("billingID");
+        CustomSpinner.monthID    = user.getInt("monthID");
         Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе

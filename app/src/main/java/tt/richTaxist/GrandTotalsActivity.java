@@ -24,11 +24,12 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import tt.richTaxist.Bricks.CustomSpinner;
+import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.TypeOfSpinner;
 
 public class GrandTotalsActivity extends AppCompatActivity {
     private static final String LOG_TAG = "GrandTotalsActivity";
@@ -151,7 +152,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         createShiftSpinner(true, spnFirstShift);
         createShiftSpinner(false, spnLastShift);
         createTaxoparkSpinner();
-        calculateGrandTotals(Util.taxoparkID);
+        calculateGrandTotals(CustomSpinner.taxoparkID);
         refreshGTControls();
     }
 
@@ -168,7 +169,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
                 }
                 cursor.close();
 
-                calculateGrandTotals(Util.taxoparkID);
+                calculateGrandTotals(CustomSpinner.taxoparkID);
                 refreshGTControls();
             }
 
@@ -208,13 +209,13 @@ public class GrandTotalsActivity extends AppCompatActivity {
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-                calculateGrandTotals(Util.taxoparkID);
+                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                calculateGrandTotals(CustomSpinner.taxoparkID);
                 refreshGTControls();
             }
             public void onNothingSelected(AdapterView<?> parent) { }
         });
-        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override

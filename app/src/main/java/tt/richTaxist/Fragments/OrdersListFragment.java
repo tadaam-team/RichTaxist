@@ -13,9 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.ArrayList;
+import tt.richTaxist.Bricks.CustomSpinner;
+import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -92,13 +93,13 @@ public class OrdersListFragment extends Fragment {
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
                 MainActivity.ordersStorage.clear();
-                if (Util.taxoparkID == 0) {
+                if (CustomSpinner.taxoparkID == 0) {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
                 } else {
                     MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(
-                            MainActivity.currentShift.shiftID, Util.taxoparkID));
+                            MainActivity.currentShift.shiftID, CustomSpinner.taxoparkID));
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -106,7 +107,7 @@ public class OrdersListFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     public interface OnOrderListFragmentInteractionListener {

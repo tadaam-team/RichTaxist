@@ -7,8 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import com.parse.ParseUser;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,12 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
-import tt.richTaxist.Units.Billing;
-import tt.richTaxist.DB.BillingsSQLHelper;
-import tt.richTaxist.Units.Taxopark;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Enums.InputStyle;
-import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.gps.GPSHelper;
 
 /**
@@ -38,9 +32,6 @@ public class Util {
     public static Boolean youngIsOnTop = true;
     public static Boolean twoTapTimePick = true;
     public static Boolean hideTaxometer = true;
-    public static int taxoparkID = -1;
-    public static int billingID = -1;
-    public static int monthID = -1;
 
     public static InputStyle inputStyle = InputStyle.BUTTON;
     public static int timePickerStep = 10;
@@ -81,61 +72,6 @@ public class Util {
         }
     }
 
-    //TODO: extend Spinner and add to it methods from here. also consider creating static field in it
-    public static void saveSpinner(TypeOfSpinner typeOfSpinner, Spinner spinner){
-        switch (typeOfSpinner) {
-            case TAXOPARK:
-                try { taxoparkID = ((Taxopark) spinner.getSelectedItem()).taxoparkID;
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "taxopark not defined");
-                    taxoparkID = -1;
-                }
-                break;
-
-            case BILLING:
-                try { billingID = ((Billing) spinner.getSelectedItem()).billingID;
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "billing not defined");
-                    billingID = -1;
-                }
-                break;
-
-            case MONTH:
-                try { monthID = (int) spinner.getSelectedItemId();
-                } catch (NullPointerException e) {
-                    Log.d(LOG_TAG, "month not defined");
-                    monthID = -1;
-                }
-                break;
-        }
-    }
-
-    public static void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, ArrayAdapter adapter, Spinner spinner, int id){
-        switch (typeOfSpinner){
-            case TAXOPARK:
-                //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
-                if (id == -1)
-                    for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks())
-                        if (taxoparkIter.isDefault) taxoparkID = id = taxoparkIter.taxoparkID;
-
-                Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
-                int indexInSpinner = adapter.getPosition(taxopark);
-                spinner.setSelection(indexInSpinner);
-                break;
-
-            case BILLING:
-                Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(id);
-                indexInSpinner = adapter.getPosition(billing);
-                spinner.setSelection(indexInSpinner);
-                break;
-
-            case MONTH:
-                spinner.setSelection(monthID);
-                break;
-        }
-        adapter.notifyDataSetChanged();
-    }
-
     public static void saveSettings(Context context){//to cloud and file
         Log.d(LOG_TAG, "saving settings to cloud");
         if (currentUser != null) {
@@ -145,9 +81,9 @@ public class Util {
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("twoTapTimePick", twoTapTimePick);
             currentUser.put("hideTaxometer", hideTaxometer);
-            currentUser.put("taxoparkID", taxoparkID);
-            currentUser.put("billingID", billingID);
-            currentUser.put("monthID", monthID);
+            currentUser.put("taxoparkID", CustomSpinner.taxoparkID);
+            currentUser.put("billingID", CustomSpinner.billingID);
+            currentUser.put("monthID", CustomSpinner.monthID);
             currentUser.put("inputStyle", inputStyle.toString());
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("userHasAccess", userHasAccess);
@@ -211,9 +147,9 @@ public class Util {
         youngIsOnTop    = true;
         twoTapTimePick  = true;
         hideTaxometer   = true;
-        taxoparkID      = 1;
-        billingID       = 0;
-        monthID         = 0;
+        CustomSpinner.taxoparkID = 1;
+        CustomSpinner.billingID  = 0;
+        CustomSpinner.monthID    = 0;
 
         userHasAccess   = false;
         inputStyle = InputStyle.BUTTON;

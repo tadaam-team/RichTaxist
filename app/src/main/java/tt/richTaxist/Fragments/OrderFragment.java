@@ -18,12 +18,13 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.Calendar;
+import tt.richTaxist.Bricks.CustomSpinner;
+import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeButtons;
 import tt.richTaxist.DB.BillingsSQLHelper;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.Enums.TypeOfPayment;
-import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.OrderActivity;
 import tt.richTaxist.R;
@@ -89,8 +90,8 @@ public class OrderFragment extends Fragment implements
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
-                Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
+                CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+                CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, 0);
                 Toast.makeText(context, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
         });
@@ -125,21 +126,21 @@ public class OrderFragment extends Fragment implements
         spnTaxoparkAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
                 TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
-        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, -1);
     }
     public void createBillingSpinner(){
         spnBillingAdapter = new ArrayAdapter<>(context, R.layout.list_entry_spinner,
                 BillingsSQLHelper.dbOpenHelper.getAllBillings());
         spnBilling.setAdapter(spnBillingAdapter);
-        Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, Util.billingID);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, CustomSpinner.billingID);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-        Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        Util.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
+        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        CustomSpinner.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
     }
 
     private TypeOfPayment getRadioState(){
@@ -168,8 +169,8 @@ public class OrderFragment extends Fragment implements
                 default:    typeOfPaymentUI.clearCheck();
             }
             etNote.setText(receivedOrder.note);
-            Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
-            Util.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
+            CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, receivedOrder.taxoparkID);
+            CustomSpinner.setPositionOfSpinner(TypeOfSpinner.BILLING, spnBillingAdapter, spnBilling, receivedOrder.billingID);
         } else{
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
@@ -209,11 +210,11 @@ public class OrderFragment extends Fragment implements
             note = "";
         }
 
-        Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        Util.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
+        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        CustomSpinner.saveSpinner(TypeOfSpinner.BILLING, spnBilling);
 
         Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
-                distance, travelTime, Util.taxoparkID, Util.billingID);
+                distance, travelTime, CustomSpinner.taxoparkID, CustomSpinner.billingID);
         mListener.addOrder(newOrder);
         refreshWidgets(null);
     }

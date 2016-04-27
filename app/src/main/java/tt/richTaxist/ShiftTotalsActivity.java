@@ -22,12 +22,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import tt.richTaxist.Bricks.CustomSpinner;
+import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DF_NumberInput;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.TypeOfSpinner;
 
 /**
  * Created by Tau on 27.06.2015.
@@ -61,7 +62,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
 
         locale = getResources().getConfiguration().locale;
         currentShift = MainActivity.currentShift;
-        if (currentShift != null) currentShift.calculateShiftTotals(0, Util.taxoparkID);
+        if (currentShift != null) {
+            currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+        }
 
         //найдем даты начала и конца смены
         shiftStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
@@ -201,7 +204,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.MONTH, source.get(Calendar.MONTH));
         buffer.set(Calendar.DAY_OF_MONTH, source.get(Calendar.DAY_OF_MONTH));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, Util.taxoparkID);
+        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
         refreshSTControls();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -212,7 +215,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
         buffer.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, Util.taxoparkID);
+        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
         refreshSTControls();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -259,10 +262,10 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         if ("fragment_petrol_input".equals(authorTag)) {
             currentShift.petrol = inputNumber;
             currentShift.petrolFilledByHands = true;
-            currentShift.calculateShiftTotals(inputNumber, Util.taxoparkID);
+            currentShift.calculateShiftTotals(inputNumber, CustomSpinner.taxoparkID);
         } else if ("fragment_car_rent_input".equals(authorTag)){
             currentShift.carRent = inputNumber;
-            currentShift.calculateShiftTotals(0, Util.taxoparkID);
+            currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
         }
         refreshSTControls();
     }
@@ -298,15 +301,15 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-                currentShift.calculateShiftTotals(0, Util.taxoparkID);
+                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
                 refreshSTControls();
             }
 
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     private void refreshSTControls(){
@@ -320,8 +323,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         st_revenueCard          .setText(String.format(locale, "%,d", currentShift.revenueCard));
         st_revenueBonus         .setText(String.format(locale, "%,d", currentShift.revenueBonus));
 
-        Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
-        if (Util.taxoparkID == 0) {
+        CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+        if (CustomSpinner.taxoparkID == 0) {
             st_petrol           .setText(String.format(locale, "%,d", currentShift.petrol));
             st_toTheCashier     .setText(String.format(locale, "%,d", currentShift.toTheCashier));
             st_salaryOfficial   .setText(String.format(locale, "%,d", currentShift.salaryOfficial));

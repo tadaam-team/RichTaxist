@@ -11,6 +11,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
+
+import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.OrdersSQLHelper;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         ordersStorage.add(order);
         OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
-        currentShift.calculateShiftTotals(0, Util.taxoparkID);
+        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }

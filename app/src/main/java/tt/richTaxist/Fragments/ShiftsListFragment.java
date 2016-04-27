@@ -20,11 +20,12 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
+import tt.richTaxist.Bricks.CustomSpinner;
+import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.DB.TaxoparksSQLHelper;
-import tt.richTaxist.Enums.TypeOfSpinner;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -151,18 +152,18 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         spnTaxopark.setAdapter(spnTaxoparkAdapter);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Util.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
+                CustomSpinner.saveSpinner(TypeOfSpinner.TAXOPARK, spnTaxopark);
                 if (MainActivity.currentShift != null && dateTimeRangeFrag != null) {
                     MainActivity.shiftsStorage.clear();
                     MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, Util.taxoparkID));
+                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, CustomSpinner.taxoparkID));
                     adapter.notifyDataSetChanged();
                 }
             }
 
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
-        Util.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
+        CustomSpinner.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, spnTaxoparkAdapter, spnTaxopark, 0);
     }
 
     @Override
@@ -170,7 +171,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         //been executed each time upon input finish of date/time start/end
         MainActivity.shiftsStorage.clear();
         MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                rangeStart, rangeEnd, Util.youngIsOnTop, Util.taxoparkID));
+                rangeStart, rangeEnd, Util.youngIsOnTop, CustomSpinner.taxoparkID));
     }
     @Override
     public void refreshControls() {
