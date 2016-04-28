@@ -81,7 +81,7 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
         dateTimeLocal.set(Calendar.YEAR, year);
         dateTimeLocal.set(Calendar.MONTH, month);
         dateTimeLocal.set(Calendar.DAY_OF_MONTH, day);
-        btnDate.setText(getStringDateFromCal(dateTimeLocal));
+        btnDate.setText(Util.getStringDateFromCal(dateTimeLocal));
         mListener.onDateOrTimeSet(dateTimeLocal);
     }
 
@@ -90,26 +90,14 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
         dateTimeLocal.set(Calendar.HOUR_OF_DAY, hourOfDay);
         dateTimeLocal.set(Calendar.MINUTE, minute);
-        btnTime.setText(getStringTimeFromCal(dateTimeLocal));
+        btnTime.setText(Util.getStringTimeFromCal(dateTimeLocal));
         mListener.onDateOrTimeSet(dateTimeLocal);
-    }
-
-    private static String getStringDateFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
-    }
-
-    private static String getStringTimeFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
     public void setDateTime(Calendar cal){
         dateTimeLocal.setTimeInMillis(cal.getTimeInMillis());
-        btnDate.setText(getStringDateFromCal(dateTimeLocal));
-        btnTime.setText(getStringTimeFromCal(dateTimeLocal));
+        btnDate.setText(Util.getStringDateFromCal(dateTimeLocal));
+        btnTime.setText(Util.getStringTimeFromCal(dateTimeLocal));
     }
 
     public interface OnDateTimeButtonsFragmentInteractionListener {

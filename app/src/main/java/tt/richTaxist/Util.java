@@ -175,6 +175,20 @@ public class Util {
         return numerator / multiplier;
     }
 
+    public static String getStringDateFromCal(Calendar date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date.getTimeInMillis());
+        Locale locale = context.getResources().getConfiguration().locale;
+        return String.format(locale, "%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
+    }
+
+    public static String getStringTimeFromCal(Calendar date){
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(date.getTimeInMillis());
+        Locale locale = context.getResources().getConfiguration().locale;
+        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+    }
+
     static void openQuitDialog(final AppCompatActivity currentActivity) {
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(currentActivity);
         quitDialog.setTitle("Выход: Вы уверены?");

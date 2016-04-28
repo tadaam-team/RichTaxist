@@ -216,22 +216,10 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
         buttonRangeEndDate  .setEnabled(enabled);
         buttonRangeEndTime  .setEnabled(enabled);
 
-        buttonRangeStartDate.setText(getStringDateFromCal(rangeStart));
-        buttonRangeStartTime.setText(getStringTimeFromCal(rangeStart));
-        buttonRangeEndDate  .setText(getStringDateFromCal(rangeEnd));
-        buttonRangeEndTime  .setText(getStringTimeFromCal(rangeEnd));
-    }
-    private String getStringDateFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        Locale locale = getActivity().getResources().getConfiguration().locale;
-        return String.format(locale, "%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
-    }
-    private String getStringTimeFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        Locale locale = getActivity().getResources().getConfiguration().locale;
-        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        buttonRangeStartDate.setText(Util.getStringDateFromCal(rangeStart));
+        buttonRangeStartTime.setText(Util.getStringTimeFromCal(rangeStart));
+        buttonRangeEndDate  .setText(Util.getStringDateFromCal(rangeEnd));
+        buttonRangeEndTime  .setText(Util.getStringTimeFromCal(rangeEnd));
     }
 
     @Override
