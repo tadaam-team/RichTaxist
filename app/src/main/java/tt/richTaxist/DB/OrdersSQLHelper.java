@@ -6,13 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
+import tt.richTaxist.Util;
 
 /**
  * Created by AlexShredder on 29.06.2015.
@@ -65,52 +65,29 @@ public class OrdersSQLHelper extends SQLHelper {
         return result != -1;
     }
 
-    public ArrayList<Order> getOrdersInRangeByTaxopark(Calendar fromDate, Calendar toDate, int taxoparkID) {
+    public ArrayList<Order> getOrdersList(int shiftID, int taxoparkID) {
         ArrayList<Order> ordersList = new ArrayList<>();
-
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + ARRIVAL_DATE_TIME + ">='" + dateFormat.format(fromDate.getTime()) + "' AND "
-                + ARRIVAL_DATE_TIME + "<='" + dateFormat.format(toDate.getTime()) + "'";
-        if (taxoparkID != 0) selectQuery += " AND " + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do ordersList.add(loadOrderFromCursor(cursor));
-            while (cursor.moveToNext());
+        String sortMethod = "ASC";
+        if (Util.youngIsOnTop) sortMethod = "DESC";
+        String selectQuery;
+        if (taxoparkID == 0) {
+            selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+                    + SHIFT_ID + "='" + String.valueOf(shiftID) + "'"
+                    + " ORDER BY " + ARRIVAL_DATE_TIME + " " + sortMethod;
+        } else {
+            selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
+                    + SHIFT_ID + "='" + String.valueOf(shiftID) + "' AND "
+                    + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'"
+                    + " ORDER BY " + ARRIVAL_DATE_TIME + " " + sortMethod;
         }
-        return ordersList;
-    }
-
-    public ArrayList<Order> getOrdersByShift(int shiftID) {
-        ArrayList<Order> ordersList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
-
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            do ordersList.add(loadOrderFromCursor(cursor));
-            while (cursor.moveToNext());
-        }
-        return ordersList;
-    }
-
-    public ArrayList<Order> getOrdersByShiftAndTaxopark(int shiftID, int taxoparkID) {
-        ArrayList<Order> ordersList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE "
-                + SHIFT_ID + "='" + String.valueOf(shiftID)  + "' AND "
-                + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'";
-
-        SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
-            do ordersList.add(loadOrderFromCursor(cursor));
-            while (cursor.moveToNext());
+            do {
+                ordersList.add(loadOrderFromCursor(cursor));
+            } while (cursor.moveToNext());
         }
         return ordersList;
     }
@@ -120,7 +97,9 @@ public class OrdersSQLHelper extends SQLHelper {
                 + BILLING_ID + "='" + String.valueOf(billing.billingID) + "'";
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-        return cursor.getCount() == 0;
+        boolean weCanDeleteBilling = cursor.getCount() == 0;
+        cursor.close();
+        return weCanDeleteBilling;
     }
 
 //    public Map<String,Object> getDistanceAndTimeByShift(Shift shift) {

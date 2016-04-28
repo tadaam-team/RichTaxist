@@ -17,10 +17,9 @@ import tt.richTaxist.Units.Taxopark;
  */
 public class CustomSpinner extends Spinner {
     private static final String LOG_TAG = "CustomSpinner";
-    //TODO: make them non static
-    public static int taxoparkID = -1;
-    public static int billingID = -1;
-    public static int monthID = -1;
+    public int taxoparkID = -1;
+    public int billingID = -1;
+    public int monthID = -1;
     private ArrayAdapter<Taxopark> spnTaxoparkAdapter;
     private ArrayAdapter<Billing> spnBillingAdapter;
 

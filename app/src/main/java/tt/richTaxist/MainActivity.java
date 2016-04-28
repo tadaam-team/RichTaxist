@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
-
-import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.DB.OrdersSQLHelper;
@@ -76,22 +74,25 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
     public void addOrder(Order order){
         ordersStorage.add(order);
         OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
-        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+        currentShift.calculateShiftTotals(0, order.taxoparkID);
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }
         Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
     public void removeOrder(Order order){
         ordersStorage.remove(order);
         OrdersSQLHelper.dbOpenHelper.remove(order);
     }
 
+    @Override
     public void returnToOrderFragment(Order order) {
         OrderFragment orderFragment;
         if (deviceIsInLandscape){

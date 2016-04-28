@@ -9,6 +9,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.TaskStackBuilder;
@@ -25,7 +26,6 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Enums.InputStyle;
 
 public class SignInActivity extends AppCompatActivity {
@@ -85,9 +85,10 @@ public class SignInActivity extends AppCompatActivity {
         Util.username = etUsername.getText().toString();
         Util.password = etPassword.getText().toString();
         String mEmail = etEmail.getText().toString();
+        final Resources res = getResources();
 
         if ("".equals(Util.username) || "".equals(Util.password) || "".equals(mEmail)) {
-            Toast.makeText(context, "Заполните логин, пароль и почту", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, res.getString(R.string.blankFieldsSignUpError), Toast.LENGTH_SHORT).show();
         } else {
             showProgress(true);
             // Сохраняем данные нового пользователя на Parse.com
@@ -101,17 +102,18 @@ public class SignInActivity extends AppCompatActivity {
                 public void done(ParseException error) {
                     if (error == null) {
                         Log.d(LOG_TAG, "SignUp success. Waiting for email confirmation");
-                        tvWelcome.setText("Подтвердите почту\nи нажмите \"Войти\"");
+                        Toast.makeText(context, res.getString(R.string.confirmEmail), Toast.LENGTH_LONG).show();
+                        tvWelcome.setText(res.getString(R.string.confirmEmail));
                         showProgress(false);
                         //showLogInORLogOut(false, true); отсутствие строки здесь не ошибка
                     } else {
                         Log.d(LOG_TAG, "SignUp error code " + error.getCode());
                         String errorMsg;
                         switch (error.getCode()) {
-                            case 203: errorMsg = "Пользователь с такой почтой уже зарегистрирован"; break;
-                            case 202: errorMsg = "Логин занят"; break;
-                            case 125: errorMsg = "Неверный формат почты"; break;
-                            default: errorMsg = "Ошибка при регистрации. Попробуйте ещё раз"; break;
+                            case 203: errorMsg = res.getString(R.string.emailError); break;
+                            case 202: errorMsg = res.getString(R.string.loginError); break;
+                            case 125: errorMsg = res.getString(R.string.emailFormatError); break;
+                            default: errorMsg = res.getString(R.string.irregularErrMSG); break;
                         }
                         Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show();
                         showProgress(false);
@@ -130,7 +132,7 @@ public class SignInActivity extends AppCompatActivity {
         if ("".equals(Util.username) || "".equals(Util.password)) {
             showProgress(false);
             showLogInORLogOut(true, false);
-            Toast.makeText(context, "Для входа введите логин и пароль", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, getResources().getString(R.string.blankFieldsSignInError), Toast.LENGTH_SHORT).show();
         } else {
             authorize(context);
         }
@@ -278,10 +280,6 @@ public class SignInActivity extends AppCompatActivity {
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Util.hideTaxometer   = user.getBoolean("hideTaxometer");
-        //TODO: no need to load it
-        CustomSpinner.taxoparkID = user.getInt("taxoparkID");
-        CustomSpinner.billingID  = user.getInt("billingID");
-        CustomSpinner.monthID    = user.getInt("monthID");
         Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе

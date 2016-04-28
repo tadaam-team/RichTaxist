@@ -59,17 +59,12 @@ public class Shift {
         return this.endShift != null;
     }
     public boolean hasOrders(){
-        ArrayList<Order> ordersList = OrdersSQLHelper.dbOpenHelper.getOrdersByShift(this.shiftID);
+        ArrayList<Order> ordersList = OrdersSQLHelper.dbOpenHelper.getOrdersList(this.shiftID, 0);
         return !ordersList.isEmpty();
     }
 
     public void calculateShiftTotals(int petrol, int taxoparkID){
-        ArrayList<Order> orders;
-        if (taxoparkID == 0)
-            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShift(this.shiftID);
-        else
-            orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(this.shiftID, taxoparkID);
-
+        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersList(this.shiftID, taxoparkID);
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){

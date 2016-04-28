@@ -54,7 +54,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             MainActivity.shiftsStorage.clear();
             MainActivity.ordersStorage.clear();
             MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
-            MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+            MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
         }
         Util.init(this);
         Util.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
@@ -122,7 +122,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnOpenLastShift:
                 if (MainActivity.currentShift != null){
                     MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     Intent intent = new Intent(activity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
@@ -167,7 +167,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnRoute:
                 if (MainActivity.currentShift != null) {
                     MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     startActivity(new Intent(activity, RouteActivity.class));
                     Log.d(LOG_TAG, "открываю карту маршрута смены");
                 }
@@ -229,10 +229,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
         Util.hideTaxometer   = user.getBoolean("hideTaxometer");
-        //TODO: no need to load it
-        CustomSpinner.taxoparkID = user.getInt("taxoparkID");
-        CustomSpinner.billingID  = user.getInt("billingID");
-        CustomSpinner.monthID    = user.getInt("monthID");
         Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
 
         //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе

@@ -136,10 +136,11 @@ public class ShiftsSQLHelper extends SQLHelper {
         return shiftsStorage;
     }
     private boolean checkTaxoparkInShift(Shift shift, int taxoparkID){
-        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(shift.shiftID, taxoparkID);
+        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersList(shift.shiftID, taxoparkID);
         boolean hasOrdersWithTargetTaxopark = false;
-        for (Order order: orders)
+        for (Order order: orders) {
             if (order.taxoparkID == taxoparkID) hasOrdersWithTargetTaxopark = true;
+        }
         return hasOrdersWithTargetTaxopark;
     }
 

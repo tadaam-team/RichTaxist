@@ -81,14 +81,14 @@ public class GrandTotalsActivity extends AppCompatActivity {
         spnTaxopark         = (CustomSpinner)  findViewById(R.id.spnTaxopark);
     }
 
-    private void calculateGrandTotals(int taxoparkID) {
+    private void calculateGrandTotals() {
         Calendar firstShiftStart = Calendar.getInstance();
         firstShiftStart.setTime(firstShift.beginShift);
         Calendar lastShiftStart = Calendar.getInstance();
         lastShiftStart.setTime(lastShift.beginShift);
 
         ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                firstShiftStart, lastShiftStart, true, taxoparkID);
+                firstShiftStart, lastShiftStart, true, spnTaxopark.taxoparkID);
         processWholeShifts(wholeShifts);
 //        Util.logDate("firstShiftStart", firstShiftStart);
 //        Util.logDate("lastShiftStart", lastShiftStart);
@@ -140,7 +140,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         createShiftSpinner(true, spnFirstShift);
         createShiftSpinner(false, spnLastShift);
         createTaxoparkSpinner();
-        calculateGrandTotals(CustomSpinner.taxoparkID);
+        calculateGrandTotals();
         refreshGTControls();
     }
 
@@ -157,7 +157,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
                 }
                 cursor.close();
 
-                calculateGrandTotals(CustomSpinner.taxoparkID);
+                calculateGrandTotals();
                 refreshGTControls();
             }
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
@@ -191,7 +191,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                calculateGrandTotals(CustomSpinner.taxoparkID);
+                calculateGrandTotals();
                 refreshGTControls();
             }
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}

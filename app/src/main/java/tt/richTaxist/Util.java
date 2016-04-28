@@ -16,7 +16,6 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Properties;
-import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.gps.GPSHelper;
 
@@ -96,10 +95,6 @@ public class Util {
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("twoTapTimePick", twoTapTimePick);
             currentUser.put("hideTaxometer", hideTaxometer);
-            //TODO: no need to save it
-            currentUser.put("taxoparkID", CustomSpinner.taxoparkID);
-            currentUser.put("billingID", CustomSpinner.billingID);
-            currentUser.put("monthID", CustomSpinner.monthID);
             currentUser.put("inputStyle", inputStyle.toString());
             currentUser.put("timePickerStep", timePickerStep);
             currentUser.put("userHasAccess", userHasAccess);
@@ -163,9 +158,8 @@ public class Util {
         youngIsOnTop    = true;
         twoTapTimePick  = true;
         hideTaxometer   = true;
-
         userHasAccess   = false;
-        inputStyle = InputStyle.BUTTON;
+        inputStyle      = InputStyle.BUTTON;
         timePickerStep  = 10;
     }
 

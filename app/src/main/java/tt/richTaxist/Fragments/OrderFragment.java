@@ -211,12 +211,8 @@ public class OrderFragment extends Fragment implements
             Log.d(LOG_TAG, "Exception caught while parsing note");
             note = "";
         }
-
-        spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-        spnBilling.saveSpinner(TypeOfSpinner.BILLING);
-
         Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
-                distance, travelTime, CustomSpinner.taxoparkID, CustomSpinner.billingID);
+                distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         mListener.addOrder(newOrder);
         refreshWidgets(null);
     }

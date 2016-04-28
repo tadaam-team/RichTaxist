@@ -58,7 +58,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         locale = getResources().getConfiguration().locale;
         currentShift = MainActivity.currentShift;
         if (currentShift != null) {
-            currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+            currentShift.calculateShiftTotals(0, 0);
         }
 
         //найдем даты начала и конца смены
@@ -199,7 +199,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.MONTH, source.get(Calendar.MONTH));
         buffer.set(Calendar.DAY_OF_MONTH, source.get(Calendar.DAY_OF_MONTH));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID);
         refreshSTControls();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -210,7 +210,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
         buffer.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID);
         refreshSTControls();
         ShiftsSQLHelper.dbOpenHelper.update(currentShift);
     }
@@ -257,10 +257,10 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         if ("fragment_petrol_input".equals(authorTag)) {
             currentShift.petrol = inputNumber;
             currentShift.petrolFilledByHands = true;
-            currentShift.calculateShiftTotals(inputNumber, CustomSpinner.taxoparkID);
+            currentShift.calculateShiftTotals(inputNumber, spnTaxopark.taxoparkID);
         } else if ("fragment_car_rent_input".equals(authorTag)){
             currentShift.carRent = inputNumber;
-            currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+            currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID);
         }
         refreshSTControls();
     }
@@ -292,7 +292,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                currentShift.calculateShiftTotals(0, CustomSpinner.taxoparkID);
+                currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID);
                 refreshSTControls();
             }
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
@@ -310,7 +310,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         tv_revenueCard          .setText(String.format(locale, "%,d", currentShift.revenueCard));
         tv_revenueBonus         .setText(String.format(locale, "%,d", currentShift.revenueBonus));
 
-        if (CustomSpinner.taxoparkID == 0) {
+        if (spnTaxopark.taxoparkID == 0) {
             tv_petrol           .setText(String.format(locale, "%,d", currentShift.petrol));
             tv_toTheCashier     .setText(String.format(locale, "%,d", currentShift.toTheCashier));
             tv_salaryOfficial   .setText(String.format(locale, "%,d", currentShift.salaryOfficial));

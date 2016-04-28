@@ -63,7 +63,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
                 //TODO: rough violation of encapsulation
                 MainActivity.currentShift = (Shift) selectedObject;
                 MainActivity.ordersStorage.clear();
-                MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
+                MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
                 Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
                 intent.putExtra(ShiftTotalsActivity.EXTRA_AUTHOR, "FirstScreenActivity");
 //                TODO: intent.putExtra("selectedShiftId", selectedShift.shiftID);
@@ -147,7 +147,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
                 if (MainActivity.currentShift != null && dateTimeRangeFrag != null) {
                     MainActivity.shiftsStorage.clear();
                     MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, CustomSpinner.taxoparkID));
+                            dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, spnTaxopark.taxoparkID));
                     rvAdapter.notifyDataSetChanged();
                 }
             }
@@ -160,7 +160,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.On
         //been executed each time upon input finish of date/time start/end
         MainActivity.shiftsStorage.clear();
         MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
-                rangeStart, rangeEnd, Util.youngIsOnTop, CustomSpinner.taxoparkID));
+                rangeStart, rangeEnd, Util.youngIsOnTop, spnTaxopark.taxoparkID));
     }
     @Override
     public void refreshControls() {

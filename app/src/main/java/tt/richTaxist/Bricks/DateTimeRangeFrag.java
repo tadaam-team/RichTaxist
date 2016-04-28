@@ -15,6 +15,7 @@ import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.R;
@@ -223,12 +224,14 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
     private String getStringDateFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
+        Locale locale = getActivity().getResources().getConfiguration().locale;
+        return String.format(locale, "%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR) % 100);
     }
     private String getStringTimeFromCal(Calendar date){
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format("%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
+        Locale locale = getActivity().getResources().getConfiguration().locale;
+        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
     @Override

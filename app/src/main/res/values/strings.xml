@@ -132,6 +132,12 @@
     <string name="orderSelectedMSG">выбран заказ для редактирования</string>
     <string name="orderListSelectErrMSG">ошибка обработки жеста</string>
     <string name="contribute">Сказать спасибо</string>
+    <string name="confirmEmail">Подтвердите почту\nи нажмите \"Войти\"</string>
+    <string name="emailError">Пользователь с такой почтой уже зарегистрирован</string>
+    <string name="loginError">Логин занят</string>
+    <string name="emailFormatError">Неверный формат почты</string>
+    <string name="blankFieldsSignUpError">Заполните логин, пароль и почту</string>
+    <string name="blankFieldsSignInError">Для входа введите логин и пароль</string>
 
 
     <string name="chatScreenName">Водительский чат</string>

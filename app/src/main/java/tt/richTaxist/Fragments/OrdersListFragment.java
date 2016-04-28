@@ -44,7 +44,7 @@ public class OrdersListFragment extends Fragment {
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
         //TODO: get correct dataSource
-//        OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark();
+//        OrdersSQLHelper.dbOpenHelper.getOrdersList();
         rvAdapter = new RecyclerViewAdapter(MainActivity.ordersStorage, RecyclerViewAdapter.AdapterDataType.ORDER);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -85,12 +85,8 @@ public class OrdersListFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 MainActivity.ordersStorage.clear();
-                if (CustomSpinner.taxoparkID == 0) {
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShift(MainActivity.currentShift.shiftID));
-                } else {
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersByShiftAndTaxopark(
-                            MainActivity.currentShift.shiftID, CustomSpinner.taxoparkID));
-                }
+                MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(
+                        MainActivity.currentShift.shiftID, spnTaxopark.taxoparkID));
                 rvAdapter.notifyDataSetChanged();
             }
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
