@@ -6,15 +6,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 import java.util.Calendar;
@@ -29,12 +26,11 @@ import tt.richTaxist.R;
 import tt.richTaxist.Settings4ParksAndBillingsActivity;
 import tt.richTaxist.Util;
 
-public class OrderFragment extends Fragment implements
-        DateTimeButtons.OnDateTimeButtonsFragmentInteractionListener {
+public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeButtonsInterface {
     public static final String FRAGMENT_TAG = "OrderFragment";
     private static final String LOG_TAG = "OrderFragment";
     private static Context context;
-    private OnOrderFragmentInteractionListener mListener;
+    private OrderFragmentInterface mListener;
 
     private Order order;
     public static Calendar arrivalDateTime;
@@ -48,7 +44,7 @@ public class OrderFragment extends Fragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try { mListener = (OnOrderFragmentInteractionListener) context;
+        try { mListener = (OrderFragmentInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
         }
@@ -58,13 +54,10 @@ public class OrderFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
-        //TODO: check if it is needed
-        LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 2.0f);
-        rootView.setLayoutParams(layoutParams);
 
-        typeOfPaymentUI = (RadioGroup)  rootView.findViewById(R.id.payTypeRadioGroup);
-        etPrice         = (EditText)    rootView.findViewById(R.id.etPrice);
-        etNote          = (EditText)    rootView.findViewById(R.id.etNote);
+        typeOfPaymentUI = (RadioGroup)    rootView.findViewById(R.id.payTypeRadioGroup);
+        etPrice         = (EditText)      rootView.findViewById(R.id.etPrice);
+        etNote          = (EditText)      rootView.findViewById(R.id.etNote);
         spnTaxopark     = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
         spnBilling      = (CustomSpinner) rootView.findViewById(R.id.spnBilling);
 
@@ -114,7 +107,9 @@ public class OrderFragment extends Fragment implements
         super.onResume();
         createTaxoparkSpinner();
         createBillingSpinner();
-        refreshInputStyle();
+        FragmentManager fragmentManager = getChildFragmentManager();
+        DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
+        buttonsFragment.setDateTime(arrivalDateTime);
         if (order != null) {
             refreshWidgets(order);
         }
@@ -221,22 +216,7 @@ public class OrderFragment extends Fragment implements
         arrivalDateTime.setTimeInMillis(cal.getTimeInMillis());
     }
 
-    public interface OnOrderFragmentInteractionListener {
+    public interface OrderFragmentInterface {
         void addOrder(Order order);
-    }
-
-    private void refreshInputStyle() {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
-        if (buttonsFragment == null) {
-            buttonsFragment = new DateTimeButtons();
-            Bundle bundle = new Bundle();
-            bundle.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-            buttonsFragment.setArguments(bundle);
-        }
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        ft.replace(R.id.dateTimePlaceHolder, buttonsFragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.commit();
     }
 }

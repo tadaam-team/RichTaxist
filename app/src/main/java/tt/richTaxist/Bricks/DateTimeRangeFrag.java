@@ -12,12 +12,9 @@ import android.widget.Toast;
 import com.fourmob.datetimepicker.date.DatePickerDialog;
 import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
-import tt.richTaxist.MainActivity;
-import tt.richTaxist.Units.Order;
+import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Util;
@@ -29,73 +26,46 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private FragmentActivity mActivity;
-
-    private ArrayList<? extends Object> list;
-    private String workList;
     private Calendar rangeStart, rangeEnd;
     private Button buttonRangeStartDate, buttonRangeStartTime, buttonRangeEndDate, buttonRangeEndTime;
     private ViewGroup seekBarPlaceHolder;
     private RangeSeekBar<Long> seekBar;
     private String clickedButtonID;
-    private OnDateTimeRangeFragmentInteractionListener mListener;
+    private DateTimeRangeFragInterface mListener;
 
     public DateTimeRangeFrag() { }
-
-//    public DateTimeRangeFrag(String workList) {
-//        this.workList = workList;
-//        if ("shifts".equals(workList))      list = MainActivity.shiftsStorage;
-//        else if ("orders".equals(workList)) list = MainActivity.ordersStorage;
-//    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
             //проверим, реализован ли нужный интерфейс родительским фрагментом или активностью
-            mListener = (OnDateTimeRangeFragmentInteractionListener) getParentFragment();
-            if (mListener == null) mListener = (OnDateTimeRangeFragmentInteractionListener) getActivity();
+            mListener = (DateTimeRangeFragInterface) getParentFragment();
+            if (mListener == null) mListener = (DateTimeRangeFragInterface) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());}
-        dateSetListener = DateTimeRangeFrag.this;
-        timeSetListener = DateTimeRangeFrag.this;
+        dateSetListener = this;
+        timeSetListener = this;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mActivity = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_date_time_range, container, false);
-
         initiateControls(rootView);
 
-        rangeStart = new GregorianCalendar(2015, Calendar.JANUARY, 1);
+        rangeStart = new GregorianCalendar(2016, Calendar.JANUARY, 1);
         rangeEnd = Calendar.getInstance();
-        //благодаря обработке ниже, фрагмент сам определяет минимальную границу для себя
         if (savedInstanceState != null) {
-            workList = savedInstanceState.getString("workList");
-            if ("shifts".equals(workList))      list = MainActivity.shiftsStorage;
-            else if ("orders".equals(workList)) list = MainActivity.ordersStorage;
-            rangeStart.setTimeInMillis  (savedInstanceState.getLong("rangeStart"));
-            rangeEnd.setTimeInMillis    (savedInstanceState.getLong("rangeEnd"));
+            rangeStart.setTimeInMillis (savedInstanceState.getLong("rangeStart"));
+            rangeEnd.setTimeInMillis (savedInstanceState.getLong("rangeEnd"));
         } else {
-            workList = "shifts";
-            list = MainActivity.shiftsStorage;
+            //отсечем заведомо пустой кусок шкалы между 01.01.2015 и минимальной датой
+            Shift firstShift = ShiftsSQLHelper.dbOpenHelper.getFirstShift();
+            rangeStart.setTime(firstShift.beginShift);
         }
-
-        if (!list.isEmpty()) {
-            //отсечем заведомо пустой кусок шкалы между 01.01.2015 и минимальной датой в list
-            Object object;
-            if (Util.youngIsOnTop) object = list.get(list.size() - 1);
-            else object = list.get(0);
-
-            if (object instanceof Shift)        rangeStart.setTime(((Shift) object).beginShift);
-            else if (object instanceof Order)   rangeStart.setTime(((Order) object).arrivalDateTime);
-            refreshControls(true);
-        } else {
-            //если в списке нет смен, то отключаем кнопки. обратно сделать доступными их невозможно. только заново создать фрагмент и уже правильно пройти проверку
-            refreshControls(false);
-        }
+        refreshControls();
         createButtonsAndSeekBar(rangeStart, rangeEnd);
-
         return rootView;
     }
 
@@ -161,7 +131,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
                 rangeStart.setTimeInMillis(minValue);
                 rangeEnd.setTimeInMillis(maxValue);
                 sendDataToParent();
-                refreshControls(true);
+                refreshControls();
             }
         });
         seekBarPlaceHolder.removeAllViews();
@@ -186,7 +156,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
                 break;
         }
         sendDataToParent();
-        refreshControls(true);
+        refreshControls();
     }
 
     //вызывается после завершения ввода в диалоге времени
@@ -207,25 +177,20 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
                 break;
         }
         sendDataToParent();
-        refreshControls(true);
+        refreshControls();
     }
 
-    public void refreshControls(boolean enabled) {
-        buttonRangeStartDate.setEnabled(enabled);
-        buttonRangeStartTime.setEnabled(enabled);
-        buttonRangeEndDate  .setEnabled(enabled);
-        buttonRangeEndTime  .setEnabled(enabled);
-
+    public void refreshControls() {
         buttonRangeStartDate.setText(Util.getStringDateFromCal(rangeStart));
-        buttonRangeStartTime.setText(Util.getStringTimeFromCal(rangeStart));
         buttonRangeEndDate  .setText(Util.getStringDateFromCal(rangeEnd));
+
+        buttonRangeStartTime.setText(Util.getStringTimeFromCal(rangeStart));
         buttonRangeEndTime  .setText(Util.getStringTimeFromCal(rangeEnd));
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("workList", workList);
         outState.putLong("rangeStart", rangeStart.getTimeInMillis());
         outState.putLong("rangeEnd",   rangeEnd.getTimeInMillis());
     }
@@ -238,7 +203,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
         mListener.refreshControls();
     }
 
-    public interface OnDateTimeRangeFragmentInteractionListener {
+    public interface DateTimeRangeFragInterface {
         public void calculate(Calendar rangeStart, Calendar rangeEnd);
         public void refreshControls();
     }

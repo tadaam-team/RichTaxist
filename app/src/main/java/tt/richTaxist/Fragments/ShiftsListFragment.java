@@ -33,7 +33,7 @@ import tt.richTaxist.Units.Shift;
  * Created by TAU on 18.04.2016.
  */
 
-public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.OnDateTimeRangeFragmentInteractionListener {
+public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.DateTimeRangeFragInterface {
     public static final String FRAGMENT_TAG = "ShiftsListFragment";
     private static final String LOG_TAG = "ShiftsListFragment";
     private FragmentActivity mActivity;

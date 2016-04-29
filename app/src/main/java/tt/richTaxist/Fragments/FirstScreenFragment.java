@@ -11,7 +11,7 @@ import tt.richTaxist.R;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
     private static final String LOG_TAG = "FirstScreenFragment";
-    private OnFirstScreenFragmentInteractionListener mListener;
+    private FirstScreenInterface mListener;
 
     public FirstScreenFragment() {
     }
@@ -19,7 +19,7 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try { mListener = (OnFirstScreenFragmentInteractionListener) context;
+        try { mListener = (FirstScreenInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
         }
@@ -49,7 +49,7 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
         mListener.onButtonSelected(v.getId());
     }
 
-    public interface OnFirstScreenFragmentInteractionListener {
+    public interface FirstScreenInterface {
         public void onButtonSelected(int buttonIndex);
     }
 }

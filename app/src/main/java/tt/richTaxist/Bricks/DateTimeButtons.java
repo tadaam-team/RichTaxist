@@ -16,8 +16,7 @@ import tt.richTaxist.R;
 import tt.richTaxist.Util;
 
 public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
-    private Context context;
-    private OnDateTimeButtonsFragmentInteractionListener mListener;
+    private DateTimeButtonsInterface mListener;
     private Calendar dateTimeLocal = Calendar.getInstance();
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
@@ -30,19 +29,17 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
         super.onAttach(context);
         try {
             //проверим, реализован ли нужный интерфейс родительским фрагментом или активностью
-            mListener = (OnDateTimeButtonsFragmentInteractionListener) getParentFragment();
-            if (mListener == null) mListener = (OnDateTimeButtonsFragmentInteractionListener) getActivity();
+            mListener = (DateTimeButtonsInterface) getParentFragment();
+            if (mListener == null) mListener = (DateTimeButtonsInterface) getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
         }
-        dateSetListener = DateTimeButtons.this;
-        timeSetListener = DateTimeButtons.this;
-        dateTimeLocal.setTimeInMillis(getArguments().getLong("arrivalDateTime"));
+        dateSetListener = this;
+        timeSetListener = this;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        context = getContext();
         View rootView = inflater.inflate(R.layout.fragment_input_style_buttons, container, false);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, 1.0f);
         rootView.setLayoutParams(layoutParams);
@@ -100,7 +97,7 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
         btnTime.setText(Util.getStringTimeFromCal(dateTimeLocal));
     }
 
-    public interface OnDateTimeButtonsFragmentInteractionListener {
+    public interface DateTimeButtonsInterface {
         void onDateOrTimeSet(Calendar cal);
     }
 }

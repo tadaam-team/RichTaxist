@@ -20,8 +20,6 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-
-import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.Units.Shift;
@@ -31,7 +29,7 @@ import tt.richTaxist.Fragments.FirstScreenFragment;
 import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
-        FirstScreenFragment.OnFirstScreenFragmentInteractionListener{
+        FirstScreenFragment.FirstScreenInterface {
     static AppCompatActivity activity;
     static Context context;
     private static final String LOG_TAG = "FirstScreenActivity";

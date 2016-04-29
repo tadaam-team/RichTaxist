@@ -145,37 +145,48 @@ public class ShiftsSQLHelper extends SQLHelper {
     }
 
     public ArrayList<Shift> getAllShifts() {
-        ArrayList<Shift> shiftsStorage = new ArrayList<>();
+        ArrayList<Shift> shiftsList = new ArrayList<>();
         // Select All Query
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
-            do shiftsStorage.add(loadShiftFromCursor(cursor));
-            while (cursor.moveToNext());
+            do {
+                shiftsList.add(loadShiftFromCursor(cursor));
+            } while (cursor.moveToNext());
         }
-        return shiftsStorage;
+        return shiftsList;
+    }
+
+    public Shift getFirstShift() {
+        Shift shift = null;
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            shift = loadShiftFromCursor(cursor);
+        }
+        return shift;
     }
 
     public Shift getLastShift() {
         Shift shift = null;
-        SQLiteDatabase db = getWritableDatabase();
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
+        SQLiteDatabase db = getReadableDatabase();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY _id ASC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        // в курсоре единственная запись и луп излишен
         if (cursor.moveToFirst()) {
-            do shift = loadShiftFromCursor(cursor);
-            while (cursor.moveToNext());
+            shift = loadShiftFromCursor(cursor);
         }
         return shift;
     }
 
     public Shift getShiftByID(int shiftID) {
         Shift shift = null;
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         String selectQuery = "SELECT  * FROM " + TABLE_NAME + " WHERE " + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) shift = loadShiftFromCursor(cursor);

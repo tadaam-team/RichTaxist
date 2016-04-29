@@ -22,8 +22,8 @@ import tt.richTaxist.Fragments.OrderFragment;
  */
 
 public class MainActivity extends AppCompatActivity implements
-        OrderFragment.OnOrderFragmentInteractionListener,
-        OrdersListFragment.OnOrderListFragmentInteractionListener {
+        OrderFragment.OrderFragmentInterface,
+        OrdersListFragment.OrdersListInterface {
     private static final String LOG_TAG = "MainActivity";
     public static Context context;
     public static Shift currentShift;

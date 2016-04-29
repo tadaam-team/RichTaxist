@@ -21,7 +21,7 @@ import tt.richTaxist.Units.Order;
 public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
     private static final String LOG_TAG = "OrdersListFragment";
-    private OnOrderListFragmentInteractionListener mListener;
+    private OrdersListInterface mListener;
     public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
 
@@ -30,7 +30,7 @@ public class OrdersListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try { mListener = (OnOrderListFragmentInteractionListener) context;
+        try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
         }
@@ -93,7 +93,7 @@ public class OrdersListFragment extends Fragment {
         });
     }
 
-    public interface OnOrderListFragmentInteractionListener {
+    public interface OrdersListInterface {
         void removeOrder(Order order);
         void returnToOrderFragment(Order order);
     }
