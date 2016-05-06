@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Properties;
@@ -45,10 +46,10 @@ public class Util {
 //    public static long sessionLength = 0;
 
     public static boolean deviceIsInLandscape;
-    private static final String LOG_TAG = "Util";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static Util instance;
     private static Context context;
-
+    public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
 
     public static Util init(Context context){
         if (instance == null) instance = new Util(context);

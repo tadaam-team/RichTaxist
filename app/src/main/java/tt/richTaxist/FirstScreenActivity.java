@@ -20,10 +20,10 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.Units.Shift;
-import tt.richTaxist.DB.ShiftsSQLHelper;
 import tt.richTaxist.Enums.InputStyle;
 import tt.richTaxist.Fragments.FirstScreenFragment;
 import tt.richTaxist.gps.RouteActivity;
@@ -32,9 +32,11 @@ public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface {
     static AppCompatActivity activity;
     static Context context;
-    private static final String LOG_TAG = "FirstScreenActivity";
+    public static final String LOG_TAG = "MY_LOG";
     public static ArrayAdapter shiftAdapterMA;
     private boolean deviceIsInLandscape;
+    private ShiftsSource shiftsSource;
+    private OrdersSource ordersSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +49,15 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
 //        GPSHelper.startService(MainActivity.context);
 
-        MainActivity.currentShift = ShiftsSQLHelper.dbOpenHelper.getLastShift();
+        shiftsSource = new ShiftsSource(getApplicationContext());
+        ordersSource = new OrdersSource(getApplicationContext());
+        MainActivity.currentShift = shiftsSource.getLastShift();
         if (MainActivity.currentShift != null) {
             MainActivity.shiftsStorage.clear();
+            MainActivity.shiftsStorage.addAll(shiftsSource.getAllShifts(Util.youngIsOnTop));
+
             MainActivity.ordersStorage.clear();
-            MainActivity.shiftsStorage.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
-            MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
+            MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
         }
         Util.init(this);
         Util.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
@@ -120,7 +125,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnOpenLastShift:
                 if (MainActivity.currentShift != null){
                     MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
+                    MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     Intent intent = new Intent(activity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
@@ -132,7 +137,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnNewShift:
-                MainActivity.currentShift = new Shift();
+                Shift shift = new Shift();
+                shift.shiftID = shiftsSource.create(shift);
+                MainActivity.currentShift = shift;
                 MainActivity.ordersStorage.clear();
                 startActivity(new Intent(activity, MainActivity.class));
                 Log.d(LOG_TAG, "открываю новую смену");
@@ -165,7 +172,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnRoute:
                 if (MainActivity.currentShift != null) {
                     MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(MainActivity.currentShift.shiftID, 0));
+                    MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     startActivity(new Intent(activity, RouteActivity.class));
                     Log.d(LOG_TAG, "открываю карту маршрута смены");
                 }
@@ -174,10 +181,14 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnGrandTotals:
-                Intent intent = new Intent(activity, GrandTotalsActivity.class);
-                intent.putExtra(GrandTotalsActivity.AUTHOR, "FirstScreenActivity");
-                startActivity(intent);
-                Log.d(LOG_TAG, "открываю итоги по зарплате");
+                if (MainActivity.currentShift != null){
+                    Intent intent = new Intent(activity, GrandTotalsActivity.class);
+                    intent.putExtra(GrandTotalsActivity.AUTHOR, "FirstScreenActivity");
+                    startActivity(intent);
+                    Log.d(LOG_TAG, "открываю итоги по зарплате");
+                }
+                else
+                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnExit:

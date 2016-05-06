@@ -13,21 +13,25 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import java.util.ArrayList;
+import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Taxopark;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
 import tt.richTaxist.R;
 
 public class TaxoparksFragment extends ListFragment {
-    private static final String LOG_TAG = "TaxoparksFragment";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     ArrayList<Taxopark> taxoparks = new ArrayList<>();
     private Context context;
     private ArrayAdapter taxoparksAdapter;
+    private TaxoparksSource taxoparksSource;
+
     public TaxoparksFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
-        taxoparks.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+        taxoparksSource = new TaxoparksSource(context);
+        taxoparks.addAll(taxoparksSource.getAllTaxoparks());
         taxoparksAdapter = new TaxoparksAdapter(context);
         setListAdapter(taxoparksAdapter);
 
@@ -39,8 +43,8 @@ public class TaxoparksFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 Taxopark taxopark = new Taxopark("", false, 0);
+                taxopark.taxoparkID = taxoparksSource.create(taxopark);
                 taxoparks.add(taxopark);
-                TaxoparksSQLHelper.dbOpenHelper.create(taxopark);
                 taxoparksAdapter.notifyDataSetChanged();
             }
         });
@@ -76,9 +80,14 @@ public class TaxoparksFragment extends ListFragment {
 
             //если таксопарк по умолчанию не назначен ни для одного члена списка, назначим текущий парк парком по умолчанию
             boolean defaultTaxoparkDefined = false;
-            for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks())
-                if (taxoparkIter.isDefault) defaultTaxoparkDefined = true;
-            if (!defaultTaxoparkDefined) taxopark.isDefault = true;
+            for (Taxopark taxoparkIter : taxoparks) {
+                if (taxoparkIter.isDefault) {
+                    defaultTaxoparkDefined = true;
+                }
+            }
+            if (!defaultTaxoparkDefined) {
+                taxopark.isDefault = true;
+            }
 
             RadioButton rbDefault = (RadioButton) convertView.findViewById(R.id.rbDefault);
             rbDefault.setChecked(taxopark.isDefault);
@@ -88,10 +97,10 @@ public class TaxoparksFragment extends ListFragment {
                     //сбрасываем все таксопарки в недефолтные и устанавливаем дефолтным текущий
                     for (Taxopark taxoparkIter : taxoparks) {
                         taxoparkIter.isDefault = false;
-                        TaxoparksSQLHelper.dbOpenHelper.update(taxoparkIter);
+                        taxoparksSource.update(taxoparkIter);
                     }
                     taxopark.isDefault = true;
-                    TaxoparksSQLHelper.dbOpenHelper.update(taxopark);
+                    taxoparksSource.update(taxopark);
                     notifyDataSetChanged();
                 }
             });
@@ -100,7 +109,7 @@ public class TaxoparksFragment extends ListFragment {
                 @Override
                 public void onClick(View view) {
                     taxoparks.remove(taxopark);
-                    TaxoparksSQLHelper.dbOpenHelper.remove(taxopark);
+                    taxoparksSource.remove(taxopark);
                     notifyDataSetChanged();
                 }
             });
@@ -110,8 +119,10 @@ public class TaxoparksFragment extends ListFragment {
         private void saveTaxoparkName(Taxopark currentTaxopark, EditText taxoparkName){
             String newName = taxoparkName.getText().toString();
             boolean isInTheList = false;
-            for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks()) {
-                if (newName.equals(taxoparkIter.taxoparkName) && currentTaxopark.taxoparkID != taxoparkIter.taxoparkID) isInTheList = true;
+            for (Taxopark taxoparkIter : taxoparksSource.getAllTaxoparks()) {
+                if (newName.equals(taxoparkIter.taxoparkName) && currentTaxopark.taxoparkID != taxoparkIter.taxoparkID) {
+                    isInTheList = true;
+                }
             }
             if (isInTheList) {
                 Toast.makeText(context, getResources().getString(R.string.taxopark) + " " + String.valueOf(newName) + " " +
@@ -120,7 +131,7 @@ public class TaxoparksFragment extends ListFragment {
             }
             else {
                 currentTaxopark.taxoparkName = newName;
-                TaxoparksSQLHelper.dbOpenHelper.update(currentTaxopark);
+                taxoparksSource.update(currentTaxopark);
             }
         }
     }

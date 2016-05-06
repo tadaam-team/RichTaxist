@@ -14,7 +14,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Util;
@@ -23,6 +23,7 @@ import tt.richTaxist.Util;
  * Created by Tau on 13.10.2015.
  */
 public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    public static final String FRAGMENT_TAG = "DateTimeRangeFrag";
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private FragmentActivity mActivity;
@@ -60,8 +61,9 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             rangeStart.setTimeInMillis (savedInstanceState.getLong("rangeStart"));
             rangeEnd.setTimeInMillis (savedInstanceState.getLong("rangeEnd"));
         } else {
-            //отсечем заведомо пустой кусок шкалы между 01.01.2015 и минимальной датой
-            Shift firstShift = ShiftsSQLHelper.dbOpenHelper.getFirstShift();
+            //отсечем заведомо пустой кусок шкалы между 01.01.2016 и минимальной датой
+            ShiftsSource shiftsSource = new ShiftsSource(getContext().getApplicationContext());
+            Shift firstShift = shiftsSource.getFirstShift();
             rangeStart.setTime(firstShift.beginShift);
         }
         refreshControls();
@@ -85,7 +87,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 DatePickerDialog startDatePD = DatePickerDialog.newInstance(dateSetListener, rangeStart.get(Calendar.YEAR), rangeStart.get(Calendar.MONTH), rangeStart.get(Calendar.DAY_OF_MONTH), false);
                 startDatePD.setVibrate(false);
-                startDatePD.setYearRange(2015, 2025);
+                startDatePD.setYearRange(2016, 2025);
                 startDatePD.setCloseOnSingleTapDay(true);
                 startDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeStartDate";
@@ -106,7 +108,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 DatePickerDialog endDatePD = DatePickerDialog.newInstance(dateSetListener, rangeEnd.get(Calendar.YEAR), rangeEnd.get(Calendar.MONTH), rangeEnd.get(Calendar.DAY_OF_MONTH), false);
                 endDatePD.setVibrate(false);
-                endDatePD.setYearRange(2015, 2025);
+                endDatePD.setYearRange(2016, 2025);
                 endDatePD.setCloseOnSingleTapDay(true);
                 endDatePD.show(mActivity.getSupportFragmentManager(), "datepicker");
                 clickedButtonID = "buttonRangeEndDate";
@@ -204,7 +206,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
     }
 
     public interface DateTimeRangeFragInterface {
-        public void calculate(Calendar rangeStart, Calendar rangeEnd);
-        public void refreshControls();
+        void calculate(Calendar rangeStart, Calendar rangeEnd);
+        void refreshControls();
     }
 }

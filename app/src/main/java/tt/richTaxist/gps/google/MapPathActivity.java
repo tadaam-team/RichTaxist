@@ -18,12 +18,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.gps.Coordinates;
 import com.google.android.gms.maps.MapFragment;
 
 public class MapPathActivity extends Fragment {
-    private static final String LOG_TAG = "Google Map fragment";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     GoogleMap mMapController;
     List<Coordinates> lastCoordsList;
 

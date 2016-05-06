@@ -7,10 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout.LayoutParams;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
-    private static final String LOG_TAG = "FirstScreenFragment";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private FirstScreenInterface mListener;
 
     public FirstScreenFragment() {
@@ -50,6 +51,6 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
     }
 
     public interface FirstScreenInterface {
-        public void onButtonSelected(int buttonIndex);
+        void onButtonSelected(int buttonIndex);
     }
 }

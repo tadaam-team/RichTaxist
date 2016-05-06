@@ -1,34 +1,29 @@
 package tt.richTaxist.Units;
 
-import tt.richTaxist.DB.TaxoparksSQLHelper;
-
+import android.database.Cursor;
+import android.provider.BaseColumns;
+import static tt.richTaxist.DB.Tables.TaxoparksTable.*;
 /**
  * Created by Tau on 23.09.2015.
  */
 public class Taxopark {
-    public int taxoparkID;
+    public long taxoparkID;
     public String taxoparkName;
     public boolean isDefault;
     public int defaultBilling;
 
     public Taxopark(String taxoparkName, boolean isDefault, int defaultBilling) {
-        this.taxoparkID     = getNextID();
+        taxoparkID = -1;//необходимо для использования автоинкремента id новой записи в sql
         this.taxoparkName   = taxoparkName;
         this.isDefault      = isDefault;
         this.defaultBilling = defaultBilling;
     }
 
-    public Taxopark(int taxoparkID, String taxoparkName, boolean isDefault, int defaultBilling) {
-        this.taxoparkID     = taxoparkID;
-        this.taxoparkName   = taxoparkName;
-        this.isDefault      = isDefault;
-        this.defaultBilling = defaultBilling;
-    }
-
-    private int getNextID() {
-        Taxopark lastTaxopark = TaxoparksSQLHelper.dbOpenHelper.getLastTaxopark();
-        return (lastTaxopark == null) ? 1 : lastTaxopark.taxoparkID + 1;
-        //младший id = 1 гарантирует свободность 0-индекса для списков с "- - -"
+    public Taxopark(Cursor cursor) {
+        taxoparkID     = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+        taxoparkName   = cursor.getString(cursor.getColumnIndex(TAXOPARK_NAME));
+        isDefault      = cursor.getInt(cursor.getColumnIndex(IS_DEFAULT)) == 1;
+        defaultBilling = cursor.getInt(cursor.getColumnIndex(DEFAULT_BILLING));
     }
 
     @Override
@@ -41,7 +36,7 @@ public class Taxopark {
 
     @Override
     public int hashCode() {
-        return 31 * taxoparkID;
+        return (int) (31 * taxoparkID);
     }
 
     @Override

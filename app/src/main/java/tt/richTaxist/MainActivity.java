@@ -11,9 +11,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
+import tt.richTaxist.DB.Sources.BillingsSource;
+import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
-import tt.richTaxist.DB.OrdersSQLHelper;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Fragments.OrderFragment;
 
@@ -24,12 +26,15 @@ import tt.richTaxist.Fragments.OrderFragment;
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
-    private static final String LOG_TAG = "MainActivity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static Context context;
     public static Shift currentShift;
     public final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
     public final static ArrayList<Order> ordersStorage = new ArrayList<>();
     private boolean deviceIsInLandscape;
+    private ShiftsSource shiftsSource;
+    private OrdersSource ordersSource;
+    private BillingsSource billingsSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements
         context = getApplicationContext();
 //        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_main));
         Util.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+
+        shiftsSource = new ShiftsSource(getApplicationContext());
+        ordersSource = new OrdersSource(getApplicationContext());
+        billingsSource = new BillingsSource(getApplicationContext());
 
         //фрагментная логика
         deviceIsInLandscape = (findViewById(R.id.container_orders_list) != null);
@@ -76,10 +85,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void addOrder(Order order){
+        //на входе заказ с id == -1
+        order.orderID = ordersSource.create(order);
         ordersStorage.add(order);
-        OrdersSQLHelper.dbOpenHelper.commit(order);
         sortOrdersStorage();
-        currentShift.calculateShiftTotals(0, order.taxoparkID);
+        currentShift.calculateShiftTotals(0, order.taxoparkID, shiftsSource, ordersSource, billingsSource);
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }
@@ -89,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void removeOrder(Order order){
         ordersStorage.remove(order);
-        OrdersSQLHelper.dbOpenHelper.remove(order);
+        ordersSource.remove(order);
     }
 
     @Override

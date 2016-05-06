@@ -12,7 +12,9 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
-import tt.richTaxist.DB.OrdersSQLHelper;
+import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.Tables.OrdersTable;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -20,16 +22,18 @@ import tt.richTaxist.Units.Order;
 
 public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
-    private static final String LOG_TAG = "OrdersListFragment";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private OrdersListInterface mListener;
     public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
+    private OrdersSource ordersSource;
 
     public OrdersListFragment() { }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        ordersSource = new OrdersSource(context.getApplicationContext());
         try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
@@ -44,11 +48,10 @@ public class OrdersListFragment extends Fragment {
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
         //TODO: get correct dataSource
-//        OrdersSQLHelper.dbOpenHelper.getOrdersList();
+//        ordersSource.getOrdersList();
         rvAdapter = new RecyclerViewAdapter(MainActivity.ordersStorage, RecyclerViewAdapter.AdapterDataType.ORDER);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-//        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
         rvAdapter.setListener(new RecyclerViewAdapter.Listener() {
             @Override
@@ -82,13 +85,15 @@ public class OrdersListFragment extends Fragment {
     public void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 MainActivity.ordersStorage.clear();
-                MainActivity.ordersStorage.addAll(OrdersSQLHelper.dbOpenHelper.getOrdersList(
+                MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(
                         MainActivity.currentShift.shiftID, spnTaxopark.taxoparkID));
                 rvAdapter.notifyDataSetChanged();
             }
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
     }

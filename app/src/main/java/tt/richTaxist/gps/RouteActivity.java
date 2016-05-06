@@ -10,17 +10,19 @@ import com.google.android.gms.maps.SupportMapFragment;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import tt.richTaxist.Bricks.RangeSeekBar;
-import tt.richTaxist.DB.LocationsSQLHelper;
+import tt.richTaxist.DB.Sources.LocationsSource;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.gps.google.MapPathActivity;
 
 public class RouteActivity extends FragmentActivity {
-    private static final String LOG_TAG = "Route activity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private MapPathActivity mapFragment;
     private AsyncTask updateTask;
+    private LocationsSource locationsSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class RouteActivity extends FragmentActivity {
 
         setContentView(R.layout.gps_activity_route);
         setUpMapIfNeeded();
+        locationsSource = new LocationsSource(getApplicationContext());
 
         mapFragment = new MapPathActivity();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -42,7 +45,7 @@ public class RouteActivity extends FragmentActivity {
         final Calendar rangeEnd = Calendar.getInstance();
         if (currentShift.isClosed()) rangeEnd.setTime(currentShift.endShift);
 
-        mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByShift(currentShift));
+        mapFragment.showPath(locationsSource.getLocationsByShift(currentShift));
         final TextView tvRangeStart = (TextView) findViewById(R.id.tvRangeStart);
         final TextView tvRangeEnd   = (TextView) findViewById(R.id.tvRangeEnd);
         tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
@@ -58,7 +61,7 @@ public class RouteActivity extends FragmentActivity {
                 rangeEnd.setTimeInMillis(maxValue);
                 tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
                 tvRangeEnd.setText(getStringDateTimeFromCal(rangeEnd));
-                mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
+                mapFragment.showPath(locationsSource.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
             }
         });
 
@@ -89,7 +92,7 @@ public class RouteActivity extends FragmentActivity {
                 //Log.d(LOG_TAG,"Updating map");
                 try {
                     seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
-                    mapFragment.showPath(LocationsSQLHelper.dbOpenHelper.getLocationsByPeriod
+                    mapFragment.showPath(locationsSource.getLocationsByPeriod
                             (rangeStart.getTime(), Calendar.getInstance().getTime()));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -150,7 +153,7 @@ public class RouteActivity extends FragmentActivity {
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
      * just add a marker near Africa.
      * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     * This should only be called once and when we are sure that mMap is not null.
      */
     private void setUpMap() {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));

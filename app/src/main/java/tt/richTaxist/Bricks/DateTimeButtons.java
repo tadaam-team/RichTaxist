@@ -16,6 +16,8 @@ import tt.richTaxist.R;
 import tt.richTaxist.Util;
 
 public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+    public static final String FRAGMENT_TAG = "DateTimeButtons";
+    public static final String DATE_TIME_EXTRA = "DateTimeExtra";
     private DateTimeButtonsInterface mListener;
     private Calendar dateTimeLocal = Calendar.getInstance();
     private DatePickerDialog.OnDateSetListener dateSetListener;
@@ -36,6 +38,17 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
         }
         dateSetListener = this;
         timeSetListener = this;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dateTimeLocal = Calendar.getInstance();
+        if (savedInstanceState != null) {
+            dateTimeLocal.setTimeInMillis(savedInstanceState.getLong(DATE_TIME_EXTRA));
+        } else {
+            dateTimeLocal.setTimeInMillis(getArguments().getLong(DATE_TIME_EXTRA));
+        }
     }
 
     @Override
@@ -95,6 +108,12 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
         dateTimeLocal.setTimeInMillis(cal.getTimeInMillis());
         btnDate.setText(Util.getStringDateFromCal(dateTimeLocal));
         btnTime.setText(Util.getStringTimeFromCal(dateTimeLocal));
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(DATE_TIME_EXTRA, dateTimeLocal.getTimeInMillis());
     }
 
     public interface DateTimeButtonsInterface {

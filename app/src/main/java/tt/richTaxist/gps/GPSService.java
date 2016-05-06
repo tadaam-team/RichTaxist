@@ -11,16 +11,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-import tt.richTaxist.DB.LocationsSQLHelper;
+import tt.richTaxist.DB.Sources.LocationsSource;
+import tt.richTaxist.FirstScreenActivity;
 
 public class GPSService extends Service {
-
-    private static final String LOG_TAG = "GPSService";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     static PendingIntent pi;
     MyBinder binder = new MyBinder();
     Thread gpsTracking;
     private int distance;
     private Location lastLocation;
+    private LocationsSource locationsSource;
 
     public GPSService() {
     }
@@ -28,7 +29,7 @@ public class GPSService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        locationsSource = new LocationsSource(getApplicationContext());
     }
 
     @Override
@@ -84,7 +85,7 @@ public class GPSService extends Service {
                 Log.d(LOG_TAG, "pi == null");
             }
             try {
-                LocationsSQLHelper.dbOpenHelper.storeLocation(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
+                locationsSource.create(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
             } catch (Exception e) {
                 e.printStackTrace();
 

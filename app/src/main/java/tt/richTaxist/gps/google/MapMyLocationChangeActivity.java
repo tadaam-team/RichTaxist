@@ -4,23 +4,20 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 
-
 public class MapMyLocationChangeActivity extends FragmentActivity {
-    private static final String LOG_TAG = "MMLCA";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     //Called when the activity is first created.
     SupportMapFragment mapFragment;
     GoogleMap map;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

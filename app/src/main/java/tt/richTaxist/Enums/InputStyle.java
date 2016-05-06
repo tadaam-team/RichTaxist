@@ -1,6 +1,7 @@
 package tt.richTaxist.Enums;
 
 import android.util.Log;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 
@@ -13,7 +14,7 @@ public enum InputStyle {
 
     public final int id;
     private final int captionId;
-    private static final String LOG_TAG = "ENUM_InputStyle";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
 
     InputStyle(int id, int captionId) {
         this.id = id;

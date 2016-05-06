@@ -15,7 +15,7 @@ import tt.richTaxist.Enums.InputStyle;
 public class SettingsActivity extends AppCompatActivity implements DF_ChooseFromList.ListInputDialogListener {
     Context context;
     protected Button btnTimePickerInterval;
-    String LOG_TAG = "SettingsActivity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

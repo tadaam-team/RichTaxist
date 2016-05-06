@@ -24,13 +24,12 @@
                     android:text="@string/arrivalDateTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-
-                <fragment
+                <LinearLayout
+                    android:id="@+id/dateTimePlaceHolder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:name="tt.richTaxist.Bricks.DateTimeButtons"
-                    tools:layout="@layout/fragment_input_style_buttons"
-                    android:tag="buttonsFragment" />
+                    android:orientation="horizontal"
+                    android:minHeight="60dp"/>
             </LinearLayout>
 
 

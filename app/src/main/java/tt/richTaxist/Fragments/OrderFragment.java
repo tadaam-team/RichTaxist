@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeButtons;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.MainActivity;
@@ -28,7 +30,8 @@ import tt.richTaxist.Util;
 
 public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeButtonsInterface {
     public static final String FRAGMENT_TAG = "OrderFragment";
-    private static final String LOG_TAG = "OrderFragment";
+    public static final String DATE_TIME_EXTRA = "DateTimeExtra";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static Context context;
     private OrderFragmentInterface mListener;
 
@@ -51,6 +54,15 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        arrivalDateTime = Calendar.getInstance();
+        if (savedInstanceState != null) {
+            arrivalDateTime.setTimeInMillis(savedInstanceState.getLong(DATE_TIME_EXTRA));
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
@@ -60,12 +72,6 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         etNote          = (EditText)      rootView.findViewById(R.id.etNote);
         spnTaxopark     = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
         spnBilling      = (CustomSpinner) rootView.findViewById(R.id.spnBilling);
-
-        arrivalDateTime = Calendar.getInstance();
-        if (savedInstanceState != null) {
-            long arrivalDateTimeLong = savedInstanceState.getLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
-            arrivalDateTime.setTimeInMillis(arrivalDateTimeLong);
-        }
 
         rootView.findViewById(R.id.btnAddNewOrder).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +87,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -1);
+                spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -2);
                 spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, 0);
                 Toast.makeText(context, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
@@ -107,37 +113,30 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         super.onResume();
         createTaxoparkSpinner();
         createBillingSpinner();
-        FragmentManager fragmentManager = getChildFragmentManager();
-        DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
-        buttonsFragment.setDateTime(arrivalDateTime);
-        if (order != null) {
-            refreshWidgets(order);
-        }
+        refreshWidgets(order);
     }
 
     public void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, false);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
             }
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
     }
     public void createBillingSpinner(){
         spnBilling.createSpinner(TypeOfSpinner.BILLING, false);
         spnBilling.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnBilling.saveSpinner(TypeOfSpinner.BILLING);
             }
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong("arrivalDateTime", arrivalDateTime.getTimeInMillis());
     }
 
     private TypeOfPayment getRadioState(){
@@ -149,12 +148,10 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         }
     }
 
-    //этот метод получает заказ из листа, когда юзер делает свайп влево
     public void setOrder(Order order){
         this.order = order;
     }
 
-    //этот метод обнуляет поля ввода, если переданный заказ == null
     public void refreshWidgets(Order receivedOrder){
         if (receivedOrder != null) {
             arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
@@ -175,10 +172,20 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             etNote.setText("");
         }
 
+        //Nested fragments are only supported when added to a fragment dynamically.
         FragmentManager fragmentManager = getChildFragmentManager();
-        DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag("buttonsFragment");
-        if (buttonsFragment != null && buttonsFragment.isAdded())
+        DateTimeButtons buttonsFragment = (DateTimeButtons) fragmentManager.findFragmentByTag(DateTimeButtons.FRAGMENT_TAG);
+        if (buttonsFragment == null) {
+            buttonsFragment = new DateTimeButtons();
+            Bundle args = new Bundle();
+            args.putLong(DateTimeButtons.DATE_TIME_EXTRA, arrivalDateTime.getTimeInMillis());
+            buttonsFragment.setArguments(args);
+            FragmentTransaction ft = fragmentManager.beginTransaction();
+            ft.replace(R.id.dateTimePlaceHolder, buttonsFragment, DateTimeButtons.FRAGMENT_TAG);
+            ft.commit();
+        } else {
             buttonsFragment.setDateTime(arrivalDateTime);
+        }
     }
 
     //выполняется после возврата из OrderActivity
@@ -188,7 +195,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         if (requestCode == GET_DATA_FROM_ORDER_ACTIVITY && resultCode == Activity.RESULT_OK){
             //когда из таксометра мы будем получать результат, createNewOrder() будет получать дополнительные параметры
             int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
-            long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);;
+            long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);
             createNewOrder(distance, travelTime);
         }
     }
@@ -206,10 +213,16 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             Log.d(LOG_TAG, "Exception caught while parsing note");
             note = "";
         }
-        Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift, note,
+        Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
                 distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         mListener.addOrder(newOrder);
         refreshWidgets(null);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(DATE_TIME_EXTRA, arrivalDateTime.getTimeInMillis());
     }
 
     public void onDateOrTimeSet(Calendar cal){

@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +23,12 @@ import java.util.Calendar;
 import java.util.Locale;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
+import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.Units.Shift;
-import tt.richTaxist.DB.ShiftsSQLHelper;
 
 public class GrandTotalsActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "GrandTotalsActivity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static final String AUTHOR = "author";
     private Shift firstShift, lastShift;
 
@@ -41,9 +41,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private CustomSpinner spnTaxopark;
     private Locale locale;
     private String author = "";
-
-    private SQLiteDatabase db;
     private Cursor shiftCursor;
+    private ShiftsSource shiftsSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +52,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
 
         locale = getResources().getConfiguration().locale;
         ArrayList<Shift> list = new ArrayList<>();
-        list.addAll(ShiftsSQLHelper.dbOpenHelper.getAllShifts());
+        shiftsSource = new ShiftsSource(getApplicationContext());
+        list.addAll(shiftsSource.getAllShifts(Util.youngIsOnTop));
         firstShift = list.get(0);
         lastShift = list.get(list.size() - 1);
         initiateWidgets();
@@ -87,7 +87,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         Calendar lastShiftStart = Calendar.getInstance();
         lastShiftStart.setTime(lastShift.beginShift);
 
-        ArrayList<Shift> wholeShifts = ShiftsSQLHelper.dbOpenHelper.getShiftsInRangeByTaxopark(
+        ArrayList<Shift> wholeShifts = shiftsSource.getShiftsInRangeByTaxopark(
                 firstShiftStart, lastShiftStart, true, spnTaxopark.taxoparkID);
         processWholeShifts(wholeShifts);
 //        Util.logDate("firstShiftStart", firstShiftStart);
@@ -132,10 +132,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SQLiteOpenHelper helper = new ShiftsSQLHelper(this);
-        db = helper.getReadableDatabase();
-        shiftCursor = db.query(ShiftsSQLHelper.TABLE_NAME, new String[]{"_id", ShiftsSQLHelper.BEGIN_SHIFT},
-                null, null, null, null, null);
+        shiftCursor = shiftsSource.getShiftCursor();
 
         createShiftSpinner(true, spnFirstShift);
         createShiftSpinner(false, spnLastShift);
@@ -148,18 +145,14 @@ public class GrandTotalsActivity extends AppCompatActivity {
         CursorAdapter shiftAdapter = new ShiftCursorAdapter(this, shiftCursor, 0);
         spinner.setAdapter(shiftAdapter);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Cursor cursor = db.query(ShiftsSQLHelper.TABLE_NAME, null, ShiftsSQLHelper.BEGIN_SHIFT + "=?",
-                        new String[]{((TextView) itemSelected).getText().toString()}, null, null, null);
-                if (cursor.moveToFirst()) {
-                    Shift selectedShift = ShiftsSQLHelper.dbOpenHelper.loadShiftFromCursor(cursor);
-                    EventBus.getDefault().postSticky(new SpinnerEvent(spinnerRefersToFirstShift, selectedShift));
-                }
-                cursor.close();
-
+                Shift selectedShift = shiftsSource.getShiftByItsStart(((TextView) itemSelected).getText().toString());
+                EventBus.getDefault().postSticky(new SpinnerEvent(spinnerRefersToFirstShift, selectedShift));
                 calculateGrandTotals();
                 refreshGTControls();
             }
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
         if (!spinnerRefersToFirstShift) {
@@ -189,11 +182,13 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
                 calculateGrandTotals();
                 refreshGTControls();
             }
+            @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
     }
@@ -202,7 +197,6 @@ public class GrandTotalsActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         shiftCursor.close();
-        db.close();
     }
 
     @Override
@@ -234,7 +228,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             TextView content = (TextView) view.findViewById(R.id.row_content);
-            String date = cursor.getString(cursor.getColumnIndex(ShiftsSQLHelper.BEGIN_SHIFT));
+            String date = cursor.getString(cursor.getColumnIndex(ShiftsTable.BEGIN_SHIFT));
 //            content.setText(SQLHelper.dateFormat.format(date));
             content.setText(date);
             view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));

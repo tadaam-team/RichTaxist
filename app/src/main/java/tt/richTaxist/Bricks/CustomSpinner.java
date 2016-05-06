@@ -7,8 +7,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.ArrayList;
-import tt.richTaxist.DB.BillingsSQLHelper;
-import tt.richTaxist.DB.TaxoparksSQLHelper;
+import tt.richTaxist.DB.Sources.BillingsSource;
+import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Taxopark;
@@ -16,23 +17,31 @@ import tt.richTaxist.Units.Taxopark;
  * Created by TAU on 27.04.2016.
  */
 public class CustomSpinner extends Spinner {
-    private static final String LOG_TAG = "CustomSpinner";
-    public int taxoparkID = -1;
-    public int billingID = -1;
-    public int monthID = -1;
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
+    public long taxoparkID = -1;
+    public long billingID = -1;
+    public long monthID = -1;
     private ArrayAdapter<Taxopark> spnTaxoparkAdapter;
     private ArrayAdapter<Billing> spnBillingAdapter;
+    private TaxoparksSource taxoparksSource;
+    private BillingsSource billingsSource;
 
     public CustomSpinner(Context context) {
         super(context);
+        taxoparksSource = new TaxoparksSource(context.getApplicationContext());
+        billingsSource = new BillingsSource(context.getApplicationContext());
     }
     //inflate a view from XML
     public CustomSpinner(Context context, AttributeSet attrs) {
         super(context, attrs);
+        taxoparksSource = new TaxoparksSource(context.getApplicationContext());
+        billingsSource = new BillingsSource(context.getApplicationContext());
     }
     //inflate a view from XML and apply a class-specific base style
     public CustomSpinner(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        taxoparksSource = new TaxoparksSource(context.getApplicationContext());
+        billingsSource = new BillingsSource(context.getApplicationContext());
     }
 
     public void saveSpinner(TypeOfSpinner typeOfSpinner){
@@ -46,38 +55,35 @@ public class CustomSpinner extends Spinner {
                 break;
 
             case MONTH:
-                monthID = (int) getSelectedItemId();
+                monthID = getSelectedItemId();
                 break;
         }
     }
 
-    public void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, int id){
+    public void setPositionOfSpinner(TypeOfSpinner typeOfSpinner, long id){
         switch (typeOfSpinner){
             case TAXOPARK:
-                //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
-                if (id == -1) {
-                    for (Taxopark taxoparkIter : TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks()) {
-                        if (taxoparkIter.isDefault) {
-                            taxoparkID = id = taxoparkIter.taxoparkID;
-                        }
-                    }
+                Taxopark taxopark;
+                if (id == -2) {
+                    //если получена команда обнулить состояние спиннера, возвращаем не просто первый по списку, а умолчание
+                    taxopark = taxoparksSource.getDefaultTaxopark();
+                } else {
+                    taxopark = taxoparksSource.getTaxoparkByID(id);
                 }
-                Taxopark taxopark = TaxoparksSQLHelper.dbOpenHelper.getTaxoparkByID(id);
+                Log.d(LOG_TAG, "setPositionOfSpinner. taxopark: " + String.valueOf(taxopark));
                 int tIndexInSpinner = 0;
                 if (taxopark != null){
                     tIndexInSpinner = spnTaxoparkAdapter.getPosition(taxopark);
                 }
-                Log.d(LOG_TAG, "tIndexInSpinner: " + String.valueOf(tIndexInSpinner));
                 setSelection(tIndexInSpinner);
                 break;
 
             case BILLING:
-                Billing billing = BillingsSQLHelper.dbOpenHelper.getBillingByID(id);
+                Billing billing = billingsSource.getBillingByID(id);
                 int bIndexInSpinner = 0;
                 if (billing != null){
                     bIndexInSpinner = spnBillingAdapter.getPosition(billing);
                 }
-                Log.d(LOG_TAG, "bIndexInSpinner: " + String.valueOf(bIndexInSpinner));
                 setSelection(bIndexInSpinner);
                 break;
 
@@ -92,20 +98,24 @@ public class CustomSpinner extends Spinner {
             case TAXOPARK:
                 ArrayList<Taxopark> listOfTaxoparks = new ArrayList<>();
                 if (addBlankListEntry){
-                    listOfTaxoparks.add(0, new Taxopark(0, "- - -", false, 0));
+                    Taxopark blankTaxopark = new Taxopark("- - -", false, 0);
+                    blankTaxopark.taxoparkID = 0;
+                    listOfTaxoparks.add(blankTaxopark);
                 }
-                listOfTaxoparks.addAll(TaxoparksSQLHelper.dbOpenHelper.getAllTaxoparks());
+                listOfTaxoparks.addAll(taxoparksSource.getAllTaxoparks());
                 spnTaxoparkAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, listOfTaxoparks);
                 setAdapter(spnTaxoparkAdapter);
-                setPositionOfSpinner(TypeOfSpinner.TAXOPARK, addBlankListEntry ? 0 : -1);
+                if (!addBlankListEntry) {
+                    setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -2);
+                }
                 break;
 
             case BILLING:
                 ArrayList<Billing> listOfBillings = new ArrayList<>();
-                listOfBillings.addAll(BillingsSQLHelper.dbOpenHelper.getAllBillings());
+                listOfBillings.addAll(billingsSource.getAllBillings());
                 spnBillingAdapter = new ArrayAdapter<>(getContext(), R.layout.list_entry_spinner, listOfBillings);
                 setAdapter(spnBillingAdapter);
-                setPositionOfSpinner(TypeOfSpinner.BILLING, addBlankListEntry ? 0 : -1);
+                setPositionOfSpinner(TypeOfSpinner.BILLING, 0);
                 break;
 
             case MONTH:

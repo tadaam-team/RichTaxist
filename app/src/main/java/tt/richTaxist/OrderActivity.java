@@ -30,7 +30,7 @@ import tt.richTaxist.gps.GPSService;
  * Created by AlexShredder on 07.07.2015.
  */
 public class OrderActivity extends AppCompatActivity{
-    private static final String LOG_TAG = "Order activity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     static Context context;
     private int distance;
     private long travelTime;

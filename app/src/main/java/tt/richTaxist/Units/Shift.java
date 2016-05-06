@@ -1,22 +1,27 @@
 package tt.richTaxist.Units;
 
 import android.content.res.Resources;
+import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import tt.richTaxist.DB.BillingsSQLHelper;
-import tt.richTaxist.DB.OrdersSQLHelper;
-import tt.richTaxist.DB.ShiftsSQLHelper;
+import tt.richTaxist.DB.Sources.BillingsSource;
+import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
-
+import java.text.ParseException;
+import static tt.richTaxist.DB.Tables.ShiftsTable.*;
 /**
  * Created by Tau on 27.06.2015.
  */
 public class Shift {
-    public int shiftID;
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
+    public long shiftID;
     public Date beginShift;
     public Date endShift; //по этому полю проверяется закрыта ли смена. == null пока не закрыта
     public int revenueCash, revenueCard, revenueOfficial, petrol;
@@ -25,50 +30,65 @@ public class Shift {
     public double workHoursSpent;
     public int salaryPerHour, distance;
     public long travelTime;
-    private static final String LOG_TAG = "ShiftClass";
 
     public Shift() {
-        Shift lastShift = ShiftsSQLHelper.dbOpenHelper.getLastShift();
-        if (lastShift == null) shiftID = 0;
-        else shiftID = lastShift.shiftID + 1;
-
-        beginShift = new Date();
-        petrolFilledByHands = false;
-        Log.d(LOG_TAG, "new shift created. ID: " + String.valueOf(shiftID));
-        ShiftsSQLHelper.dbOpenHelper.create(this);
-    }
-
-    public Shift(int shiftID) {
-        //если передаем в конструктор ID значит в SQL добавлять запись не нужно
-        this.shiftID = shiftID;
+        shiftID = -1;//необходимо для использования автоинкремента id новой записи в sql
         beginShift = new Date();
         petrolFilledByHands = false;
     }
 
-    public void closeShift() {
+    public Shift(Cursor cursor) {
+        shiftID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+
+        beginShift = null;
+        endShift = null;
+        try {
+            beginShift = Util.dateFormat.parse(cursor.getString(cursor.getColumnIndex(BEGIN_SHIFT)));
+            if (cursor.getString(cursor.getColumnIndex(END_SHIFT)) != null &&
+                    !"".equals(cursor.getString(cursor.getColumnIndex(END_SHIFT)))) {
+                endShift = Util.dateFormat.parse(cursor.getString(cursor.getColumnIndex(END_SHIFT)));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        revenueOfficial       = cursor.getInt(cursor.getColumnIndex(REVENUE_OFFICIAL));
+        revenueCash           = cursor.getInt(cursor.getColumnIndex(REVENUE_CASH));
+        revenueCard           = cursor.getInt(cursor.getColumnIndex(REVENUE_CARD));
+        petrol                = cursor.getInt(cursor.getColumnIndex(PETROL));
+        petrolFilledByHands   = cursor.getInt(cursor.getColumnIndex(PETROL_FILLED_BY_HANDS)) != 0;
+        toTheCashier          = cursor.getInt(cursor.getColumnIndex(TO_THE_CASHIER));
+        salaryOfficial        = cursor.getInt(cursor.getColumnIndex(SALARY_OFFICIAL));
+        revenueBonus          = cursor.getInt(cursor.getColumnIndex(REVENUE_BONUS));
+        carRent               = cursor.getInt(cursor.getColumnIndex(CAR_RENT));
+        salaryUnofficial      = cursor.getInt(cursor.getColumnIndex(SALARY_UNOFFICIAL));
+        workHoursSpent        = cursor.getInt(cursor.getColumnIndex(WORK_HOURS_SPENT));
+        salaryPerHour         = cursor.getInt(cursor.getColumnIndex(SALARY_PER_HOUR));
+        distance              = cursor.getInt(cursor.getColumnIndex(DISTANCE));
+        travelTime            = cursor.getInt(cursor.getColumnIndex(TRAVEL_TIME));
+    }
+
+    public void closeShift(ShiftsSource shiftsSource) {
         this.endShift = new Date();
         //в этой точке бензин уже введен и итоги уже рассчитаны
-        ShiftsSQLHelper.dbOpenHelper.update(this);
+        shiftsSource.update(this);
     }
 
-    public void openShift() {
+    public void openShift(ShiftsSource shiftsSource) {
         this.endShift = null;
-        ShiftsSQLHelper.dbOpenHelper.update(this);
+        shiftsSource.update(this);
     }
     public boolean isClosed(){
         return this.endShift != null;
     }
-    public boolean hasOrders(){
-        ArrayList<Order> ordersList = OrdersSQLHelper.dbOpenHelper.getOrdersList(this.shiftID, 0);
-        return !ordersList.isEmpty();
-    }
 
-    public void calculateShiftTotals(int petrol, int taxoparkID){
-        ArrayList<Order> orders = OrdersSQLHelper.dbOpenHelper.getOrdersList(this.shiftID, taxoparkID);
+    public void calculateShiftTotals(int petrol, long taxoparkID, ShiftsSource shiftsSource,
+                                     OrdersSource ordersSource, BillingsSource billingsSource) {
+        ArrayList<Order> orders = ordersSource.getOrdersList(this.shiftID, taxoparkID);
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){
-            float commission = BillingsSQLHelper.dbOpenHelper.getBillingByID(order.billingID).commission;
+            float commission = billingsSource.getBillingByID(order.billingID).commission;
             switch (order.typeOfPayment){
                 case CASH: revenueCash += order.price;
                     salaryOfficial += order.price * (1 - commission/100);
@@ -98,7 +118,7 @@ public class Shift {
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
         workHoursSpent = Util.RoundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryUnofficial / workHoursSpent);
-        ShiftsSQLHelper.dbOpenHelper.update(this);
+        shiftsSource.update(this);
     }
 
     @Override
@@ -114,7 +134,9 @@ public class Shift {
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1,
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
                 revenueOfficial, toTheCashier, petrol, this.isClosed() ? res.getString(R.string.yes) : res.getString(R.string.no));
-        if (carRent != 0) text += String.format("\n" + res.getString(R.string.carRent) + ": %d", carRent);
+        if (carRent != 0) {
+            text += String.format("\n" + res.getString(R.string.carRent) + ": %d", carRent);
+        }
         return text;
     }
 }

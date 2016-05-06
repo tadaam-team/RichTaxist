@@ -68,8 +68,8 @@
     <string name="closeShift">Закрыть смену</string>
     <string name="continueShift">Продолжить\nсмену</string>
     <string name="exitToMainMenu">Главное\nменю</string>
-    <string name="shiftIsOpen">Смена\nоткрыта</string>
-    <string name="shiftIsClosed">Смена\nзакрыта</string>
+    <string name="shiftIsOpen">Смена открыта</string>
+    <string name="shiftIsClosed">Смена закрыта</string>
     <string name="zero">0</string>
     <string name="summInputMsg">Введите сумму</string>
     <string name="ok">OK</string>
@@ -138,6 +138,7 @@
     <string name="emailFormatError">Неверный формат почты</string>
     <string name="blankFieldsSignUpError">Заполните логин, пароль и почту</string>
     <string name="blankFieldsSignInError">Для входа введите логин и пароль</string>
+    <string name="hello">Здравствуйте, %s</string>
 
 
     <string name="chatScreenName">Водительский чат</string>

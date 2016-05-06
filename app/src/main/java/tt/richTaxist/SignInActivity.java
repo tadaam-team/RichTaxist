@@ -29,7 +29,7 @@ import com.parse.SignUpCallback;
 import tt.richTaxist.Enums.InputStyle;
 
 public class SignInActivity extends AppCompatActivity {
-    private static final String LOG_TAG = "SignInActivity";
+    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private Context context;
     int contributeCount = 0;
 
@@ -223,7 +223,7 @@ public class SignInActivity extends AppCompatActivity {
         buttonContribute.setEnabled(showLogOut);
         buttonLogOut.setEnabled(showLogOut);
         if (Util.currentUser != null){
-            tvWelcome.setText("Здравствуйте, " + Util.currentUser.getUsername());
+            tvWelcome.setText(String.format(getResources().getString(R.string.hello), Util.currentUser.getUsername()));
             cbUserActive    .setChecked(Util.currentUser.isAuthenticated());
             cbEmailVerified .setChecked(Util.currentUser.getBoolean("emailVerified"));
             cbIMEICorrect   .setChecked(Util.deviceIMEI.equals(Util.currentUser.getString("IMEI")));

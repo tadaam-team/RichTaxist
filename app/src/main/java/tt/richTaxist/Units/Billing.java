@@ -1,28 +1,26 @@
 package tt.richTaxist.Units;
 
-import tt.richTaxist.DB.BillingsSQLHelper;
-
+import android.database.Cursor;
+import android.provider.BaseColumns;
+import static tt.richTaxist.DB.Tables.BillingsTable.*;
 /**
  * Created by Tau on 25.09.2015.
  */
 public class Billing {
-    public int billingID;
+    public long billingID;
     public String billingName;
     public float commission;
 
     public Billing(String billingName, float commission) {
-        Billing lastBilling = BillingsSQLHelper.dbOpenHelper.getLastBilling();
-        if (lastBilling == null) billingID = 0;
-        else billingID = lastBilling.billingID + 1;
-
+        this.billingID = -1;//необходимо для использования автоинкремента id новой записи в sql
         this.billingName = billingName;
         this.commission = commission;
     }
 
-    public Billing(int billingID) {
-        this.billingID = billingID;
-        billingName = "";
-        commission = 0f;
+    public Billing(Cursor cursor) {
+        billingID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+        billingName = cursor.getString(cursor.getColumnIndex(BILLING_NAME));
+        commission = cursor.getInt(cursor.getColumnIndex(COMMISSION));
     }
 
     @Override
@@ -35,7 +33,7 @@ public class Billing {
 
     @Override
     public int hashCode() {
-        return 31 * billingID;
+        return (int) (31 * billingID);
     }
 
     @Override
