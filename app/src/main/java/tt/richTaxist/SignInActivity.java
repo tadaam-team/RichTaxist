@@ -1,23 +1,13 @@
 package tt.richTaxist;
 
-/**
- * Created by Tau on 18.07.2015.
- */
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
-import android.app.TaskStackBuilder;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,32 +16,43 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import tt.richTaxist.Enums.InputStyle;
 
+import tt.richTaxist.SharedPreferences.SharedPrefEntry;
+import tt.richTaxist.SharedPreferences.SharedPrefsHelper;
+/**
+ * Created by Tau on 18.07.2015.
+ */
 public class SignInActivity extends AppCompatActivity {
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
-    private Context context;
-    int contributeCount = 0;
+    private EmailValidator emailValidator;
+    private SharedPrefsHelper sharedPrefsHelper;
+    private int contributeCount = 0;
 
-    private TextView tvUsername, tvPassword, tvEmail;
+    private ViewGroup laNotSigned, laSigned;
     private EditText etUsername, etPassword, etEmail;
-    private Button buttonSignUp, buttonLogIn, buttonClaim, buttonContribute, buttonLogOut;
     private View mProgress;
     private TextView tvWelcome;
     private CheckBox cbUserActive, cbEmailVerified, cbIMEICorrect, cbPremiumUser;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
-        context = getApplicationContext();
-        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_sign_in));
+        Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.activity_sign_in));
 
         initiateWidgets();
+        emailValidator = new EmailValidator();
+        etEmail.addTextChangedListener(emailValidator);
+
+        sharedPrefsHelper = new SharedPrefsHelper(PreferenceManager.getDefaultSharedPreferences(this));
+        populateUi();
+
         mProgress.setVisibility(View.INVISIBLE);
-        if (Util.currentUser != null) showLogInORLogOut(false, true);
-        else showLogInORLogOut(true, false);
+        if (Util.currentUser != null) {
+            showLogInORLogOut(false, true);
+        } else {
+            showLogInORLogOut(true, false);
+        }
         //TODO: убрать клавиатуру при входе на экран
 //        View focused = getCurrentFocus();
 //        if (focused != null) {
@@ -62,80 +63,103 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void initiateWidgets() {
-        tvUsername      = (TextView)    findViewById(R.id.tvUsername);
-        tvPassword      = (TextView)    findViewById(R.id.tvPassword);
-        tvEmail         = (TextView)    findViewById(R.id.tvEmail);
-        etUsername      = (EditText)    findViewById(R.id.editUserName);
-        etPassword      = (EditText)    findViewById(R.id.editPassword);
-        etEmail         = (EditText)    findViewById(R.id.editEmail);
-        buttonSignUp    = (Button)      findViewById(R.id.buttonSignUp);
-        buttonLogIn     = (Button)      findViewById(R.id.buttonLogIn);
-        buttonClaim     = (Button)      findViewById(R.id.buttonClaimChangeDevice);
-        buttonContribute = (Button)     findViewById(R.id.buttonContribute);
-        buttonLogOut    = (Button)      findViewById(R.id.buttonLogOut);
-        mProgress       =               findViewById(R.id.view_progress);
-        tvWelcome       = (TextView)    findViewById(R.id.textViewUser_Secret);
-        cbUserActive    = (CheckBox)    findViewById(R.id.cbUserActive);
-        cbEmailVerified = (CheckBox)    findViewById(R.id.cbEmailVerified);
-        cbIMEICorrect   = (CheckBox)    findViewById(R.id.cbIMEICorrect);
-        cbPremiumUser   = (CheckBox)    findViewById(R.id.cbPremiumUser);
+        laNotSigned = (ViewGroup) findViewById(R.id.laNotSigned);
+        laSigned = (ViewGroup) findViewById(R.id.laSigned);
+        etUsername = (EditText) findViewById(R.id.editUserName);
+        etPassword = (EditText) findViewById(R.id.editPassword);
+        etEmail = (EditText) findViewById(R.id.editEmail);
+        mProgress = findViewById(R.id.view_progress);
+        tvWelcome = (TextView) findViewById(R.id.textViewUser_Secret);
+        cbUserActive = (CheckBox) findViewById(R.id.cbUserActive);
+        cbEmailVerified = (CheckBox) findViewById(R.id.cbEmailVerified);
+        cbIMEICorrect = (CheckBox) findViewById(R.id.cbIMEICorrect);
+        cbPremiumUser = (CheckBox) findViewById(R.id.cbPremiumUser);
+    }
+
+    private void populateUi() {
+        SharedPrefEntry sharedPrefEntry = sharedPrefsHelper.getPersonalInfo();
+        etUsername.setText(sharedPrefEntry.getName());
+        etPassword.setText(sharedPrefEntry.getPassword());
     }
 
     public void onSignUpClick(View v) {
-        Util.username = etUsername.getText().toString();
-        Util.password = etPassword.getText().toString();
-        String mEmail = etEmail.getText().toString();
+        //получим данные из полей ввода
+        final String username = etUsername.getText().toString();
+        final String password = etPassword.getText().toString();
+        String email = etEmail.getText().toString();
         final Resources res = getResources();
 
-        if ("".equals(Util.username) || "".equals(Util.password) || "".equals(mEmail)) {
-            Toast.makeText(context, res.getString(R.string.blankFieldsSignUpError), Toast.LENGTH_SHORT).show();
-        } else {
-            showProgress(true);
-            // Сохраняем данные нового пользователя на Parse.com
-            ParseUser user = new ParseUser();
-            user.setUsername(Util.username);
-            user.setPassword(Util.password);
-            user.setEmail(mEmail);
-            user.put("IMEI", Util.deviceIMEI);
+        //проверим поля ввода. прервем выполнение метода, если встретим ошибку
+        if ("".equals(username) || "".equals(password)) {
+            Toast.makeText(getApplicationContext(), res.getString(R.string.blankFieldsSignUpError), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!emailValidator.isValid()) {
+            Toast.makeText(getApplicationContext(), R.string.emailFormatError, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            SignUpCallback signUpCallback = new SignUpCallback() {
-                public void done(ParseException error) {
-                    if (error == null) {
-                        Log.d(LOG_TAG, "SignUp success. Waiting for email confirmation");
-                        Toast.makeText(context, res.getString(R.string.confirmEmail), Toast.LENGTH_LONG).show();
-                        tvWelcome.setText(res.getString(R.string.confirmEmail));
-                        showProgress(false);
-                        //showLogInORLogOut(false, true); отсутствие строки здесь не ошибка
-                    } else {
-                        Log.d(LOG_TAG, "SignUp error code " + error.getCode());
-                        String errorMsg;
-                        switch (error.getCode()) {
-                            case 203: errorMsg = res.getString(R.string.emailError); break;
-                            case 202: errorMsg = res.getString(R.string.loginError); break;
-                            case 125: errorMsg = res.getString(R.string.emailFormatError); break;
-                            default: errorMsg = res.getString(R.string.irregularErrMSG); break;
-                        }
-                        Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show();
-                        showProgress(false);
-                        showLogInORLogOut(true, false);
+        //проверки пройдены. сохраним данные нового пользователя на Parse.com
+        mProgress.setVisibility(View.VISIBLE);
+        showLogInORLogOut(false, false);
+        ParseUser user = new ParseUser();
+        user.setUsername(username);
+        user.setPassword(password);
+        user.setEmail(email);
+        user.put("IMEI", Util.deviceIMEI);
+        user.put("premiumUser", Util.premiumUser);
+        user.put("showListHint", Util.showListHint);
+        user.put("youngIsOnTop", Util.youngIsOnTop);
+        user.put("twoTapTimePick", Util.twoTapTimePick);
+        user.put("hideTaxometer", Util.hideTaxometer);
+        user.put("userHasAccess", Util.userHasAccess);
+
+        SignUpCallback signUpCallback = new SignUpCallback() {
+            public void done(ParseException error) {
+                if (error == null) {
+                    Log.d(LOG_TAG, "SignUp success. Waiting for email confirmation");
+                    Toast.makeText(getApplicationContext(), res.getString(R.string.confirmEmail), Toast.LENGTH_LONG).show();
+                    tvWelcome.setText(res.getString(R.string.confirmEmail));
+                    //сохранять данные пользователя локально в SharedPreferences логично только после подтверждения от Parse.com
+                    saveLocalSharedPrefs(username, password);
+                    showLogInORLogOut(false, true);
+                } else {
+                    Log.d(LOG_TAG, "SignUp error code " + error.getCode());
+                    String errorMsg;
+                    switch (error.getCode()) {
+                        case 203: errorMsg = res.getString(R.string.emailError); break;
+                        case 202: errorMsg = res.getString(R.string.loginError); break;
+                        case 125: errorMsg = res.getString(R.string.emailFormatError); break;
+                        default:  errorMsg = res.getString(R.string.irregularErrMSG); break;
                     }
+                    Toast.makeText(getApplicationContext(), errorMsg, Toast.LENGTH_LONG).show();
+                    showLogInORLogOut(true, false);
                 }
-            };
-            user.signUpInBackground(signUpCallback);
+                mProgress.setVisibility(View.INVISIBLE);
+            }
+        };
+        user.signUpInBackground(signUpCallback);
+    }
+
+    private void saveLocalSharedPrefs(String username, String password){
+        SharedPrefEntry entry = new SharedPrefEntry(username, password);
+        boolean isSuccess = sharedPrefsHelper.savePersonalInfo(entry);
+        if (isSuccess) {
+            Log.d(LOG_TAG, "Personal information saved");
+        } else {
+            Log.d(LOG_TAG, "Failed to write personal information to SharedPreferences");
         }
     }
 
     public void onLoginClick(View v) {
-        showProgress(true);
-        Util.username = etUsername.getText().toString();
-        Util.password = etPassword.getText().toString();
-        if ("".equals(Util.username) || "".equals(Util.password)) {
-            showProgress(false);
+        String username = etUsername.getText().toString();
+        String password = etPassword.getText().toString();
+        if ("".equals(username) || "".equals(password)) {
             showLogInORLogOut(true, false);
-            Toast.makeText(context, getResources().getString(R.string.blankFieldsSignInError), Toast.LENGTH_SHORT).show();
-        } else {
-            authorize(context);
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.blankFieldsSignInError), Toast.LENGTH_SHORT).show();
+            return;
         }
+        authorize(username, password, getApplicationContext());
     }
 
     public void onContributeClick(View p1) {
@@ -144,18 +168,20 @@ public class SignInActivity extends AppCompatActivity {
             case 1: msg = "спасибо и вам за Ваш выбор!"; break;
             case 2: msg = "нам очень приятно!"; break;
             case 3: msg = "в самом деле, не стоит благодарности!"; break;
-            case 4: msg = "СПАСИБО!!"; break;
-            case 5: msg = "можете погладить с обратной стороны телефона"; break;
-            case 6:
+            case 4:
                 if (Util.currentUser != null && Util.emailVerified) {
                     if (!Util.premiumUser){
                         Util.premiumUser = true;
                         Util.userHasAccess = true;
 
-                        showLogInORLogOut(false, true);//по сути это костыль вместо refreshWidgets()
+                        showLogInORLogOut(false, true);
                         msg = "премиум подписка подключена";
-                    } else msg = "у Вас уже есть премиум";
-                } else msg = "Вы не авторизованы или почта не подтверждена.\nНе могу подключить премиум подписку";
+                    } else {
+                        msg = "у Вас уже есть премиум";
+                    }
+                } else {
+                    msg = "Вы не авторизованы или почта не подтверждена.\nНе могу подключить премиум подписку";
+                }
                 break;
             default: msg = "хватит баловаться"; break;
         }
@@ -163,65 +189,32 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onLogoutClick(View v) {
-        ParseUser.logOut();
         etUsername.setText("");
         etPassword.setText("");
         etEmail.setText("");
-
-        Util.currentUser = null;
-        Util.username = "";
-        Util.password = "";
+        saveLocalSharedPrefs("", "");
         Util.resetSettings();
-        Util.saveSettings(context);
+        Util.saveSettingsToCloud();
+        ParseUser.logOut();
         showLogInORLogOut(true, false);
-        //onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
+        //TODO: onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
+        //dropDataBase с подтверждением
     }
 
-
     public void onClaimChangeDeviceClick(View v) {
-        showProgress(true);
         Log.d(LOG_TAG, "IMEI before detach: " + Util.currentUser.getString("IMEI"));
         Util.currentUser.put("IMEI", "detached");
         Util.currentUser.saveInBackground();
-        showProgress(false);
         showLogInORLogOut(true, false);
-        Toast.makeText(context, "Запрос принят. Заново войдите чтобы привязать это устройство к учетной записи", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Запрос принят. Заново войдите чтобы привязать это устройство к учетной записи", Toast.LENGTH_LONG).show();
     }
-
-
-    private void showProgress(boolean show) {
-        tvUsername  .setEnabled(!show);
-        tvPassword  .setEnabled(!show);
-        tvEmail     .setEnabled(!show);
-        etUsername  .setEnabled(!show);
-        etPassword  .setEnabled(!show);
-        etEmail     .setEnabled(!show);
-        buttonSignUp.setEnabled(!show);
-        buttonLogIn .setEnabled(!show);
-
-        buttonClaim.setEnabled(!show);
-        buttonContribute.setEnabled(!show);
-        buttonLogOut.setEnabled(!show);
-        mProgress.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
-    }
-
 
     private void showLogInORLogOut(boolean showLogIn, boolean showLogOut) {
-//рад бы, но тогда прога не правильно скрывает/отображает кнопки. видимо нужно выделять логин/логаут в отдельный процесс
-//        for (View view : laNotSigned.getTouchables())  view.setEnabled(showLogIn);
-//        for (View view : laSigned.getTouchables())     view.setEnabled(showLogOut);
-        tvUsername  .setEnabled(showLogIn);
-        tvPassword  .setEnabled(showLogIn);
-        tvEmail     .setEnabled(showLogIn);
-        etUsername  .setEnabled(showLogIn);
-        etPassword  .setEnabled(showLogIn);
-        etEmail     .setEnabled(showLogIn);
-        buttonSignUp.setEnabled(showLogIn);
-        buttonLogIn .setEnabled(showLogIn);
+        Log.d(LOG_TAG, "showLogIn: " + String.valueOf(showLogIn));
+        Log.d(LOG_TAG, "showLogOut: " + String.valueOf(showLogOut));
+        recursiveLoopChildren(laNotSigned, showLogIn);
+        recursiveLoopChildren(laSigned, showLogOut);
 
-        buttonClaim.setEnabled(showLogOut);
-        buttonContribute.setEnabled(showLogOut);
-        buttonLogOut.setEnabled(showLogOut);
         if (Util.currentUser != null){
             tvWelcome.setText(String.format(getResources().getString(R.string.hello), Util.currentUser.getUsername()));
             cbUserActive    .setChecked(Util.currentUser.isAuthenticated());
@@ -237,17 +230,34 @@ public class SignInActivity extends AppCompatActivity {
             cbPremiumUser   .setChecked(false);
         }
     }
+    private void recursiveLoopChildren(ViewGroup parent, boolean show) {
+        //getTouchables() не возвращает список деактивированных кнопок
+        for (int i = parent.getChildCount() - 1; i >= 0; i--) {
+            final View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                recursiveLoopChildren((ViewGroup) child, show);
+            } else {
+                if (child != null) {
+                    child.setEnabled(show);
+                }
+            }
+        }
+    }
 
-    //пока не могу найти способ не задваивать метод авторизации
-    //если выносить его в сторож, происходит рассинхронизация обработки результатов метода done,
-    //что приводит к не штатному вызову SignInActivity.showLogInORLogOut()
-    public void authorize(final Context context){
-        showProgress(true);
-        // Отправляем данные на Parse.com для проверки
+    private void authorize(final String username, final String password, final Context context){
+        if (username == null || "".equals(username) || password == null || "".equals(password)) {
+            return;
+        }
+        //опишем, что делать после того, как мы получим ответ от Parse.com
         LogInCallback logInCallback = new LogInCallback() {
             public void done(ParseUser user, ParseException error) {
                 if (user != null) {
-                    Util.userHasAccess = verifyUser(user);
+                    cbUserActive.setChecked(true);
+                    Log.d(LOG_TAG, "user logged in");
+                    Util.userHasAccess = Util.verifyUser(user, context);
+                    saveLocalSharedPrefs(username, password);
+                    Util.saveSettingsToCloud();
+                    showLogInORLogOut(false, true);
                 } else {
                     Log.d(LOG_TAG, "error code " + error.getCode());
                     String msg;
@@ -257,118 +267,14 @@ public class SignInActivity extends AppCompatActivity {
                         default:  msg = "Необычная ошибка " + error.getCode(); break;
                     }
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                    showProgress(false);
                     showLogInORLogOut(true, false);
                 }
+                mProgress.setVisibility(View.INVISIBLE);
             }
         };
-        if (Util.username != null && !Util.username.equals(""))
-            ParseUser.logInInBackground(Util.username, Util.password, logInCallback);
-    }
-
-
-    private boolean verifyUser(ParseUser user) {
-        //пользователь авторизован. загрузим его сохраненные настройки из облака
-        cbUserActive.setChecked(true);
-        Log.d(LOG_TAG, "user logged in");
-
-
-        Util.currentUser     = user;
-        Util.premiumUser     = user.getBoolean("premiumUser");
-        Util.emailVerified   = user.getBoolean("emailVerified");
-        Util.showListHint    = user.getBoolean("showListHint");
-        Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
-        Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
-        Util.hideTaxometer   = user.getBoolean("hideTaxometer");
-        Util.inputStyle      = InputStyle.stringToInputStyle(user.getString("inputStyle"));
-
-        //TODO: если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
-        if (!Util.emailVerified) {
-            //для бесплатного доступа вообще то необязательно подтверждать почту или сверять IMEI,
-            // но для дисциплины напомним юзеру, что надо подтвердить
-            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
-                    "\nВаш email еще не подтвержден", Toast.LENGTH_LONG).show();
-            showProgress(false);//костыль чтобы открыть доступ ко всем кнопкам сразу
-            return false;
-        }
-        Log.d(LOG_TAG, "email verified");
-        //пользователь авторизован и почта подтверждена--------------------------------------------
-
-
-        if (!Util.premiumUser){
-            //если премиум доступа нет, то и нет смысла проверять IMEI
-            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
-                    "\nПриятной работы", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        Log.d(LOG_TAG, "user is premium");
-        //пользователь авторизован, почта подтверждена и есть подписка-----------------------------
-
-
-        if (user.getString("IMEI") == null || user.getString("IMEI").equals("detached")) {
-            //IMEI еще не привязан или отвязан по запросу
-            Util.currentUser.put("IMEI", Util.deviceIMEI);
-            Util.currentUser.saveInBackground();
-            showProgress(false);
-            showLogInORLogOut(false, true);
-            Toast.makeText(context, "Вы привязали это устройство" +
-                    "\nк своей учетной записи." +
-                    "\nПриятной работы", Toast.LENGTH_LONG).show();
-
-            Log.d(LOG_TAG, "IMEI saved");
-            return true;
-        }
-        Log.d(LOG_TAG, "IMEI not null");
-        //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
-
-
-        if (!Util.deviceIMEI.equals(user.getString("IMEI"))) {
-            String header = "Здравствуйте, " + user.getUsername();
-            String msg = "Вы вошли в систему с другого устройства." +
-                    "\nСейчас платные опции недоступны." +
-                    "\nЧтобы привязать логин к новому устройству" +
-                    "\nперейдите в меню \"Учетные записи\"" +
-                    "\nи нажмите \"Сменить устройство\"";
-
-            //подготовим очередь возврата, используя уже существующий стек вызововов MainActivity и добавив к нему целевой интент
-            Intent intent = new Intent(context, SignInActivity.class);
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-            stackBuilder.addParentStack(FirstScreenActivity.class);
-            stackBuilder.addNextIntent(intent);
-            PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Notification.Builder builder = new Notification.Builder(context)
-                    .setTicker(header)
-                    .setContentTitle(header)
-                    .setContentText(msg)
-                    .setWhen(System.currentTimeMillis())
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.drawable.ic_taxi);
-
-            Notification notification = new Notification.BigTextStyle(builder).bigText(msg).build();
-            notification.sound = Uri.parse("android.resource://tt.richTaxist/raw/notification");
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(1, notification);
-
-            showProgress(false);
-            showLogInORLogOut(false, true);
-            return false;
-        }
-        Log.d(LOG_TAG, "IMEI check passed");
-        //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
-
-
-        Toast.makeText(context, "Здравствуйте, " + user.getUsername() + "\nПриятной работы", Toast.LENGTH_LONG).show();
-        showProgress(false);
-        showLogInORLogOut(false, true);
-        Log.d(LOG_TAG, "user has access!!");
-        return true;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        Util.saveSettings(context);
+        // Отправляем данные на Parse.com для проверки
+        mProgress.setVisibility(View.VISIBLE);
+        showLogInORLogOut(false, false);
+        ParseUser.logInInBackground(username, password, logInCallback);
     }
 }

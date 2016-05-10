@@ -183,11 +183,11 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
     }
 
     public void refreshControls() {
-        buttonRangeStartDate.setText(Util.getStringDateFromCal(rangeStart));
-        buttonRangeEndDate  .setText(Util.getStringDateFromCal(rangeEnd));
+        buttonRangeStartDate.setText(Util.getStringDateFromCal(rangeStart, getContext()));
+        buttonRangeEndDate  .setText(Util.getStringDateFromCal(rangeEnd, getContext()));
 
-        buttonRangeStartTime.setText(Util.getStringTimeFromCal(rangeStart));
-        buttonRangeEndTime  .setText(Util.getStringTimeFromCal(rangeEnd));
+        buttonRangeStartTime.setText(Util.getStringTimeFromCal(rangeStart, getContext()));
+        buttonRangeEndTime  .setText(Util.getStringTimeFromCal(rangeEnd, getContext()));
     }
 
     @Override

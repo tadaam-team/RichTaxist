@@ -81,36 +81,6 @@
                     android:onClick="onTBHideTaxometerClick"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView
-                    android:text="@string/viewOfDateTimePicker"
-                    android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
-                    android:gravity="center_vertical|start"
-                    android:layout_gravity="center_vertical"/>
-                <ToggleButton
-                    android:id="@+id/tbInputStyle"
-                    style="@style/ToggleButtonBordered"
-                    android:textOff="@string/spinner"
-                    android:textOn="@string/button"
-                    android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:onClick="onTBInputStyleClick"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView
-                    android:text="@string/timePickerInterval"
-                    android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
-                    android:gravity="center_vertical|start"
-                    android:layout_gravity="center_vertical"/>
-                <Button
-                    android:id="@+id/btnTimePickerInterval"
-                    style="@style/ButtonBordered"
-                    android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
 
             <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content">

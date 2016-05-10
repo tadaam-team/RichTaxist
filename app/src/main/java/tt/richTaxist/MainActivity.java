@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         context = getApplicationContext();
 //        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_main));
-        Util.deviceIsInLandscape = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
 
         shiftsSource = new ShiftsSource(getApplicationContext());
         ordersSource = new OrdersSource(getApplicationContext());
