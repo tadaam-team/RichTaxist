@@ -91,6 +91,16 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
+        ImageView descriptionIcon = (ImageView) cardView.findViewById(R.id.descriptionIcon);
+        descriptionIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onClickDescription(objects.get(holder.getAdapterPosition()));
+                }
+            }
+        });
+
         ImageView deleteIcon = (ImageView) cardView.findViewById(R.id.deleteIcon);
         deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +134,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public interface Listener {
         void onClick(Object selectedObject);
+        void onClickDescription(Object selectedObject);
         void onClickDelete(Object selectedObject);
     }
 

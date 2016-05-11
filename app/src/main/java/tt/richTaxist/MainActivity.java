@@ -1,6 +1,5 @@
 package tt.richTaxist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -22,7 +21,6 @@ public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
-    public static Context context;
     public static Shift currentShift;
     private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
@@ -33,8 +31,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
-//        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_main));
+//        Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.container_main));
 
         shiftsSource = new ShiftsSource(getApplicationContext());
         ordersSource = new OrdersSource(getApplicationContext());
@@ -83,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }
-        Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "заказ добавлен", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -136,32 +133,32 @@ public class MainActivity extends AppCompatActivity implements
                         ft.commit();
                     }
                 } else {
-                    Toast.makeText(context, R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
                 }
                 return true;
 
 
             case R.id.main_menu:
-                startActivity(new Intent(context, FirstScreenActivity.class));
+                startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
                 finish();
                 return true;
 
             case R.id.action_shift_totals:
-                Intent intent = new Intent(context, ShiftTotalsActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ShiftTotalsActivity.class);
                 intent.putExtra("author", "MainActivity");
                 startActivity(intent);
                 finish();
                 return true;
 
             case R.id.action_grand_totals:
-                Intent intent2 = new Intent(context, GrandTotalsActivity.class);
+                Intent intent2 = new Intent(getApplicationContext(), GrandTotalsActivity.class);
                 intent2.putExtra(GrandTotalsActivity.AUTHOR, "MainActivity");
                 startActivity(intent2);
                 finish();
                 return true;
 
             case R.id.action_settings:
-                startActivity(new Intent(context, SettingsActivity.class));
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -170,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            startActivity(new Intent(context, FirstScreenActivity.class));
+            startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
             finish();
         } else {
             getSupportFragmentManager().popBackStack();

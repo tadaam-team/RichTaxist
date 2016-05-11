@@ -41,8 +41,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
         activity = FirstScreenActivity.this;
         context = getApplicationContext();
 //        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_first_screen));
-        MainActivity.context = context;
-
 //        GPSHelper.startService(MainActivity.context);
 
         shiftsSource = new ShiftsSource(getApplicationContext());
@@ -184,7 +182,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnExit:
-                GPSHelper.stopService(MainActivity.context);
+                GPSHelper.stopService(getApplicationContext());
                 finish();
                 break;
 

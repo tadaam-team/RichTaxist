@@ -13,7 +13,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
+import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.Sources.TaxoparksSource;
 import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
@@ -24,10 +26,11 @@ public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private OrdersListInterface mListener;
-    //TODO: private
-    public RecyclerViewAdapter rvAdapter;
+    private RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private OrdersSource ordersSource;
+    private TaxoparksSource taxoparksSource;
+    private BillingsSource billingsSource;
     //TODO: private int currentShiftID;
 
     public OrdersListFragment() { }
@@ -36,6 +39,8 @@ public class OrdersListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         ordersSource = new OrdersSource(context.getApplicationContext());
+        taxoparksSource = new TaxoparksSource(context.getApplicationContext());
+        billingsSource = new BillingsSource(context.getApplicationContext());
         try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
@@ -60,8 +65,14 @@ public class OrdersListFragment extends Fragment {
                 //исправленная запись вернется в список по нажатию "ДОБАВИТЬ ЗАКАЗ"
                 ordersSource.remove(selectedOrder);
                 rvAdapter.removeObject(selectedOrder);
-                Toast.makeText(getActivity(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
                 mListener.returnToOrderFragment(selectedOrder);
+            }
+
+            @Override
+            public void onClickDescription(Object selectedObject) {
+                Order selectedOrder = (Order) selectedObject;
+                Toast.makeText(getContext(), selectedOrder.getDescription(getContext(), taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -69,7 +80,7 @@ public class OrdersListFragment extends Fragment {
                 Order selectedOrder = (Order) selectedObject;
                 ordersSource.remove(selectedOrder);
                 rvAdapter.removeObject(selectedOrder);
-                Toast.makeText(getActivity(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
             }
         });
 

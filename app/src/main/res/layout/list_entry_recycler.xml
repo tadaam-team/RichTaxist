@@ -51,13 +51,23 @@
 
 
         <ImageView
-            android:id="@+id/deleteIcon"
+            android:id="@+id/descriptionIcon"
+            android:src="@drawable/ic_description_black"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
-            android:src="@drawable/ic_delete_black" />
+            android:layout_marginBottom="2dp" />
+
+        <ImageView
+            android:id="@+id/deleteIcon"
+            android:src="@drawable/ic_delete_black"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

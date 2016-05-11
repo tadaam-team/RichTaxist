@@ -1,5 +1,6 @@
 package tt.richTaxist.Units;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.provider.BaseColumns;
@@ -11,7 +12,6 @@ import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.FirstScreenActivity;
-import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
 import java.text.ParseException;
@@ -121,11 +121,10 @@ public class Shift {
         shiftsSource.update(this);
     }
 
-    @Override
-    public String toString() {
+    public String getDescription(Context context){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(beginShift);
-        Resources res = MainActivity.context.getResources();
+        Resources res = context.getResources();
         String text = String.format(res.getString(R.string.shiftStart) + ": %02d.%02d %02d:%02d,\n" +
                         res.getString(R.string.revenueOfficial) + ": %d,\n" +
                         res.getString(R.string.toTheCashier) + ": %d,\n" +

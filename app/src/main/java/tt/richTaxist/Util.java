@@ -219,7 +219,7 @@ public class Util {
         quitDialog.setNegativeButton("Да", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                GPSHelper.stopService(MainActivity.context);
+                GPSHelper.stopService(currentActivity.getApplicationContext());
                 currentActivity.finish();
             }
         });

@@ -1,5 +1,6 @@
 package tt.richTaxist.Units;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.provider.BaseColumns;
@@ -8,7 +9,6 @@ import java.util.Date;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
 import tt.richTaxist.Enums.TypeOfPayment;
-import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
 import java.text.ParseException;
@@ -76,17 +76,17 @@ public class Order {
         return arrivalDateTime != null ? 31 * Integer.parseInt(arrivalDateTime.toString()) : 0;
     }
 
-    public String getDescription(TaxoparksSource taxoparksSource, BillingsSource billingsSource) {
+    public String getDescription(Context context, TaxoparksSource taxoparksSource, BillingsSource billingsSource) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
-        Resources res = MainActivity.context.getResources();
+        Resources res = context.getResources();
         String text = String.format(res.getString(R.string.arrivalDateTime) + ": %02d.%02d.%02d %02d:%02d,\n" +
                         res.getString(R.string.price) + ": %d, " +
                         res.getString(R.string.payType) + ": %s,\n" +
                         res.getString(R.string.taxopark) + ": %s, " +
                         res.getString(R.string.billing) + ": %s",
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.toString(),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.getDescription(context),
                 taxoparksSource.getTaxoparkByID(taxoparkID),
                 billingsSource.getBillingByID(billingID));
         if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.note) + ": %s", note);
