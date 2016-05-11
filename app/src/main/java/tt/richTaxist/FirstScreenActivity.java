@@ -48,11 +48,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
         shiftsSource = new ShiftsSource(getApplicationContext());
         ordersSource = new OrdersSource(getApplicationContext());
         MainActivity.currentShift = shiftsSource.getLastShift();
-        if (MainActivity.currentShift != null) {
-            MainActivity.ordersStorage.clear();
-            MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
-        }
-
         loadSharedPrefs();
 
         try {
@@ -126,8 +121,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
                 if (MainActivity.currentShift != null){
-                    MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     Intent intent = new Intent(activity, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
@@ -142,7 +135,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 Shift shift = new Shift();
                 shift.shiftID = shiftsSource.create(shift);
                 MainActivity.currentShift = shift;
-                MainActivity.ordersStorage.clear();
                 startActivity(new Intent(activity, MainActivity.class));
                 Log.d(LOG_TAG, "открываю новую смену");
                 finish();
@@ -173,8 +165,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnRoute:
                 if (MainActivity.currentShift != null) {
-                    MainActivity.ordersStorage.clear();
-                    MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
                     startActivity(new Intent(activity, RouteActivity.class));
                     Log.d(LOG_TAG, "открываю карту маршрута смены");
                 }

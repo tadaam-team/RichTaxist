@@ -91,6 +91,20 @@ public class OrdersSource {
         return ordersList;
     }
 
+    public int getOrdersListCount(long shiftID) {
+        int ordersListCount = 0;
+        String selectQuery = "SELECT COUNT (*) FROM " + TABLE_NAME + " WHERE "
+                + SHIFT_ID + "='" + String.valueOf(shiftID) + "'";
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            ordersListCount = cursor.getInt(0);
+        }
+        cursor.close();
+        Log.d(LOG_TAG, "OrdersSource. ordersListCount: " + String.valueOf(ordersListCount));
+        return ordersListCount;
+    }
+
     public Order getLastOrder() {
         Order order = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();

@@ -68,8 +68,6 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             public void onClick(Object selectedObject) {
                 //TODO: rough violation of encapsulation
                 MainActivity.currentShift = (Shift) selectedObject;
-                MainActivity.ordersStorage.clear();
-                MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
                 Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
                 intent.putExtra(ShiftTotalsActivity.EXTRA_AUTHOR, "FirstScreenActivity");
 //                TODO: intent.putExtra("selectedShiftId", selectedShift.shiftID);

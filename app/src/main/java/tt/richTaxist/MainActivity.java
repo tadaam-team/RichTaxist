@@ -8,8 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import java.util.ArrayList;
-import java.util.Date;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
@@ -26,7 +24,6 @@ public class MainActivity extends AppCompatActivity implements
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static Context context;
     public static Shift currentShift;
-    public final static ArrayList<Order> ordersStorage = new ArrayList<>();
     private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
     private OrdersSource ordersSource;
@@ -82,19 +79,11 @@ public class MainActivity extends AppCompatActivity implements
     public void addOrder(Order order){
         //на входе заказ с id == -1
         order.orderID = ordersSource.create(order);
-        ordersStorage.add(order);
-        sortOrdersStorage();
         currentShift.calculateShiftTotals(0, order.taxoparkID, shiftsSource, ordersSource, billingsSource);
         if (deviceIsInLandscape) {
             addOrdersListFragment();
         }
         Toast.makeText(context, "заказ добавлен", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void removeOrder(Order order){
-        ordersStorage.remove(order);
-        ordersSource.remove(order);
     }
 
     @Override
@@ -117,22 +106,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public static void sortOrdersStorage(){
-        for (int i = ordersStorage.size() - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-                Date currentDate = ordersStorage.get(j).arrivalDateTime;
-                Date nextDate = ordersStorage.get(j + 1).arrivalDateTime;
-                //ниже проверяем НАРУШЕНИЕ порядка, а не его правильность. если проверка true, то переставляем
-                //before = самый свежий должен быть наверху, after = самый старый должен быть наверху
-                if (Util.youngIsOnTop ? !currentDate.after(nextDate) : !currentDate.before(nextDate)) {
-                    Order tmp = ordersStorage.get(j);
-                    ordersStorage.set(j, ordersStorage.get(j + 1));
-                    ordersStorage.set(j + 1, tmp);
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -151,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_show_orders_list:
                 //item is shown only in portrait
-                if (ordersStorage.size() != 0){
+                if (ordersSource.getOrdersListCount(currentShift.shiftID) != 0){
                     OrdersListFragment ordersListFragment = (OrdersListFragment)
                             getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
                     if (ordersListFragment == null) {

@@ -10,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Tables.OrdersTable;
 import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
@@ -24,9 +24,11 @@ public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private OrdersListInterface mListener;
+    //TODO: private
     public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private OrdersSource ordersSource;
+    //TODO: private int currentShiftID;
 
     public OrdersListFragment() { }
 
@@ -42,14 +44,12 @@ public class OrdersListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        MainActivity.sortOrdersStorage();
         View rootView = inflater.inflate(R.layout.fragment_orders_list, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
-        //TODO: get correct dataSource
-//        ordersSource.getOrdersList();
-        rvAdapter = new RecyclerViewAdapter(MainActivity.ordersStorage, RecyclerViewAdapter.AdapterDataType.ORDER);
+        ArrayList<Order> ordersList = ordersSource.getOrdersList(MainActivity.currentShift.shiftID, spnTaxopark.getSelectedItemId());
+        rvAdapter = new RecyclerViewAdapter(ordersList, RecyclerViewAdapter.AdapterDataType.ORDER);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -57,9 +57,9 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onClick(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
-                mListener.removeOrder(selectedOrder);
                 //исправленная запись вернется в список по нажатию "ДОБАВИТЬ ЗАКАЗ"
-                rvAdapter.notifyDataSetChanged();
+                ordersSource.remove(selectedOrder);
+                rvAdapter.removeObject(selectedOrder);
                 Toast.makeText(getActivity(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
                 mListener.returnToOrderFragment(selectedOrder);
             }
@@ -67,8 +67,8 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onClickDelete(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
-                mListener.removeOrder(selectedOrder);
-                rvAdapter.notifyDataSetChanged();
+                ordersSource.remove(selectedOrder);
+                rvAdapter.removeObject(selectedOrder);
                 Toast.makeText(getActivity(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
             }
         });
@@ -88,10 +88,7 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                MainActivity.ordersStorage.clear();
-                MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(
-                        MainActivity.currentShift.shiftID, spnTaxopark.taxoparkID));
-                rvAdapter.notifyDataSetChanged();
+                rvAdapter.setObjects(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, spnTaxopark.taxoparkID));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
@@ -99,7 +96,6 @@ public class OrdersListFragment extends Fragment {
     }
 
     public interface OrdersListInterface {
-        void removeOrder(Order order);
         void returnToOrderFragment(Order order);
     }
 }
