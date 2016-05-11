@@ -132,7 +132,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
                 rangeStart.setTimeInMillis(minValue);
                 rangeEnd.setTimeInMillis(maxValue);
-                sendDataToParent();
+                mListener.calculate(rangeStart, rangeEnd);
                 refreshControls();
             }
         });
@@ -157,7 +157,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
                 seekBar.setSelectedMaxValue(rangeEnd.getTimeInMillis());
                 break;
         }
-        sendDataToParent();
+        mListener.calculate(rangeStart, rangeEnd);
         refreshControls();
     }
 
@@ -178,7 +178,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             default: Toast.makeText(mActivity, R.string.irregularErrMSG, Toast.LENGTH_SHORT).show();
                 break;
         }
-        sendDataToParent();
+        mListener.calculate(rangeStart, rangeEnd);
         refreshControls();
     }
 
@@ -200,13 +200,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
     public Calendar getRangeStart(){ return rangeStart; }
     public Calendar getRangeEnd(){   return rangeEnd; }
 
-    private void sendDataToParent(){
-        mListener.calculate(rangeStart, rangeEnd);
-        mListener.refreshControls();
-    }
-
     public interface DateTimeRangeFragInterface {
         void calculate(Calendar rangeStart, Calendar rangeEnd);
-        void refreshControls();
     }
 }

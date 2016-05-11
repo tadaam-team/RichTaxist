@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
@@ -53,12 +54,12 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
-        //TODO: get correct dataSource
-//        ShiftsSource.getShiftsInRangeByTaxopark();
         shiftsSource = new ShiftsSource(getContext());
         ordersSource = new OrdersSource(getContext());
+        createDateTimeRangeFrag();
 
-        rvAdapter = new RecyclerViewAdapter(MainActivity.shiftsStorage, RecyclerViewAdapter.AdapterDataType.SHIFT);
+        //we don't need to update shiftsList hence we don't use rvAdapter.notifyDataSetChanged()
+        rvAdapter = new RecyclerViewAdapter(shiftsSource.getAllShifts(Util.youngIsOnTop), RecyclerViewAdapter.AdapterDataType.SHIFT);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -81,16 +82,18 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             @Override
             public void onClickDelete(Object selectedObject) {
                 Shift selectedShift = (Shift) selectedObject;
-                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() != 0) {
+                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
                     deleteShift(selectedShift);
                 } else {
                     openShiftDeleteDialog(selectedShift);
                 }
             }
         });
+        return rootView;
+    }
 
+    private void createDateTimeRangeFrag(){
         FragmentManager fragmentManager = getChildFragmentManager();
-        MainActivity.sortShiftsStorage();
         dateTimeRangeFrag = (DateTimeRangeFrag) fragmentManager.findFragmentByTag(DateTimeRangeFrag.FRAGMENT_TAG);
         if (isListSingleVisible) {
             //когда лист единственный на экране, фрагмент следует создать
@@ -108,7 +111,6 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
                 ft.commit();
             }
         }
-        return rootView;
     }
 
     public void setSoloView(boolean isListSingleVisible){
@@ -133,8 +135,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
 
     private void deleteShift(Shift shift){
         shiftsSource.remove(shift);
-        MainActivity.shiftsStorage.remove(shift);
-        rvAdapter.notifyDataSetChanged();
+        rvAdapter.removeObject(shift);
         Toast.makeText(mActivity, R.string.shiftDeletedMSG, Toast.LENGTH_SHORT).show();
     }
 
@@ -150,16 +151,14 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                if (MainActivity.currentShift != null) {
-                    MainActivity.shiftsStorage.clear();
-                    if (dateTimeRangeFrag != null){
-                        MainActivity.shiftsStorage.addAll(shiftsSource.getShiftsInRangeByTaxopark(
-                                dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(), Util.youngIsOnTop, spnTaxopark.taxoparkID));
-                    } else {
-                        MainActivity.shiftsStorage.addAll(shiftsSource.getShiftsByTaxopark(Util.youngIsOnTop, spnTaxopark.taxoparkID));
-                    }
-                    rvAdapter.notifyDataSetChanged();
+                ArrayList<Shift> shiftsList;
+                if (dateTimeRangeFrag != null){
+                    shiftsList = shiftsSource.getShiftsInRangeByTaxopark(dateTimeRangeFrag.getRangeStart(), dateTimeRangeFrag.getRangeEnd(),
+                            Util.youngIsOnTop, spnTaxopark.taxoparkID);
+                } else {
+                    shiftsList = shiftsSource.getShiftsByTaxopark(Util.youngIsOnTop, spnTaxopark.taxoparkID);
                 }
+                rvAdapter.setObjects(shiftsList);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
@@ -169,12 +168,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
     @Override
     public void calculate(Calendar rangeStart, Calendar rangeEnd) {
         //been executed each time upon input finish of date/time start/end
-        MainActivity.shiftsStorage.clear();
-        MainActivity.shiftsStorage.addAll(shiftsSource.getShiftsInRangeByTaxopark(
-                rangeStart, rangeEnd, Util.youngIsOnTop, spnTaxopark.taxoparkID));
-    }
-    @Override
-    public void refreshControls() {
-        rvAdapter.notifyDataSetChanged();
+        rvAdapter.setObjects(shiftsSource.getShiftsInRangeByTaxopark(rangeStart, rangeEnd,
+                Util.youngIsOnTop, spnTaxopark.taxoparkID));
     }
 }

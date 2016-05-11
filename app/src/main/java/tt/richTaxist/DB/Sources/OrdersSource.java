@@ -76,7 +76,7 @@ public class OrdersSource {
                     + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'"
                     + " ORDER BY " + ARRIVAL_DATE_TIME + " " + sortMethod;
         }
-        Log.d(LOG_TAG, "getOrdersList. selectQuery: " + String.valueOf(selectQuery));
+//        Log.d(LOG_TAG, "getOrdersList. selectQuery: " + String.valueOf(selectQuery));
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -87,6 +87,7 @@ public class OrdersSource {
             } while (cursor.moveToNext());
         }
         cursor.close();
+        Log.d(LOG_TAG, "OrdersSource. ordersList.size(): " + String.valueOf(ordersList.size()));
         return ordersList;
     }
 

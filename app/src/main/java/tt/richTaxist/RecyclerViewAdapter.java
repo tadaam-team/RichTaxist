@@ -30,14 +30,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.adapterDataType = adapterDataType;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
-        public ViewHolder(CardView v) {
-            super(v);
-            cardView = v;
-        }
-    }
-
     @Override
     public RecyclerViewAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.list_entry_recycler, parent, false);
@@ -115,6 +107,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return objects.size();
     }
 
+    //crucial method, because notifyDataSetChanged() called from outside of adapter magically doesn't work for rv
+    public void setObjects(ArrayList<? extends Object> objects){
+        this.objects = objects;
+        notifyDataSetChanged();
+    }
+
+    public void removeObject(Object object){
+        objects.remove(object);
+        notifyDataSetChanged();
+    }
+
     public void setListener(Listener listener){
         this.listener = listener;
     }
@@ -122,6 +125,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public interface Listener {
         void onClick(Object selectedObject);
         void onClickDelete(Object selectedObject);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private CardView cardView;
+        public ViewHolder(CardView v) {
+            super(v);
+            cardView = v;
+        }
     }
 
     public enum AdapterDataType {SHIFT, ORDER}

@@ -1,6 +1,5 @@
 package tt.richTaxist;
 
-import android.content.res.Configuration;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,18 +17,15 @@ import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Fragments.OrderFragment;
-
 /**
  * Created by Tau on 08.06.2015.
  */
-
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
     private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static Context context;
     public static Shift currentShift;
-    public final static ArrayList<Shift> shiftsStorage = new ArrayList<>();
     public final static ArrayList<Order> ordersStorage = new ArrayList<>();
     private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
@@ -132,22 +128,6 @@ public class MainActivity extends AppCompatActivity implements
                     Order tmp = ordersStorage.get(j);
                     ordersStorage.set(j, ordersStorage.get(j + 1));
                     ordersStorage.set(j + 1, tmp);
-                }
-            }
-        }
-    }
-
-    public static void sortShiftsStorage(){
-        for (int i = shiftsStorage.size() - 1; i > 0; i--) {
-            for (int j = 0; j < i; j++) {
-                Date currentShiftStart = shiftsStorage.get(j).beginShift;
-                Date nextShiftStart = shiftsStorage.get(j + 1).beginShift;
-                //ниже проверяем НАРУШЕНИЕ порядка, а не его правильность. если проверка true, то переставляем
-                //before = самый свежий должен быть наверху, after = самый старый должен быть наверху
-                if (Util.youngIsOnTop ? !currentShiftStart.after(nextShiftStart) : !currentShiftStart.before(nextShiftStart)) {
-                    Shift tmp = shiftsStorage.get(j);
-                    shiftsStorage.set(j, shiftsStorage.get(j + 1));
-                    shiftsStorage.set(j + 1, tmp);
                 }
             }
         }

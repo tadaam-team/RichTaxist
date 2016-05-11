@@ -49,9 +49,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
         ordersSource = new OrdersSource(getApplicationContext());
         MainActivity.currentShift = shiftsSource.getLastShift();
         if (MainActivity.currentShift != null) {
-            MainActivity.shiftsStorage.clear();
-            MainActivity.shiftsStorage.addAll(shiftsSource.getAllShifts(Util.youngIsOnTop));
-
             MainActivity.ordersStorage.clear();
             MainActivity.ordersStorage.addAll(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, 0));
         }

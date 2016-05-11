@@ -79,18 +79,18 @@ public class ShiftsSource {
     }
 
     public ArrayList<Shift> getShiftsByTaxopark(boolean youngIsOnTop, long taxoparkID) {
-        ArrayList<Shift> shiftsStorage = new ArrayList<>();
+        ArrayList<Shift> shiftsList = new ArrayList<>();
         for (Shift shift : getAllShifts(youngIsOnTop)){
             if (taxoparkID == 0 || checkTaxoparkInShift(shift, taxoparkID)) {
-                shiftsStorage.add(shift);
+                shiftsList.add(shift);
             }
         }
-        Log.d(LOG_TAG, "shiftsStorage: " + String.valueOf(shiftsStorage));
-        return shiftsStorage;
+        Log.d(LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        return shiftsList;
     }
 
     public ArrayList<Shift> getShiftsInRangeByTaxopark(Calendar fromDate, Calendar toDate, boolean youngIsOnTop, long taxoparkID) {
-        ArrayList<Shift> shiftsStorage = new ArrayList<>();
+        ArrayList<Shift> shiftsList = new ArrayList<>();
         String sortMethod = "ASC";
         if (youngIsOnTop) sortMethod = "DESC";
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -105,14 +105,14 @@ public class ShiftsSource {
             do {
                 Shift shift = new Shift(cursor);
                 if (taxoparkID == 0 || checkTaxoparkInShift(shift, taxoparkID)) {
-                    shiftsStorage.add(shift);
+                    shiftsList.add(shift);
                 }
             }
             while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(LOG_TAG, "shiftsStorage: " + String.valueOf(shiftsStorage));
-        return shiftsStorage;
+        Log.d(LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        return shiftsList;
     }
     private boolean checkTaxoparkInShift(Shift shift, long taxoparkID){
         ArrayList<Order> orders = ordersSource.getOrdersList(shift.shiftID, taxoparkID);
@@ -145,7 +145,7 @@ public class ShiftsSource {
     public Shift getFirstShift() {
         Shift shift = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id ASC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -158,7 +158,7 @@ public class ShiftsSource {
     public Shift getLastShift() {
         Shift shift = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id ASC LIMIT 1";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
