@@ -17,7 +17,7 @@
 
     <item
         android:id="@+id/action_shift_totals"
-        android:title="@string/shiftTotals"
+        android:title="@string/shiftTotalsScreenName"
         android:orderInCategory="400"
         app:showAsAction="never" />
     <item
@@ -27,7 +27,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/action_settings"
-        android:title="@string/settings"
+        android:title="@string/settingsScreenName"
         android:orderInCategory="600"
         app:showAsAction="never"/>
 

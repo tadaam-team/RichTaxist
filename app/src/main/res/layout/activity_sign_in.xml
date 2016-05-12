@@ -64,7 +64,7 @@
                 <TableRow
                     android:layout_width="match_parent" android:layout_height="wrap_content">
                     <Button
-                        android:text="@string/signUp" style="@style/ButtonBordered"
+                        android:text="@string/newDriver" style="@style/ButtonBordered"
                         android:id="@+id/buttonSignUp"
                         android:layout_width="0dp" android:layout_height="60dp"
                         android:onClick="onSignUpClick"
@@ -117,14 +117,13 @@
                 android:orientation="vertical"
                 android:layout_marginLeft="2dp">
                 <TextView
-                    android:text="@string/signUpDefault"
                     android:id="@+id/textViewUser_Secret"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     android:enabled="false"
                     android:paddingBottom="20dp" />
                 <CheckBox
-                    android:text="@string/userActive"
+                    android:text="@string/userRegistered"
                     android:id="@+id/cbUserActive"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:enabled="false"

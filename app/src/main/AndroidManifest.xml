@@ -33,7 +33,7 @@
         </activity>
         <activity
             android:name=".ShiftTotalsActivity"
-            android:label="@string/shiftTotals"
+            android:label="@string/shiftTotalsScreenName"
             android:windowSoftInputMode="stateAlwaysHidden" >
         </activity>
         <activity
@@ -43,11 +43,11 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/settings" >
+            android:label="@string/settingsScreenName" >
         </activity>
         <activity
             android:name=".Settings4ParksAndBillingsActivity"
-            android:label="@string/settings" >
+            android:label="@string/settingsScreenName" >
         </activity>
         <activity
             android:name=".gps.google.MapMyLocationChangeActivity"
@@ -63,7 +63,7 @@
         </activity>
         <activity
             android:name=".SignInActivity"
-            android:label="@string/signInScreenName" >
+            android:label="@string/userAccountsScreenName" >
         </activity>
 
 

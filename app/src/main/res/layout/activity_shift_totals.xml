@@ -301,7 +301,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <Button
-            android:text="@string/exitToMainMenu"
+            android:text="@string/mainMenu"
             android:id="@+id/buttonExitToMainMenu"
             style="@style/ButtonBordered"
             android:layout_width="0dp"

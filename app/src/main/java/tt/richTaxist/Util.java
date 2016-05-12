@@ -47,29 +47,29 @@ public class Util {
     public static boolean verifyUser(ParseUser user, Context context) {
         //пользователь авторизован. загрузим его сохраненные настройки из облака
         context = context.getApplicationContext();
-        Util.currentUser     = user;
-        Util.premiumUser     = user.getBoolean("premiumUser");
-        Util.emailVerified   = user.getBoolean("emailVerified");
-        Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
-        Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
-        Util.showTaxometer = user.getBoolean("showTaxometer");
+        currentUser     = user;
+        premiumUser     = user.getBoolean("premiumUser");
+        emailVerified   = user.getBoolean("emailVerified");
+        youngIsOnTop    = user.getBoolean("youngIsOnTop");
+        twoTapTimePick  = user.getBoolean("twoTapTimePick");
+        showTaxometer = user.getBoolean("showTaxometer");
 
         //если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
-        if (!Util.emailVerified) {
+        if (!emailVerified) {
             //для бесплатного доступа вообще то необязательно подтверждать почту или сверять IMEI,
             // но для дисциплины напомним юзеру, что надо подтвердить
-            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
-                    "\nВаш email еще не подтвержден", Toast.LENGTH_LONG).show();
+            String msg = String.format(context.getResources().getString(R.string.helloAndVerifyEmail), user.getUsername());
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             return false;
         }
 //        Log.d(LOG_TAG, "email verified");
         //пользователь авторизован и почта подтверждена--------------------------------------------
 
 
-        if (!Util.premiumUser){
+        if (!premiumUser){
             //если премиум доступа нет, то и нет смысла проверять IMEI
-            Toast.makeText(context, "Здравствуйте, " + user.getUsername() +
-                    "\nПриятной работы", Toast.LENGTH_LONG).show();
+            String msg = String.format(context.getResources().getString(R.string.helloAndGoodDay), user.getUsername());
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             return false;
         }
 //        Log.d(LOG_TAG, "user is premium");
@@ -78,12 +78,10 @@ public class Util {
 
         if (user.getString("IMEI") == null || user.getString("IMEI").equals("detached")) {
             //IMEI еще не привязан или отвязан по запросу
-            Util.currentUser.put("IMEI", Util.deviceIMEI);
-            Util.currentUser.saveInBackground();
-            Toast.makeText(context, "Вы привязали это устройство" +
-                    "\nк своей учетной записи." +
-                    "\nПриятной работы", Toast.LENGTH_LONG).show();
-
+            currentUser.put("IMEI", deviceIMEI);
+            currentUser.saveInBackground();
+            String msg = context.getResources().getString(R.string.IMEIBindedAndGoodDay);
+            Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
 //            Log.d(LOG_TAG, "IMEI saved");
             return true;
         }
@@ -91,13 +89,9 @@ public class Util {
         //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
 
 
-        if (!Util.deviceIMEI.equals(user.getString("IMEI"))) {
-            String header = "Здравствуйте, " + user.getUsername();
-            String msg = "Вы вошли в систему с другого устройства." +
-                    "\nСейчас платные опции недоступны." +
-                    "\nЧтобы привязать логин к новому устройству" +
-                    "\nперейдите в меню \"Учетные записи\"" +
-                    "\nи нажмите \"Сменить устройство\"";
+        if (!deviceIMEI.equals(user.getString("IMEI"))) {
+            String header = String.format(context.getResources().getString(R.string.hello), user.getUsername());
+            String msg = context.getResources().getString(R.string.IMEIErrorMSG);
 
             //подготовим очередь возврата, используя уже существующий стек вызововов MainActivity и добавив к нему целевой интент
             Intent intent = new Intent(context, SignInActivity.class);
@@ -124,9 +118,8 @@ public class Util {
 //        Log.d(LOG_TAG, "IMEI check passed");
         //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
 
-
-        Toast.makeText(context, "Здравствуйте, " + user.getUsername() + "\nПриятной работы", Toast.LENGTH_LONG).show();
-
+        String msg = String.format(context.getResources().getString(R.string.helloAndGoodDay), user.getUsername());
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 //        Log.d(LOG_TAG, "user has access");
         return true;
     }

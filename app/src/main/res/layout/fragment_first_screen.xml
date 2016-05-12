@@ -38,7 +38,7 @@
                     android:layout_height="70dp"
                     android:layout_weight="1"/>
                 <Button
-                    android:text="@string/shiftsList"
+                    android:text="@string/shiftsListScreenName"
                     android:id="@+id/btnOpenShift"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
@@ -51,14 +51,14 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
                 <Button
-                    android:text="@string/settings"
+                    android:text="@string/settingsScreenName"
                     android:id="@+id/btnSettings"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="70dp"
                     android:layout_weight="1"/>
                 <Button
-                    android:text="@string/signIn"
+                    android:text="@string/userAccountsScreenName"
                     android:id="@+id/btnSignIn"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"

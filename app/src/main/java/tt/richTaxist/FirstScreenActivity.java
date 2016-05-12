@@ -204,7 +204,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     String msg;
                     switch (error.getCode()){
                         case 100: msg = getResources().getString(R.string.noInternetMSG); break;
-                        case 101: msg = getResources().getString(R.string.loginOrPasswordErrMSG); break;
+                        case 101: msg = getResources().getString(R.string.usernameOrPasswordErrMSG); break;
                         default:  msg = getResources().getString(R.string.irregularErrMSG) + " " + error.getCode(); break;
                     }
                     Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();

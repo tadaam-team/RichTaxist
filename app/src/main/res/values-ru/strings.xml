@@ -1,0 +1,136 @@
+<resources>
+    <string name="appName">Богатый таксист</string>
+    <string name="mainMenu">Главное меню</string>
+    <string name="openLastShift">Вернуться\nк последней смене</string>
+    <string name="newShift">Новая смена</string>
+    <string name="chat">Водительский чат</string>
+    <string name="routeMap">Карта маршрута</string>
+    <string name="exit">Закрыть программу</string>
+    <string name="noShiftsMSG">нет сохраненных смен</string>
+    <string name="allowedOnlyInPortraitMSG">разрешено только в портретном режиме</string>
+
+    <string name="shiftsListScreenName">Список смен</string>
+    <string name="shiftNotEmptyMSG">Эта смена не пустая, удалить?</string>
+    <string name="shiftDeletedMSG">смена удалена</string>
+
+    <string name="mainScreenName">Заказ</string>
+    <string name="noOrdersMSG">нет сохранённых заказов</string>
+    <string name="addNewOrder">Добавить заказ</string>
+    <string name="clearForm">Очистить форму</string>
+    <string name="formClearedMSG">форма очищена</string>
+    <string name="arrivalDateTime">Подача</string>
+    <string name="date">Дата</string>
+    <string name="time">Время</string>
+    <string name="price">цена</string>
+    <string name="note">заметка</string>
+    <string name="ordersList">Список заказов</string>
+
+    <string name="payType">Тип оплаты</string>
+    <string name="payTypeCash">нал</string>
+    <string name="payTypeCard">безнал</string>
+    <string name="payTypeTip">чаевые</string>
+
+    <string name="travelTime">Время в пути</string>
+    <string name="travelDistance">Пробег поездки</string>
+    <string name="closeOrder">Закрыть заказ</string>
+    <string name="openMap">Открыть карту</string>
+
+    <string name="shiftTotalsScreenName">Итоги смены</string>
+    <string name="shiftStart">Начало смены</string>
+    <string name="shiftEnd">Конец смены</string>
+    <string name="revenueOfficial">Выручка офиц.</string>
+    <string name="revenueCash">- в т.ч. наличные</string>
+    <string name="revenueCard">- в т.ч. безналичные</string>
+    <string name="petrol">Бензин</string>
+    <string name="toTheCashier">Сдать в кассу</string>
+    <string name="salaryOfficial">Зарплата белая</string>
+    <string name="revenueBonus">Чаевые</string>
+    <string name="carRent">Аренда машины</string>
+    <string name="salaryUnofficial">Зарплата с чаем</string>
+    <string name="salaryUnofficialFormatter">зп: %d</string>
+    <string name="workHoursSpent">Отработано часов</string>
+    <string name="salaryPerHour">Зарплата в час</string>
+    <string name="continueShift">Продолжить смену</string>
+    <string name="shiftIsOpen">Смена открыта</string>
+    <string name="shiftIsClosed">Смена закрыта</string>
+    <string name="summInputMsg">Введите сумму</string>
+    <string name="cancel">Отмена</string>
+
+    <string name="settingsScreenName">Настройки</string>
+    <string name="listsSortOrder">Сортировка списков</string>
+    <string name="youngIsOnTop">свежий сверху</string>
+    <string name="youngIsNotOnTop">свежий снизу</string>
+    <string name="timePickClicks">Подтвержение\nввода времени</string>
+    <string name="singleTapTimePick">в 1 клик</string>
+    <string name="twoTapTimePick">с подтвеждением</string>
+    <string name="showTaximeter">Открывать таксометр</string>
+    <string name="yes">да</string>
+    <string name="no">нет</string>
+    <string name="chooseNumber">Выберите число</string>
+
+    <string name="taxoparksAndBillings">Таксопарки и системы</string>
+    <string name="taxoparksAndBillingsInputMSG">Завершайте ввод клавишей\nOK или Enter</string>
+    <string name="main">осн</string>
+    <string name="taxopark">Таксопарк</string>
+    <string name="taxoparks">Таксопарки</string>
+    <string name="taxoparkName">имя таксопарка</string>
+    <string name="billing">Система расчетов</string>
+    <string name="billings">Системы расчетов</string>
+    <string name="billingName">название системы</string>
+    <string name="commission">комиссия</string>
+    <string name="isInTheList">уже есть в списке</string>
+    <string name="cantBeRemoved">используется в сохраненных заказах и не может быть удалена</string>
+
+    <string name="userAccountsScreenName">Учетные записи</string>
+    <string name="username">логин</string>
+    <string name="password">пароль</string>
+    <string name="email">почта</string>
+    <string name="newDriver">Новый водитель</string>
+    <string name="logIn">Войти</string>
+    <string name="claimChangeDevice">Сменить устройство</string>
+    <string name="logOut">Выйти</string>
+    <string name="userRegistered">- пользователь зарегистрирован</string>
+    <string name="emailVerified">- почта подтверждена</string>
+    <string name="IMEICorrect">- IMEI прошел проверку</string>
+    <string name="premiumUser">- премиум подписка подключена</string>
+    <string name="noInternetMSG">проверьте интернет-подключение</string>
+    <string name="usernameOrPasswordErrMSG">ошибка логина или пароля</string>
+    <string name="irregularErrMSG">необычная ошибка</string>
+    <string name="orderDeletedMSG">заказ удален</string>
+    <string name="orderSelectedMSG">выбран заказ для редактирования</string>
+    <string name="contribute">Сказать спасибо</string>
+    <string name="confirmEmail">Подтвердите почту\nи нажмите \"Войти\"</string>
+    <string name="emailError">Пользователь с такой почтой уже зарегистрирован</string>
+    <string name="usernameError">Логин занят</string>
+    <string name="emailFormatError">Неверный формат почты</string>
+    <string name="blankFieldsSignUpError">Заполните логин, пароль и почту</string>
+    <string name="blankFieldsSignInError">Для входа введите логин и пароль</string>
+    <string name="hello">Здравствуйте, %s</string>
+    <string name="helloAndGoodDay">Здравствуйте, %s. Приятной работы!</string>
+    <string name="helloAndVerifyEmail">Здравствуйте, %s.\nВаш email еще не подтвержден</string>
+    <string name="IMEIErrorMSG">Вы вошли в систему с другого устройства.\n
+        Сейчас платные опции недоступны."\n
+        Чтобы привязать логин к новому устройству"\n
+        перейдите в меню \"Учетные записи\"\n
+        и нажмите \"Сменить устройство\"</string>
+    <string name="IMEIRequestAccepted">Запрос принят. Заново войдите чтобы привязать это устройство к учетной записи</string>
+    <string name="IMEIBindedAndGoodDay">Вы привязали это устройство к своей учетной записи.\n
+        Приятной работы</string>
+    <string name="gratefullness1">спасибо и вам за Ваш выбор</string>
+    <string name="gratefullness2">нам очень приятно</string>
+    <string name="gratefullness3">в самом деле, не стоит благодарности</string>
+    <string name="premiumActivated">премиум подписка подключена</string>
+    <string name="youAlreadyHavePremium">у Вас уже есть премиум</string>
+    <string name="youAreNotLoggedIn">Вы не авторизованы или почта не подтверждена./n
+        Не могу подключить премиум подписку</string>
+    <string name="enoughFun">хватит баловаться</string>
+
+
+    <string name="grandTotalsScreenName">Заработано</string>
+    <string name="rangeStart">Первая смена</string>
+    <string name="rangeEnd">Последняя смена</string>
+    <string name="handedToTheCashier">Сдано в кассу</string>
+
+    <string name="textExampleMain">пример основного текста</string>
+    <string name="textExampleAdditional">пример поясняющего текста</string>
+</resources>

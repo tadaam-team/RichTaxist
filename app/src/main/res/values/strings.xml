@@ -1,165 +1,138 @@
 <resources>
-    <string name="appName">Богатый таксист</string>
-    <string name="mainMenu">Главное меню</string>
-    <string name="openLastShift">Вернуться\nк последней смене</string>
-    <string name="newShift">Новая смена</string>
-    <string name="shiftsList">Список смен</string>
-    <string name="settings">Настройки</string>
-    <string name="signIn">Учетные записи</string>
-    <string name="chat">Водительский чат</string>
-    <string name="routeMap">Карта маршрута</string>
-    <string name="grandTotals">Заработано</string>
-    <string name="exit">Закрыть\nпрограмму</string>
-    <string name="noShiftsMSG">сохранённых смен не найдено</string>
-    <string name="allowedOnlyInPortraitMSG">разрешено только в портретном режиме</string>
+    <string name="appName">Rich cabman</string>
+    <string name="mainMenu">Main menu</string>
+    <string name="openLastShift">Open last shift</string>
+    <string name="newShift">New shift</string>
+    <string name="routeMap">Route map</string>
+    <string name="exit">Close app</string>
+    <string name="noShiftsMSG">no saved shifts</string>
+    <string name="allowedOnlyInPortraitMSG">allowed only in portrait mode</string>
 
+    <string name="shiftsListScreenName">Shifts list</string>
+    <string name="shiftNotEmptyMSG">Shift is not empty. Delete?</string>
+    <string name="shiftDeletedMSG">shift deleted</string>
 
-    <string name="shiftsListScreenName">Список смен</string>
-    <string name="shiftNotEmptyMSG">Эта смена не пустая, удалить?</string>
-    <string name="shiftDeletedMSG">смена удалена</string>
-    <string name="shiftSelectedMSG">выбрана смена для редактирования</string>
-    <string name="gestureErrorMSG">ошибка обработки жеста</string>
-    <string name="shift">смена</string>
+    <string name="mainScreenName">Order</string>
+    <string name="noOrdersMSG">no saved orders</string>
+    <string name="clearForm">Clear form</string>
+    <string name="formClearedMSG">form cleared</string>
+    <string name="arrivalDateTime">Arrival</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="price">price</string>
+    <string name="note">note</string>
+    <string name="ordersList">Orders list</string>
 
+    <string name="payType">Pay type</string>
+    <string name="payTypeCash">cash</string>
+    <string name="payTypeCard">card</string>
+    <string name="payTypeTip">tip</string>
 
-    <string name="mainScreenName">Заказ</string>
-    <string name="order">заказ</string>
-    <string name="noOrdersMSG">нет сохранённых заказов</string>
-    <string name="addNewOrder">Добавить заказ</string>
-    <string name="clearForm">Очистить форму</string>
-    <string name="formClearedMSG">форма очищена</string>
-    <string name="arrivalDateTime">Подача</string>
-    <string name="arrivalDateTimeLow">подача</string>
-    <string name="date">Дата</string>
-    <string name="time">Время</string>
-    <string name="price">цена</string>
-    <string name="note">заметка</string>
-    <string name="ordersList">Список заказов</string>
-    <string name="shiftTotals">Итоги смены</string>
+    <string name="google_maps_key" translatable="false">AIzaSyB1ZznQZMNQ_j1FuD9Qm5EBqMnblllNZP8</string>
+    <string name="travelTime">Travel time</string>
+    <string name="travelDistance">travel distance</string>
+    <string name="closeOrder">Close order</string>
+    <string name="openMap">Open map</string>
 
-    <string name="payType">Тип оплаты</string>
-    <string name="payTypeCash">нал</string>
-    <string name="payTypeCard">безнал</string>
-    <string name="payTypeTip">чаевые</string>
+    <string name="shiftTotalsScreenName">Shift totals</string>
+    <string name="shiftStart">Shift start</string>
+    <string name="shiftEnd">Shift end</string>
+    <string name="revenueOfficial">Revenue official</string>
+    <string name="revenueCash">- incl cash</string>
+    <string name="revenueCard">- incl card</string>
+    <string name="petrol">petrol</string>
+    <string name="toTheCashier">Hand to the cashier</string>
+    <string name="salaryOfficial">Salary official</string>
+    <string name="revenueBonus">Tip</string>
+    <string name="carRent">Car rent</string>
+    <string name="salaryUnofficial">Salary plus tip</string>
+    <string name="salaryUnofficialFormatter">sal: %d</string>
+    <string name="workHoursSpent">Work hours spent</string>
+    <string name="salaryPerHour">Salary per hour</string>
+    <string name="continueShift">Continue shift</string>
+    <string name="shiftIsOpen">Shift open</string>
+    <string name="shiftIsClosed">Shift closed</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="summInputMsg">Enter summ</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="cancel">Cancel</string>
 
-    <string name="google_maps_key">AIzaSyB1ZznQZMNQ_j1FuD9Qm5EBqMnblllNZP8</string>
-    <string name="travelTime">Время в пути</string>
-    <string name="travelDistance">Пробег поездки</string>
-    <string name="closeOrder">Закрыть заказ</string>
-    <string name="openMap">Открыть карту</string>
+    <string name="settingsScreenName">Settings</string>
+    <string name="listsSortOrder">List sort order</string>
+    <string name="youngIsOnTop">yong is on top</string>
+    <string name="youngIsNotOnTop">old is on top</string>
+    <string name="timePickClicks">Confirm time input</string>
+    <string name="singleTapTimePick">single tap</string>
+    <string name="twoTapTimePick">two tap time pick</string>
+    <string name="showTaximeter">Show taximeter</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+    <string name="chooseNumber">Choose number</string>
 
+    <string name="taxoparksAndBillingsInputMSG">Finish input with OK or Enter</string>
+    <string name="main">main</string>
+    <string name="taxopark">Taxi station</string>
+    <string name="taxoparks">Taxi stations</string>
+    <string name="taxoparkName">taxi station name</string>
+    <string name="billing">Billing</string>
+    <string name="billings">Billings </string>
+    <string name="billingName">billing name</string>
+    <string name="commission">commission</string>
+    <string name="isInTheList">is in the list</string>
+    <string name="cantBeRemoved">is used in saved orders and cannot be removed</string>
 
-    <string name="shiftTotalsScreenName">Итоги смены</string>
-    <string name="shiftStart">Начало смены</string>
-    <string name="shiftEnd">Конец смены</string>
-    <string name="revenueOfficial">Выручка офиц.</string>
-    <string name="revenueCash">- в т.ч. наличные</string>
-    <string name="revenueCard">- в т.ч. безналичные</string>
-    <string name="petrol">Бензин</string>
-    <string name="toTheCashier">Сдать в кассу</string>
-    <string name="salaryOfficial">Зарплата белая</string>
-    <string name="salaryOfficialShort">зп белая</string>
-    <string name="revenueBonus">Чаевые</string>
-    <string name="carRent">Аренда машины</string>
-    <string name="salaryUnofficial">Зарплата с чаем</string>
-    <string name="salaryUnofficialFormatter">зп: %d</string>
-    <string name="workHoursSpent">Отработано часов</string>
-    <string name="salaryPerHour">Зарплата в час</string>
-    <string name="closeShift">Закрыть смену</string>
-    <string name="continueShift">Продолжить\nсмену</string>
-    <string name="exitToMainMenu">Главное\nменю</string>
-    <string name="shiftIsOpen">Смена открыта</string>
-    <string name="shiftIsClosed">Смена закрыта</string>
-    <string name="zero">0</string>
-    <string name="summInputMsg">Введите сумму</string>
-    <string name="ok">OK</string>
-    <string name="cancel">Отмена</string>
+    <string name="userAccountsScreenName">User accounts</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="email">e-mail</string>
+    <string name="newDriver">New driver</string>
+    <string name="logIn">Log in</string>
+    <string name="claimChangeDevice">Change device</string>
+    <string name="logOut">Log out</string>
+    <string name="userRegistered">- user registered</string>
+    <string name="emailVerified">- e-mail verified</string>
+    <string name="IMEICorrect">- IMEI passed check</string>
+    <string name="premiumUser">- premium account active</string>
+    <string name="noInternetMSG">check internet connection</string>
+    <string name="usernameOrPasswordErrMSG">username or password error</string>
+    <string name="irregularErrMSG">irregular error</string>
+    <string name="orderDeletedMSG">order deleted</string>
+    <string name="orderSelectedMSG">order selected</string>
+    <string name="contribute">Say thanks</string>
+    <string name="confirmEmail">Confirm e-mail\nand push \"Enter\"</string>
+    <string name="emailError">e-mail already taken</string>
+    <string name="usernameError">Username already taken</string>
+    <string name="emailFormatError">Wrong e-mail format</string>
+    <string name="blankFieldsSignUpError">Enter username, password and e-mail please</string>
+    <string name="blankFieldsSignInError">Enter username and password please</string>
+    <string name="hello">Hello, %s</string>
+    <string name="helloAndVerifyEmail">Hello, %s.\nyour email is not verified</string>
+    <string name="helloAndGoodDay">Hello, %s. enjoy working!</string>
+    <string name="IMEIErrorMSG">You logged in from not regular device.\n
+        Now premium options are not available."\n
+        To bind this device to your account"\n
+        please go to menu \"User accounts\"\n
+        and press \"Change device\"</string>
+    <string name="IMEIRequestAccepted">Request accepted. Relog please to bind this device to your account</string>
+    <string name="IMEIBindedAndGoodDay">You binded this device to your account.\n
+        Enjoy working</string>
+    <string name="gratefullness1">thank you too for your choice</string>
+    <string name="gratefullness2">we are very pleased</string>
+    <string name="gratefullness3">really welcome</string>
+    <string name="premiumActivated">premium activated</string>
+    <string name="youAlreadyHavePremium">you already have premium</string>
+    <string name="youAreNotLoggedIn">you are not logged in or email isn\'t verified./n
+        Can\'t activate premium</string>
+    <string name="enoughFun">enough fun</string>
 
+    <string name="grandTotalsScreenName">Earned</string>
+    <string name="rangeStart">First shift</string>
+    <string name="rangeEnd">Last shift</string>
+    <string name="handedToTheCashier">Handed to the cashier</string>
 
-    <string name="settingsScreenName">Настройки</string>
-    <string name="viewOfDateTimePicker">Способ ввода времени и дат</string>
-    <string name="button">кнопка</string>
-    <string name="spinner">спиннер</string>
-    <string name="timePickerInterval">Шаг спиннера минут</string>
-    <string name="showListHint">Подсказка для списков</string>
-    <string name="listHint">взмах влево = править\nвправо = удалить</string>
-    <string name="show">показывать</string>
-    <string name="dontShow">не показывать</string>
-    <string name="listsSortOrder">Сортировка списков</string>
-    <string name="youngIsOnTop">свежий сверху</string>
-    <string name="youngIsNotOnTop">свежий снизу</string>
-    <string name="timePickClicks">Подтвержение\nввода времени</string>
-    <string name="singleTapTimePick">в 1 клик</string>
-    <string name="twoTapTimePick">с подтвеждением</string>
-    <string name="showTaxometer">Открывать таксометр</string>
-    <string name="yes">да</string>
-    <string name="no">нет</string>
-    <string name="extraFunctions">Дополнительные возможности</string>
-    <string name="chooseNumber">Выберите число</string>
-    <string name="exportShifts">Экспорт и импорт\nсмен</string>
-    <string name="socials">Мы в соцсетях</string>
-
-    <string name="taxoparksAndBillings">Таксопарки и системы</string>
-    <string name="taxoparksAndBillingsInputMSG">Завершайте ввод клавишей\nOK или Enter</string>
-    <string name="main">осн</string>
-    <string name="taxopark">Таксопарк</string>
-    <string name="taxoparks">Таксопарки</string>
-    <string name="taxoparkName">имя таксопарка</string>
-    <string name="billing">Система расчетов</string>
-    <string name="billings">Системы расчетов</string>
-    <string name="billingName">название системы</string>
-    <string name="commission">комиссия</string>
-    <string name="isInTheList">уже есть в списке</string>
-    <string name="cantBeRemoved">используется в сохраненных заказах и не может быть удалена</string>
-
-    <string name="signInScreenName">Учетные записи</string>
-    <string name="username">логин</string>
-    <string name="password">пароль</string>
-    <string name="email">почта</string>
-    <string name="signUp">Новый\nводитель</string>
-    <string name="logIn">Войти</string>
-    <string name="claimChangeDevice">Сменить\nустройство</string>
-    <string name="logOut">Выйти</string>
-    <string name="signUpDefault">Здравствуйте, пользователь</string>
-    <string name="userActive">- пользователь зарегистрирован</string>
-    <string name="emailVerified">- почта подтверждена</string>
-    <string name="IMEICorrect">- IMEI прошел проверку</string>
-    <string name="premiumUser">- премиум подписка подключена</string>
-    <string name="noInternetMSG">проверьте интернет-подключение</string>
-    <string name="loginOrPasswordErrMSG">ошибка логина или пароля</string>
-    <string name="irregularErrMSG">необычная ошибка</string>
-    <string name="orderDeletedMSG">заказ удален</string>
-    <string name="orderSelectedMSG">выбран заказ для редактирования</string>
-    <string name="orderListSelectErrMSG">ошибка обработки жеста</string>
-    <string name="contribute">Сказать спасибо</string>
-    <string name="confirmEmail">Подтвердите почту\nи нажмите \"Войти\"</string>
-    <string name="emailError">Пользователь с такой почтой уже зарегистрирован</string>
-    <string name="loginError">Логин занят</string>
-    <string name="emailFormatError">Неверный формат почты</string>
-    <string name="blankFieldsSignUpError">Заполните логин, пароль и почту</string>
-    <string name="blankFieldsSignInError">Для входа введите логин и пароль</string>
-    <string name="hello">Здравствуйте, %s</string>
-
-
-    <string name="chatScreenName">Водительский чат</string>
-    <string name="ipInputHint">Введите IP:</string>
-    <string name="enterChat">Войти в чат</string>
-
-
-    <string name="grandTotalsScreenName">Заработано</string>
-    <string name="rangeStart">Первая смена</string>
-    <string name="rangeEnd">Последняя смена</string>
-    <string name="handedToTheCashier">Сдано кассу</string>
-
-
-    <string name="activityStateLAND_2_1">ландшафт с двумя фрагментами</string>
-    <string name="activityStateLAND_2">ландшафт только со списком</string>
-    <string name="activityStatePORT_1">портрет только с главным фрагментом</string>
-    <string name="activityStatePORT_2">портрет только со списком</string>
-
-    <string name="textExampleMain">пример основного текста</string>
-    <string name="textExampleAdditional">пример поясняющего текста</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="textExampleMain">text example main</string>
+    <string name="textExampleAdditional">text example additional</string>
+    <string name="addNewOrder">Add order</string>
+    <string name="chat">Cabman\'s chat</string>
+    <string name="taxoparksAndBillings">Taxi stations and billings</string>
 </resources>

@@ -127,7 +127,7 @@ public class SignInActivity extends AppCompatActivity {
                     String errorMsg;
                     switch (error.getCode()) {
                         case 203: errorMsg = res.getString(R.string.emailError); break;
-                        case 202: errorMsg = res.getString(R.string.loginError); break;
+                        case 202: errorMsg = res.getString(R.string.usernameError); break;
                         case 125: errorMsg = res.getString(R.string.emailFormatError); break;
                         default:  errorMsg = res.getString(R.string.irregularErrMSG); break;
                     }
@@ -163,26 +163,28 @@ public class SignInActivity extends AppCompatActivity {
 
     public void onContributeClick(View p1) {
         String msg;
+        Resources res = getResources();
         switch (++contributeCount) {
-            case 1: msg = "спасибо и вам за Ваш выбор!"; break;
-            case 2: msg = "нам очень приятно!"; break;
-            case 3: msg = "в самом деле, не стоит благодарности!"; break;
+            case 1: msg = res.getString(R.string.gratefullness1); break;
+            case 2: msg = res.getString(R.string.gratefullness2); break;
+            case 3: msg = res.getString(R.string.gratefullness3); break;
             case 4:
                 if (Util.currentUser != null && Util.emailVerified) {
                     if (!Util.premiumUser){
                         Util.premiumUser = true;
                         Util.userHasAccess = true;
+                        Util.saveSettingsToCloud();
 
                         showLogInORLogOut(false, true);
-                        msg = "премиум подписка подключена";
+                        msg = res.getString(R.string.premiumActivated);
                     } else {
-                        msg = "у Вас уже есть премиум";
+                        msg = res.getString(R.string.youAlreadyHavePremium);
                     }
                 } else {
-                    msg = "Вы не авторизованы или почта не подтверждена.\nНе могу подключить премиум подписку";
+                    msg = res.getString(R.string.youAreNotLoggedIn);
                 }
                 break;
-            default: msg = "хватит баловаться"; break;
+            default: msg = res.getString(R.string.enoughFun); break;
         }
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
@@ -193,8 +195,7 @@ public class SignInActivity extends AppCompatActivity {
         etEmail.setText("");
         saveLocalSharedPrefs("", "");
         Util.resetSettings();
-        Util.saveSettingsToCloud();
-        ParseUser.logOut();
+        ParseUser.logOut();//what for?...
         showLogInORLogOut(true, false);
         //TODO: onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
         //dropDataBase с подтверждением
@@ -205,7 +206,8 @@ public class SignInActivity extends AppCompatActivity {
         Util.currentUser.put("IMEI", "detached");
         Util.currentUser.saveInBackground();
         showLogInORLogOut(true, false);
-        Toast.makeText(getApplicationContext(), "Запрос принят. Заново войдите чтобы привязать это устройство к учетной записи", Toast.LENGTH_LONG).show();
+        String msg = getApplicationContext().getResources().getString(R.string.IMEIRequestAccepted);
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
 
     private void showLogInORLogOut(boolean showLogIn, boolean showLogOut) {
@@ -261,9 +263,9 @@ public class SignInActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
-                        case 100: msg = "Проверьте интернет-подключение"; break;
-                        case 101: msg = "Ошибка логина или пароля"; break;
-                        default:  msg = "Необычная ошибка " + error.getCode(); break;
+                        case 100: msg = getResources().getString(R.string.noInternetMSG); break;
+                        case 101: msg = getResources().getString(R.string.usernameOrPasswordErrMSG); break;
+                        default:  msg = getResources().getString(R.string.irregularErrMSG) + " " + error.getCode(); break;
                     }
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
                     showLogInORLogOut(true, false);
