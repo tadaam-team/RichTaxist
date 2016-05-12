@@ -91,7 +91,7 @@
     <string name="timePickClicks">Подтвержение\nввода времени</string>
     <string name="singleTapTimePick">в 1 клик</string>
     <string name="twoTapTimePick">с подтвеждением</string>
-    <string name="hideTaxometer">Открывать таксометр</string>
+    <string name="showTaxometer">Открывать таксометр</string>
     <string name="yes">да</string>
     <string name="no">нет</string>
     <string name="extraFunctions">Дополнительные возможности</string>

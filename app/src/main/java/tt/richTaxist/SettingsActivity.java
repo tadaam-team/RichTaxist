@@ -16,34 +16,32 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.activity_settings));
 
-        //транслируем сохраненное состояние настроек в виджеты при открытии
-        ((ToggleButton) findViewById(R.id.tbShowListHint))  .setChecked(!Util.showListHint);
-        ((ToggleButton) findViewById(R.id.tbListsSortOrder)).setChecked(!Util.youngIsOnTop);
-        ((ToggleButton) findViewById(R.id.tbTimePickClicks)).setChecked(!Util.twoTapTimePick);
-        ((ToggleButton) findViewById(R.id.tbHideTaxometer)) .setChecked(!Util.hideTaxometer);
+        //applying saved settings state to controls when opening screen
+        setToggleButtonState(R.id.tbListsSortOrder, Util.youngIsOnTop);
+        setToggleButtonState(R.id.tbTimePickClicks, Util.twoTapTimePick);
+        setToggleButtonState(R.id.tbShowTaxometer, Util.showTaxometer);
     }
 
-    //важно помнить, что дефолт ToggleButton.isChecked() это false. текст false это textOff
-    //имена переменных же, как и их предпочтительные значения наоборот предполагают true
-    //также сбивает с толку предпросмотр XML, показывающий textOff
-    //чтобы устранить это противоречие к опросу ToggleButton и его инициализации добавлен !
-    public void onTBListHintClick(View view) {
-        Util.showListHint = !((ToggleButton) view).isChecked();
-        Util.saveSettingsToCloud();
+    //it is important to remember that default of ToggleButton.isChecked() is false. text of defaulf is textOff
+    private void setToggleButtonState(int tbID, boolean state){
+        ToggleButton tb = ((ToggleButton) findViewById(tbID));
+        if (tb != null) {
+            tb.setChecked(state);
+        }
     }
 
     public void onTBListsSortOrderClick(View view) {
-        Util.youngIsOnTop = !((ToggleButton) view).isChecked();
+        Util.youngIsOnTop = ((ToggleButton) view).isChecked();
         Util.saveSettingsToCloud();
     }
 
     public void onTBTimePickClicksClick(View view) {
-        Util.twoTapTimePick = !((ToggleButton) view).isChecked();
+        Util.twoTapTimePick = ((ToggleButton) view).isChecked();
         Util.saveSettingsToCloud();
     }
 
-    public void onTBHideTaxometerClick(View view) {
-        Util.hideTaxometer = !((ToggleButton) view).isChecked();
+    public void onTBShowTaxometerClick(View view) {
+        Util.showTaxometer = ((ToggleButton) view).isChecked();
         Util.saveSettingsToCloud();
     }
 

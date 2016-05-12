@@ -76,7 +76,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         rootView.findViewById(R.id.btnAddNewOrder).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (Util.hideTaxometer){
+                if (Util.showTaxometer){
                     startActivityForResult(new Intent(context, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
                 } else {
                     createNewOrder(0, 0);

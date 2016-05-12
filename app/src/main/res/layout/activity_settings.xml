@@ -17,23 +17,6 @@
             <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
-                    android:text="@string/showListHint"
-                    android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
-                    android:gravity="center_vertical|start"
-                    android:layout_gravity="center_vertical"/>
-                <ToggleButton
-                    android:id="@+id/tbShowListHint"
-                    style="@style/ToggleButtonBordered"
-                    android:textOff="@string/show"
-                    android:textOn="@string/dontShow"
-                    android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
-                    android:onClick="onTBListHintClick"
-                    android:layout_gravity="center_vertical"/>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView
                     android:text="@string/listsSortOrder"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
@@ -41,8 +24,8 @@
                 <ToggleButton
                     android:id="@+id/tbListsSortOrder"
                     style="@style/ToggleButtonBordered"
-                    android:textOff="@string/youngIsOnTop"
-                    android:textOn="@string/youngIsNotOnTop"
+                    android:textOff="@string/youngIsNotOnTop"
+                    android:textOn="@string/youngIsOnTop"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:onClick="onTBListsSortOrderClick"
                     android:layout_gravity="center_vertical"/>
@@ -68,17 +51,17 @@
             <TableRow
                 android:layout_width="match_parent" android:layout_height="wrap_content">
                 <TextView
-                    android:text="@string/hideTaxometer"
+                    android:text="@string/showTaxometer"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:gravity="center_vertical|start"
                     android:layout_gravity="center_vertical"/>
                 <ToggleButton
-                    android:id="@+id/tbHideTaxometer"
+                    android:id="@+id/tbShowTaxometer"
                     style="@style/ToggleButtonBordered"
-                    android:textOff="@string/yes"
-                    android:textOn="@string/no"
+                    android:textOff="@string/no"
+                    android:textOn="@string/yes"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
-                    android:onClick="onTBHideTaxometerClick"
+                    android:onClick="onTBShowTaxometerClick"
                     android:layout_gravity="center_vertical"/>
             </TableRow>
 

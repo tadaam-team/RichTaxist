@@ -62,7 +62,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
         if (Util.currentUser == null) {
             // Отправляем данные на Parse.com для проверки только если юзер еще не авторизован
-            Log.d(LOG_TAG, "username: " + Util.username + "password: " + Util.password);
+            Log.d(LOG_TAG, "username: " + Util.username + ", password: " + Util.password);
             authorize();
         }
 
@@ -215,12 +215,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
             // Отправляем данные на Parse.com для проверки
             ParseUser.logInInBackground(Util.username, Util.password, logInCallback);
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        Util.resetSettings();
-        super.onDestroy();
     }
 
     @Override

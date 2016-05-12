@@ -108,10 +108,9 @@ public class SignInActivity extends AppCompatActivity {
         user.setEmail(email);
         user.put("IMEI", Util.deviceIMEI);
         user.put("premiumUser", Util.premiumUser);
-        user.put("showListHint", Util.showListHint);
         user.put("youngIsOnTop", Util.youngIsOnTop);
         user.put("twoTapTimePick", Util.twoTapTimePick);
-        user.put("hideTaxometer", Util.hideTaxometer);
+        user.put("showTaxometer", Util.showTaxometer);
         user.put("userHasAccess", Util.userHasAccess);
 
         SignUpCallback signUpCallback = new SignUpCallback() {

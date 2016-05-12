@@ -29,10 +29,9 @@ public class Util {
 
     public static Boolean premiumUser = false;
     public static Boolean emailVerified = false;
-    public static Boolean showListHint = true;//все булевы, переключаемые через tb должны в дефолте быть true
     public static Boolean youngIsOnTop = true;
     public static Boolean twoTapTimePick = true;
-    public static Boolean hideTaxometer = true;
+    public static Boolean showTaxometer = false;
 
     public static String deviceIMEI = "";
     //TODO привязать платные участки проги к булевому userHasAccess
@@ -51,10 +50,9 @@ public class Util {
         Util.currentUser     = user;
         Util.premiumUser     = user.getBoolean("premiumUser");
         Util.emailVerified   = user.getBoolean("emailVerified");
-        Util.showListHint    = user.getBoolean("showListHint");
         Util.youngIsOnTop    = user.getBoolean("youngIsOnTop");
         Util.twoTapTimePick  = user.getBoolean("twoTapTimePick");
-        Util.hideTaxometer   = user.getBoolean("hideTaxometer");
+        Util.showTaxometer = user.getBoolean("showTaxometer");
 
         //если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
         if (!Util.emailVerified) {
@@ -64,7 +62,7 @@ public class Util {
                     "\nВаш email еще не подтвержден", Toast.LENGTH_LONG).show();
             return false;
         }
-        Log.d(LOG_TAG, "email verified");
+//        Log.d(LOG_TAG, "email verified");
         //пользователь авторизован и почта подтверждена--------------------------------------------
 
 
@@ -74,7 +72,7 @@ public class Util {
                     "\nПриятной работы", Toast.LENGTH_LONG).show();
             return false;
         }
-        Log.d(LOG_TAG, "user is premium");
+//        Log.d(LOG_TAG, "user is premium");
         //пользователь авторизован, почта подтверждена и есть подписка-----------------------------
 
 
@@ -86,10 +84,10 @@ public class Util {
                     "\nк своей учетной записи." +
                     "\nПриятной работы", Toast.LENGTH_LONG).show();
 
-            Log.d(LOG_TAG, "IMEI saved");
+//            Log.d(LOG_TAG, "IMEI saved");
             return true;
         }
-        Log.d(LOG_TAG, "IMEI not null");
+//        Log.d(LOG_TAG, "IMEI not null");
         //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
 
 
@@ -123,13 +121,13 @@ public class Util {
             notificationManager.notify(1, notification);
             return false;
         }
-        Log.d(LOG_TAG, "IMEI check passed");
+//        Log.d(LOG_TAG, "IMEI check passed");
         //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
 
 
         Toast.makeText(context, "Здравствуйте, " + user.getUsername() + "\nПриятной работы", Toast.LENGTH_LONG).show();
 
-        Log.d(LOG_TAG, "user has access");
+//        Log.d(LOG_TAG, "user has access");
         return true;
     }
 
@@ -140,7 +138,6 @@ public class Util {
         double screenWidthInches = metrics.widthPixels / metrics.xdpi;
         screenWidthInches = RoundResult(screenWidthInches, 3);
         double screenWidthSm = RoundResult(screenWidthInches * 2.54, 3);
-        Log.d(LOG_TAG, "layout: " + String.valueOf(layout));
         if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
             ViewGroup.LayoutParams params = layout.getLayoutParams();
             params.width = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
@@ -164,10 +161,9 @@ public class Util {
         if (currentUser != null) {
             currentUser.put("premiumUser", premiumUser);
             //emailVerified не отправляем в облако, т.к. эта информация генерируется там
-            currentUser.put("showListHint", showListHint);
             currentUser.put("youngIsOnTop", youngIsOnTop);
             currentUser.put("twoTapTimePick", twoTapTimePick);
-            currentUser.put("hideTaxometer", hideTaxometer);
+            currentUser.put("showTaxometer", showTaxometer);
             currentUser.put("userHasAccess", userHasAccess);
             //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
             currentUser.saveInBackground();
@@ -180,10 +176,9 @@ public class Util {
         password = "";
         premiumUser     = false;
         emailVerified   = false;
-        showListHint    = true;
         youngIsOnTop    = true;
         twoTapTimePick  = true;
-        hideTaxometer   = true;
+        showTaxometer = false;
         userHasAccess   = false;
     }
 
