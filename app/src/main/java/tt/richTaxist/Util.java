@@ -201,19 +201,19 @@ public class Util {
         return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
     }
 
-    static void openQuitDialog(final AppCompatActivity currentActivity) {
+    public static void openQuitDialog(final AppCompatActivity currentActivity) {
+        //note that you shouldn't pass getApplicationContext() to AlertDialog.Builder. it waits for Activity
         AlertDialog.Builder quitDialog = new AlertDialog.Builder(currentActivity);
-        quitDialog.setTitle("Выход: Вы уверены?");
-        quitDialog.setNegativeButton("Да", new DialogInterface.OnClickListener() {
+        quitDialog.setTitle(currentActivity.getResources().getString(R.string.exitConfirmation));
+        quitDialog.setNegativeButton(currentActivity.getResources().getString(R.string.no), new DialogInterface.OnClickListener() { @Override
+            public void onClick(DialogInterface dialog, int which) { /*NOP*/ }
+        });
+        quitDialog.setPositiveButton(currentActivity.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 GPSHelper.stopService(currentActivity.getApplicationContext());
                 currentActivity.finish();
             }
-        });
-        quitDialog.setPositiveButton("Нет", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {/*NOP*/}
         });
         quitDialog.show();
     }

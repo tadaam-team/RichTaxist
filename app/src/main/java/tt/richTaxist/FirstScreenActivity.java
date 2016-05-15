@@ -14,7 +14,6 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
@@ -31,7 +30,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
     public static final String LOG_TAG = "MY_LOG";
     private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
-    private OrdersSource ordersSource;
     private SharedPrefsHelper sharedPrefsHelper;
 
     @Override
@@ -44,7 +42,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
 //        GPSHelper.startService(MainActivity.context);
 
         shiftsSource = new ShiftsSource(getApplicationContext());
-        ordersSource = new OrdersSource(getApplicationContext());
         MainActivity.currentShift = shiftsSource.getLastShift();
         loadSharedPrefs();
 

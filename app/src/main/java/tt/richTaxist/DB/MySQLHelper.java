@@ -2,17 +2,18 @@ package tt.richTaxist.DB;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
-
 import tt.richTaxist.DB.Tables.BillingsTable;
 import tt.richTaxist.DB.Tables.LocationsTable;
 import tt.richTaxist.DB.Tables.OrdersTable;
 import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.DB.Tables.TaxoparksTable;
 import tt.richTaxist.FirstScreenActivity;
+import tt.richTaxist.R;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Taxopark;
 
@@ -25,10 +26,12 @@ public class MySQLHelper extends SQLiteOpenHelper {
     public static final String CREATE_TABLE = "CREATE TABLE %s ( %s);";
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS %s";
     public static final String PRIMARY_KEY = BaseColumns._ID + " integer primary key autoincrement, ";
+    private final Resources res;
 
     //singleton protects db from multi thread concurrent access
     private MySQLHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
+        res = context.getResources();
     }
 
     public static MySQLHelper getInstance(Context context) {
@@ -72,7 +75,7 @@ public class MySQLHelper extends SQLiteOpenHelper {
     private void populateBase(SQLiteDatabase db){
         insertObject(db, new Billing("85/15", 15f));
         insertObject(db, new Billing("50/50", 50f));
-        insertObject(db, new Taxopark("Таксовичков", true, 0));
+        insertObject(db, new Taxopark(res.getString(R.string.defaultTaxoparkName), true, 0));
     }
     private void insertObject(SQLiteDatabase db, Object object){
         if (object instanceof Billing) {
@@ -88,6 +91,22 @@ public class MySQLHelper extends SQLiteOpenHelper {
         return String.format(CREATE_TABLE, tableName, fields);
     }
 
+    //is accessible from each of the Sources because each of them hold link to singleton dbHelper
+    public void dropAllTablesInDB(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL(getDropSql(OrdersTable.TABLE_NAME));
+            db.execSQL(getDropSql(ShiftsTable.TABLE_NAME));
+            db.execSQL(getDropSql(TaxoparksTable.TABLE_NAME));
+            db.execSQL(getDropSql(BillingsTable.TABLE_NAME));
+            db.execSQL(getDropSql(LocationsTable.TABLE_NAME));
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        updateMyDatabase(db, 0, DB_VERSION);
+    }
     private String getDropSql(String tableName) {
         return String.format(DROP_TABLE, tableName);
     }

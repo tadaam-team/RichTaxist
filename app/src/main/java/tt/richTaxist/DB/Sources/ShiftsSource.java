@@ -61,6 +61,10 @@ public class ShiftsSource {
         return result;
     }
 
+    public void dropAllTablesInDB() {
+        dbHelper.dropAllTablesInDB();
+    }
+
     public ArrayList<Shift> getAllShifts(boolean youngIsOnTop) {
         ArrayList<Shift> shiftsList = new ArrayList<>();
         String sortMethod = "ASC";

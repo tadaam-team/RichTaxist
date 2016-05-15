@@ -8,6 +8,7 @@
     <string name="exit">Закрыть программу</string>
     <string name="noShiftsMSG">нет сохраненных смен</string>
     <string name="allowedOnlyInPortraitMSG">разрешено только в портретном режиме</string>
+    <string name="exitConfirmation">Выход: Вы уверены?</string>
 
     <string name="shiftsListScreenName">Список смен</string>
     <string name="shiftNotEmptyMSG">Эта смена не пустая, удалить?</string>
@@ -133,4 +134,6 @@
 
     <string name="textExampleMain">пример основного текста</string>
     <string name="textExampleAdditional">пример поясняющего текста</string>
+
+    <string name="defaultTaxoparkName">Таксовичков</string>
 </resources>

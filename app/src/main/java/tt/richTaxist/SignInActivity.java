@@ -1,9 +1,11 @@
 package tt.richTaxist;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +18,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
+import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
 import tt.richTaxist.SharedPreferences.SharedPrefsHelper;
 /**
@@ -33,6 +35,7 @@ public class SignInActivity extends AppCompatActivity {
     private View mProgress;
     private TextView tvWelcome;
     private CheckBox cbUserActive, cbEmailVerified, cbIMEICorrect, cbPremiumUser;
+    private ShiftsSource shiftsSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.activity_sign_in));
 
+        shiftsSource = new ShiftsSource(getApplicationContext());
         initiateWidgets();
         emailValidator = new EmailValidator();
         etEmail.addTextChangedListener(emailValidator);
@@ -197,8 +201,22 @@ public class SignInActivity extends AppCompatActivity {
         Util.resetSettings();
         ParseUser.logOut();//what for?...
         showLogInORLogOut(true, false);
-        //TODO: onLogoutClick влияет только на наличие подписки и настройки. база на устройстве доступна любому пользователю
-        //dropDataBase с подтверждением
+        openDropDBDialog();
+    }
+    private void openDropDBDialog() {
+        //note that you shouldn't pass getApplicationContext() to AlertDialog.Builder. it waits for Activity
+        AlertDialog.Builder dropDBDialog = new AlertDialog.Builder(this);
+        dropDBDialog.setTitle(getResources().getString(R.string.dropDBConfirmation));
+        dropDBDialog.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() { @Override
+        public void onClick(DialogInterface dialog, int which) { /*NOP*/ }
+        });
+        dropDBDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                shiftsSource.dropAllTablesInDB();
+            }
+        });
+        dropDBDialog.show();
     }
 
     public void onClaimChangeDeviceClick(View v) {
@@ -211,8 +229,6 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void showLogInORLogOut(boolean showLogIn, boolean showLogOut) {
-        Log.d(LOG_TAG, "showLogIn: " + String.valueOf(showLogIn));
-        Log.d(LOG_TAG, "showLogOut: " + String.valueOf(showLogOut));
         recursiveLoopChildren(laNotSigned, showLogIn);
         recursiveLoopChildren(laSigned, showLogOut);
 

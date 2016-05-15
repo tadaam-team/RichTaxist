@@ -3,10 +3,12 @@
     <string name="mainMenu">Main menu</string>
     <string name="openLastShift">Open last shift</string>
     <string name="newShift">New shift</string>
+    <string name="chat">Cabman\'s chat</string>
     <string name="routeMap">Route map</string>
     <string name="exit">Close app</string>
     <string name="noShiftsMSG">no saved shifts</string>
     <string name="allowedOnlyInPortraitMSG">allowed only in portrait mode</string>
+    <string name="exitConfirmation">Close app: Are you sure?</string>
 
     <string name="shiftsListScreenName">Shifts list</string>
     <string name="shiftNotEmptyMSG">Shift is not empty. Delete?</string>
@@ -14,6 +16,7 @@
 
     <string name="mainScreenName">Order</string>
     <string name="noOrdersMSG">no saved orders</string>
+    <string name="addNewOrder">Add order</string>
     <string name="clearForm">Clear form</string>
     <string name="formClearedMSG">form cleared</string>
     <string name="arrivalDateTime">Arrival</string>
@@ -69,6 +72,7 @@
     <string name="no">no</string>
     <string name="chooseNumber">Choose number</string>
 
+    <string name="taxoparksAndBillings">Taxi stations and billings</string>
     <string name="taxoparksAndBillingsInputMSG">Finish input with OK or Enter</string>
     <string name="main">main</string>
     <string name="taxopark">Taxi station</string>
@@ -89,6 +93,7 @@
     <string name="logIn">Log in</string>
     <string name="claimChangeDevice">Change device</string>
     <string name="logOut">Log out</string>
+    <string name="dropDBConfirmation">Delete all records from device? This cannot be undone!</string>
     <string name="userRegistered">- user registered</string>
     <string name="emailVerified">- e-mail verified</string>
     <string name="IMEICorrect">- IMEI passed check</string>
@@ -132,7 +137,6 @@
 
     <string name="textExampleMain">text example main</string>
     <string name="textExampleAdditional">text example additional</string>
-    <string name="addNewOrder">Add order</string>
-    <string name="chat">Cabman\'s chat</string>
-    <string name="taxoparksAndBillings">Taxi stations and billings</string>
+
+    <string name="defaultTaxoparkName">Taksi Helsinki</string>
 </resources>
