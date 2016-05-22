@@ -24,7 +24,6 @@ import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -38,7 +37,6 @@ import tt.richTaxist.Units.Shift;
 
 public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.DateTimeRangeFragInterface {
     public static final String FRAGMENT_TAG = "ShiftsListFragment";
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private FragmentActivity mActivity;
     private RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;

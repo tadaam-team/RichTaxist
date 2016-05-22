@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.MySQLHelper;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
@@ -24,7 +25,6 @@ public class OrdersSource {
     //represents top level of abstraction from dataBase
     //all work with db layer must be done in this class
     //getReadableDatabase() and getWritableDatabase() must not be called outside this class
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static final String ERROR_TOAST = "db access error";
     private MySQLHelper dbHelper;
     private Context context;
@@ -46,19 +46,27 @@ public class OrdersSource {
         return id;
     }
 
-    //TODO: how do we update order?
+    public boolean update(Order order){
+        int result = -1;
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues cv = getContentValues(order);
+            result = db.update(TABLE_NAME, cv, BaseColumns._ID + " = ?", new String[]{String.valueOf(order.orderID)});
+        } catch (SQLiteException e) {
+            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
+        }
+        return result != -1;
+    }
 
-    public int remove(Order order){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String[] tag = new String[]{Util.dateFormat.format(order.arrivalDateTime),
-                String.valueOf(order.price),
-                String.valueOf(order.typeOfPayment.id),
-                String.valueOf(order.shiftID)};
-        int result = db.delete(TABLE_NAME, ARRIVAL_DATE_TIME + " = ?"
-                + " AND " + PRICE + " = ?"
-                + " AND " + TYPE_OF_PAYMENT + " = ?"
-                + " AND " + SHIFT_ID + " = ?", tag);
-        return result;
+    public boolean remove(Order order){
+        int result = -1;
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            result = db.delete(TABLE_NAME, BaseColumns._ID + " = ?", new String[]{String.valueOf(order.orderID)});
+        } catch (SQLiteException e) {
+            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
+        }
+        return result != -1;
     }
 
     public ArrayList<Order> getOrdersList(long shiftID, long taxoparkID) {
@@ -76,7 +84,7 @@ public class OrdersSource {
                     + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'"
                     + " ORDER BY " + ARRIVAL_DATE_TIME + " " + sortMethod;
         }
-//        Log.d(LOG_TAG, "getOrdersList. selectQuery: " + String.valueOf(selectQuery));
+//        Log.d(Constants.LOG_TAG, "getOrdersList. selectQuery: " + String.valueOf(selectQuery));
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -87,7 +95,7 @@ public class OrdersSource {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(LOG_TAG, "OrdersSource. ordersList.size(): " + String.valueOf(ordersList.size()));
+        Log.d(Constants.LOG_TAG, "OrdersSource. ordersList.size(): " + String.valueOf(ordersList.size()));
         return ordersList;
     }
 
@@ -101,7 +109,7 @@ public class OrdersSource {
             ordersListCount = cursor.getInt(0);
         }
         cursor.close();
-        Log.d(LOG_TAG, "OrdersSource. ordersListCount: " + String.valueOf(ordersListCount));
+        Log.d(Constants.LOG_TAG, "OrdersSource. ordersListCount: " + String.valueOf(ordersListCount));
         return ordersListCount;
     }
 

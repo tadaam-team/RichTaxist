@@ -3,12 +3,14 @@ package tt.richTaxist.Units;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
-import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
 import java.text.ParseException;
@@ -16,9 +18,11 @@ import static tt.richTaxist.DB.Tables.OrdersTable.*;
 /**
  * Created by Tau on 27.06.2015.
  */
-public class Order {
+public class Order implements Parcelable {
+    public static final String ORDER_KEY = "tt.richTaxist.Units.Order.KEY";
     public static final String PARAM_DISTANCE = "tt.richTaxist.Units.Order.DISTANCE";
     public static final String PARAM_TRAVEL_TIME = "tt.richTaxist.Units.Order.TRAVEL_TIME";
+
     public long orderID;
     public Date arrivalDateTime;
     public int price;
@@ -62,6 +66,29 @@ public class Order {
         billingID = cursor.getLong(cursor.getColumnIndex(BILLING_ID));
     }
 
+    private Order(Parcel in) {
+        orderID = in.readLong();
+        price = in.readInt();
+        shiftID = in.readLong();
+        note = in.readString();
+        distance = in.readInt();
+        travelTime = in.readLong();
+        taxoparkID = in.readLong();
+        billingID = in.readLong();
+    }
+
+    public static final Creator<Order> CREATOR = new Creator<Order>() {
+        @Override
+        public Order createFromParcel(Parcel in) {
+            return new Order(in);
+        }
+
+        @Override
+        public Order[] newArray(int size) {
+            return new Order[size];
+        }
+    };
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,6 +101,19 @@ public class Order {
     @Override
     public int hashCode() {
         return arrivalDateTime != null ? 31 * Integer.parseInt(arrivalDateTime.toString()) : 0;
+    }
+
+    public void update(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, long shiftID, String note,
+        int distance, long travelTime, long taxoparkID, long billingID) {
+            this.arrivalDateTime = arrivalDateTime;
+            this.price           = price;
+            this.typeOfPayment   = typeOfPayment;
+            this.shiftID         = shiftID;
+            this.note            = note;
+            this.distance        = distance;
+            this.travelTime      = travelTime;
+            this.taxoparkID      = taxoparkID;
+            this.billingID       = billingID;
     }
 
     public String getDescription(Context context, TaxoparksSource taxoparksSource, BillingsSource billingsSource) {
@@ -91,5 +131,23 @@ public class Order {
                 billingsSource.getBillingByID(billingID));
         if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.note) + ": %s", note);
         return text;
+    }
+
+    // 99.9% of the time you can just ignore this
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeLong(orderID);
+        parcel.writeInt(price);
+        parcel.writeLong(shiftID);
+        parcel.writeString(note);
+        parcel.writeInt(distance);
+        parcel.writeLong(travelTime);
+        parcel.writeLong(taxoparkID);
+        parcel.writeLong(billingID);
     }
 }

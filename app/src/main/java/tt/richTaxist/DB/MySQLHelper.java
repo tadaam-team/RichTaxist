@@ -7,12 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 import android.util.Log;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.Tables.BillingsTable;
 import tt.richTaxist.DB.Tables.LocationsTable;
 import tt.richTaxist.DB.Tables.OrdersTable;
 import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.DB.Tables.TaxoparksTable;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Taxopark;
@@ -21,7 +21,6 @@ public class MySQLHelper extends SQLiteOpenHelper {
     //helper is one no matter how much tables there are
     private static final String DB_NAME = "taxiDB";
     private static final int DB_VERSION = 1;
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static MySQLHelper instance;
     public static final String CREATE_TABLE = "CREATE TABLE %s ( %s);";
     public static final String DROP_TABLE = "DROP TABLE IF EXISTS %s";
@@ -44,12 +43,12 @@ public class MySQLHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         updateMyDatabase(db, 0, DB_VERSION);
-        Log.d(LOG_TAG, "MySQLHelper: onCreate");
+        Log.d(Constants.LOG_TAG, "MySQLHelper: onCreate");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(LOG_TAG, "Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
+        Log.d(Constants.LOG_TAG, "Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
         updateMyDatabase(db, oldVersion, newVersion);
     }
 

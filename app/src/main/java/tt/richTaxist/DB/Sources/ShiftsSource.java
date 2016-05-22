@@ -10,8 +10,8 @@ import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.MySQLHelper;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Util;
@@ -23,7 +23,6 @@ public class ShiftsSource {
     //represents top level of abstraction from dataBase
     //all work with db layer must be done in this class
     //getReadableDatabase() and getWritableDatabase() must not be called outside this class
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static final String ERROR_TOAST = "db access error";
     private MySQLHelper dbHelper;
     private Context context;
@@ -48,17 +47,26 @@ public class ShiftsSource {
     }
 
     public boolean update(Shift shift){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues cv = getContentValues(shift);
-        int result = db.update(TABLE_NAME, cv, BaseColumns._ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        int result = -1;
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues cv = getContentValues(shift);
+            result = db.update(TABLE_NAME, cv, BaseColumns._ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        } catch (SQLiteException e) {
+            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
+        }
         return result != -1;
     }
 
-    public int remove(Shift shift){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int result = db.delete(TABLE_NAME, BaseColumns._ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
-        ordersSource.deleteOrdersByShift(shift);
-        return result;
+    public boolean remove(Shift shift){
+        int result = -1;
+        try {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            result = db.delete(TABLE_NAME, BaseColumns._ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
+        } catch (SQLiteException e) {
+            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
+        }
+        return result != -1;
     }
 
     public void dropAllTablesInDB() {
@@ -89,7 +97,7 @@ public class ShiftsSource {
                 shiftsList.add(shift);
             }
         }
-        Log.d(LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        Log.d(Constants.LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
         return shiftsList;
     }
 
@@ -115,12 +123,12 @@ public class ShiftsSource {
             while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        Log.d(Constants.LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
         return shiftsList;
     }
     private boolean checkTaxoparkInShift(Shift shift, long taxoparkID){
         ArrayList<Order> orders = ordersSource.getOrdersList(shift.shiftID, taxoparkID);
-        Log.d(LOG_TAG, "orders: " + String.valueOf(orders.size()));
+        Log.d(Constants.LOG_TAG, "orders: " + String.valueOf(orders.size()));
         boolean hasOrdersWithTargetTaxopark = false;
         for (Order order: orders) {
             if (order.taxoparkID == taxoparkID) hasOrdersWithTargetTaxopark = true;

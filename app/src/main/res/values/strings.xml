@@ -25,6 +25,10 @@
     <string name="price">price</string>
     <string name="note">note</string>
     <string name="ordersList">Orders list</string>
+    <string name="wrongPriceErrMsg">price is incorrect</string>
+    <string name="wrongNoteErrMsg">Note text not saved</string>
+    <string name="orderSaved">Order saved</string>
+    <string name="orderNotSaved">Order not saved</string>
 
     <string name="payType">Pay type</string>
     <string name="payTypeCash">cash</string>

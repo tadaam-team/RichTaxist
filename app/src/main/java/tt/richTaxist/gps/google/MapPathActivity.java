@@ -18,13 +18,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
-import tt.richTaxist.FirstScreenActivity;
+import tt.richTaxist.Constants;
 import tt.richTaxist.R;
 import tt.richTaxist.gps.Coordinates;
 import com.google.android.gms.maps.MapFragment;
 
 public class MapPathActivity extends Fragment {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     GoogleMap mMapController;
     List<Coordinates> lastCoordsList;
 
@@ -54,10 +53,10 @@ public class MapPathActivity extends Fragment {
             if (minLon <= lon) minLon = lon;
         }
 
-        Log.d(LOG_TAG, "maxLat " + String.valueOf(maxLat));
-        Log.d(LOG_TAG, "minLat " + String.valueOf(minLat));
-        Log.d(LOG_TAG, "maxLon " + String.valueOf(maxLon));
-        Log.d(LOG_TAG, "minLon " + String.valueOf(minLon));
+        Log.d(Constants.LOG_TAG, "maxLat " + String.valueOf(maxLat));
+        Log.d(Constants.LOG_TAG, "minLat " + String.valueOf(minLat));
+        Log.d(Constants.LOG_TAG, "maxLon " + String.valueOf(maxLon));
+        Log.d(Constants.LOG_TAG, "minLon " + String.valueOf(minLon));
 
         mMapController.clear();
         mMapController.setMyLocationEnabled(true);
@@ -76,7 +75,7 @@ public class MapPathActivity extends Fragment {
         mMapController.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                Log.d(LOG_TAG,"onMapLoaded");
+                Log.d(Constants.LOG_TAG,"onMapLoaded");
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 mMapController.animateCamera(cameraUpdate);
             }
@@ -99,16 +98,16 @@ public class MapPathActivity extends Fragment {
     }
 
     private MapFragment getMapFragment() {
-        Log.d(LOG_TAG, "sdk: " + Build.VERSION.SDK_INT);
-        Log.d(LOG_TAG, "release: " + Build.VERSION.RELEASE);
+        Log.d(Constants.LOG_TAG, "sdk: " + Build.VERSION.SDK_INT);
+        Log.d(Constants.LOG_TAG, "release: " + Build.VERSION.RELEASE);
 
         FragmentManager fm;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             fm = getFragmentManager();
-            Log.d(LOG_TAG, "using FragmentManager");
+            Log.d(Constants.LOG_TAG, "using FragmentManager");
         } else {
             fm = getChildFragmentManager();
-            Log.d(LOG_TAG, "using ChildFragmentManager");
+            Log.d(Constants.LOG_TAG, "using ChildFragmentManager");
         }
         return (MapFragment) fm.findFragmentById(R.id.map);
     }

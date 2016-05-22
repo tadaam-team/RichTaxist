@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ToggleButton;
 
 public class SettingsActivity extends AppCompatActivity {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

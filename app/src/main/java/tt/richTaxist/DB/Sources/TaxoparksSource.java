@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.DB.MySQLHelper;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Taxopark;
 import static tt.richTaxist.DB.Tables.TaxoparksTable.*;
 /**
@@ -20,7 +18,6 @@ public class TaxoparksSource {
     //represents top level of abstraction from dataBase
     //all work with db layer must be done in this class
     //getReadableDatabase() and getWritableDatabase() must not be called outside this class
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static final String ERROR_TOAST = "db access error";
     private MySQLHelper dbHelper;
     private Context context;

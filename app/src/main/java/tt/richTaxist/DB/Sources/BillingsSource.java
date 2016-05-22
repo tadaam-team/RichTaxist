@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import tt.richTaxist.DB.MySQLHelper;
 import tt.richTaxist.DB.Tables.BillingsTable;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Billing;
 import static tt.richTaxist.DB.Tables.BillingsTable.*;
 /**
@@ -21,7 +20,6 @@ public class BillingsSource {
     //represents top level of abstraction from dataBase
     //all work with db layer must be done in this class
     //getReadableDatabase() and dbHelper.getWritableDatabase() must not be called outside this class
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private static final String ERROR_TOAST = "db access error";
     private MySQLHelper dbHelper;
     private Context context;
@@ -44,7 +42,7 @@ public class BillingsSource {
     }
 
     public boolean update(Billing billing){
-        long result = -1;
+        int result = -1;
         try {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             ContentValues cv = getContentValues(billing);
@@ -77,24 +75,6 @@ public class BillingsSource {
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToFirst()) {
                 billing = new Billing(cursor);
-            }
-            cursor.close();
-        } catch (SQLiteException e) {
-            Toast.makeText(context, ERROR_TOAST, Toast.LENGTH_SHORT).show();
-        }
-        return billing;
-    }
-
-    public Billing getLastBilling() {
-        Billing billing = null;
-        try {
-            String selectQuery = "SELECT * FROM " + BillingsTable.TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    billing = new Billing(cursor);
-                } while (cursor.moveToNext());
             }
             cursor.close();
         } catch (SQLiteException e) {

@@ -3,7 +3,6 @@ package tt.richTaxist;
 import android.content.res.Resources;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +12,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import tt.richTaxist.Enums.TypeOfPayment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
 /**
  * Created by TAU on 18.04.2016.
  */
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private ArrayList<? extends Object> objects;
     private AdapterDataType adapterDataType;
     private Listener listener;

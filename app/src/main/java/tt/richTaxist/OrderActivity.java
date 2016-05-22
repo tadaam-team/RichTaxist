@@ -20,17 +20,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.gps.Coordinates;
 import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.GPSService;
-
 /**
  * Created by AlexShredder on 07.07.2015.
  */
 public class OrderActivity extends AppCompatActivity{
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     static Context context;
     private int distance;
     private long travelTime;
@@ -55,12 +52,12 @@ public class OrderActivity extends AppCompatActivity{
         distance = 0;
         travelTime = 0;
         coordinatesList = new ArrayList<>();
-        Log.d(LOG_TAG, "onCreate");
+        Log.d(Constants.LOG_TAG, "onCreate");
 
         try {
             //stopService(new Intent(this,GPSService.class));
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Ошибка остановки сервиса");
+            Log.d(Constants.LOG_TAG, "Ошибка остановки сервиса");
         }
 
        Intent intent = new Intent(OrderActivity.this, GPSService.class);//.putExtra(GPSHelper.PARAM_PINTENT, pi);
@@ -74,12 +71,12 @@ public class OrderActivity extends AppCompatActivity{
                 PendingIntent pi = createPendingResult(GPSHelper.GPS_REQUEST_FROM_ORDER, getIntent(), 0);
                 gpsService.setPendingIntent(pi);
                 gpsService.restart();
-                Log.d(LOG_TAG,"Service connected");
+                Log.d(Constants.LOG_TAG,"Service connected");
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(LOG_TAG,"Service disconnected");
+                Log.d(Constants.LOG_TAG,"Service disconnected");
             }
         };
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
@@ -115,14 +112,14 @@ public class OrderActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        Log.d(LOG_TAG, "On destroy");
+        Log.d(Constants.LOG_TAG, "On destroy");
 
         try {
             unbindService(serviceConnection);
             serviceConnection = null;
             //stopService(new Intent(this,GPSService.class));
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Ошибка остановки сервиса");
+            Log.d(Constants.LOG_TAG, "Ошибка остановки сервиса");
         }
         if (updateTimeTask != null) updateTimeTask.cancel(true);
 
@@ -132,7 +129,7 @@ public class OrderActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(LOG_TAG, "on activity result: " + requestCode + " " + resultCode);
+        Log.d(Constants.LOG_TAG, "on activity result: " + requestCode + " " + resultCode);
         if (requestCode == GPSHelper.GPS_REQUEST_FROM_ORDER && resultCode == GPSHelper.PARAM_RETURN_DATA){
             distance   = data.getIntExtra(GPSHelper.PARAM_DISTANCE, 0);
             double lat = data.getDoubleExtra(GPSHelper.PARAM_LAT, 0);
@@ -144,13 +141,13 @@ public class OrderActivity extends AppCompatActivity{
 
     @Override
     protected void onResume() {
-        Log.d(LOG_TAG, "onResume");
+        Log.d(Constants.LOG_TAG, "onResume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d(LOG_TAG, "OnPause");
+        Log.d(Constants.LOG_TAG, "OnPause");
         super.onPause();
     }
 
@@ -160,12 +157,12 @@ public class OrderActivity extends AppCompatActivity{
         protected void onPreExecute() {
             super.onPreExecute();
             travelTimeTextView.setText("---");
-            Log.d(LOG_TAG, "UTT: Preexecute");
+            Log.d(Constants.LOG_TAG, "UTT: Preexecute");
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(LOG_TAG, "UTT: doInBackground");
+            Log.d(Constants.LOG_TAG, "UTT: doInBackground");
             try {
                 while (true) {
                     TimeUnit.SECONDS.sleep(1);
@@ -189,14 +186,14 @@ public class OrderActivity extends AppCompatActivity{
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d(LOG_TAG, "UTT: onPostExecute");
+            Log.d(Constants.LOG_TAG, "UTT: onPostExecute");
             super.onPostExecute(result);
             travelTimeTextView.setText("stop travel");
         }
 
         @Override
         protected void onCancelled() {
-            Log.d(LOG_TAG, "UTT: cancelled");
+            Log.d(Constants.LOG_TAG, "UTT: cancelled");
             super.onCancelled();
         }
 

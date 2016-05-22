@@ -14,12 +14,10 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.R;
 
 public class TaxoparksFragment extends ListFragment {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     ArrayList<Taxopark> taxoparks = new ArrayList<>();
     private Context context;
     private ArrayAdapter taxoparksAdapter;

@@ -2,14 +2,12 @@ package tt.richTaxist.Bricks;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.Units.Taxopark;
@@ -17,7 +15,6 @@ import tt.richTaxist.Units.Taxopark;
  * Created by TAU on 27.04.2016.
  */
 public class CustomSpinner extends Spinner {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public long taxoparkID = -1;
     public long billingID = -1;
     public long monthID = -1;
@@ -70,7 +67,7 @@ public class CustomSpinner extends Spinner {
                 } else {
                     taxopark = taxoparksSource.getTaxoparkByID(id);
                 }
-                Log.d(LOG_TAG, "setPositionOfSpinner. taxopark: " + String.valueOf(taxopark));
+//                Log.d(LOG_TAG, "setPositionOfSpinner. taxopark: " + String.valueOf(taxopark));
                 int tIndexInSpinner = 0;
                 if (taxopark != null){
                     tIndexInSpinner = spnTaxoparkAdapter.getPosition(taxopark);

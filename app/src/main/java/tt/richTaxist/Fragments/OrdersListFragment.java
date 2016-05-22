@@ -16,7 +16,6 @@ import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -24,7 +23,6 @@ import tt.richTaxist.Units.Order;
 
 public class OrdersListFragment extends Fragment {
     public static final String FRAGMENT_TAG = "OrdersListFragment";
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private OrdersListInterface mListener;
     private RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
@@ -62,9 +60,6 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onClick(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
-                //исправленная запись вернется в список по нажатию "ДОБАВИТЬ ЗАКАЗ"
-                ordersSource.remove(selectedOrder);
-                rvAdapter.removeObject(selectedOrder);
                 Toast.makeText(getContext(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
                 mListener.returnToOrderFragment(selectedOrder);
             }

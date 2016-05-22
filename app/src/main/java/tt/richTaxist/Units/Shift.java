@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.provider.BaseColumns;
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
 import java.text.ParseException;
@@ -20,7 +18,6 @@ import static tt.richTaxist.DB.Tables.ShiftsTable.*;
  * Created by Tau on 27.06.2015.
  */
 public class Shift {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public long shiftID;
     public Date beginShift;
     public Date endShift; //по этому полю проверяется закрыта ли смена. == null пока не закрыта

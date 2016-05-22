@@ -25,6 +25,10 @@
     <string name="price">цена</string>
     <string name="note">заметка</string>
     <string name="ordersList">Список заказов</string>
+    <string name="wrongPriceErrMsg">Странная цена заказа</string>
+    <string name="wrongNoteErrMsg">Текст заметки не сохранен</string>
+    <string name="orderSaved">Заказ сохранен</string>
+    <string name="orderNotSaved">Заказ не сохранен</string>
 
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">нал</string>

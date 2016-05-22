@@ -25,7 +25,6 @@ import tt.richTaxist.SharedPreferences.SharedPrefsHelper;
  * Created by Tau on 18.07.2015.
  */
 public class SignInActivity extends AppCompatActivity {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     private EmailValidator emailValidator;
     private SharedPrefsHelper sharedPrefsHelper;
     private int contributeCount = 0;
@@ -120,14 +119,14 @@ public class SignInActivity extends AppCompatActivity {
         SignUpCallback signUpCallback = new SignUpCallback() {
             public void done(ParseException error) {
                 if (error == null) {
-                    Log.d(LOG_TAG, "SignUp success. Waiting for email confirmation");
+                    Log.d(Constants.LOG_TAG, "SignUp success. Waiting for email confirmation");
                     Toast.makeText(getApplicationContext(), res.getString(R.string.confirmEmail), Toast.LENGTH_LONG).show();
                     tvWelcome.setText(res.getString(R.string.confirmEmail));
                     //сохранять данные пользователя локально в SharedPreferences логично только после подтверждения от Parse.com
                     saveLocalSharedPrefs(username, password);
                     showLogInORLogOut(false, true);
                 } else {
-                    Log.d(LOG_TAG, "SignUp error code " + error.getCode());
+                    Log.d(Constants.LOG_TAG, "SignUp error code " + error.getCode());
                     String errorMsg;
                     switch (error.getCode()) {
                         case 203: errorMsg = res.getString(R.string.emailError); break;
@@ -148,9 +147,9 @@ public class SignInActivity extends AppCompatActivity {
         SharedPrefEntry entry = new SharedPrefEntry(username, password);
         boolean isSuccess = sharedPrefsHelper.savePersonalInfo(entry);
         if (isSuccess) {
-            Log.d(LOG_TAG, "Personal information saved");
+            Log.d(Constants.LOG_TAG, "Personal information saved");
         } else {
-            Log.d(LOG_TAG, "Failed to write personal information to SharedPreferences");
+            Log.d(Constants.LOG_TAG, "Failed to write personal information to SharedPreferences");
         }
     }
 
@@ -220,7 +219,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onClaimChangeDeviceClick(View v) {
-        Log.d(LOG_TAG, "IMEI before detach: " + Util.currentUser.getString("IMEI"));
+        Log.d(Constants.LOG_TAG, "IMEI before detach: " + Util.currentUser.getString("IMEI"));
         Util.currentUser.put("IMEI", "detached");
         Util.currentUser.saveInBackground();
         showLogInORLogOut(true, false);
@@ -270,13 +269,13 @@ public class SignInActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException error) {
                 if (user != null) {
                     cbUserActive.setChecked(true);
-                    Log.d(LOG_TAG, "user logged in");
+                    Log.d(Constants.LOG_TAG, "user logged in");
                     Util.userHasAccess = Util.verifyUser(user, context);
                     saveLocalSharedPrefs(username, password);
                     Util.saveSettingsToCloud();
                     showLogInORLogOut(false, true);
                 } else {
-                    Log.d(LOG_TAG, "error code " + error.getCode());
+                    Log.d(Constants.LOG_TAG, "error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
                         case 100: msg = getResources().getString(R.string.noInternetMSG); break;

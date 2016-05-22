@@ -28,7 +28,6 @@ import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.Units.Shift;
 
 public class GrandTotalsActivity extends AppCompatActivity {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static final String AUTHOR = "author";
     private Shift firstShift, lastShift;
 
@@ -92,8 +91,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
         processWholeShifts(wholeShifts);
 //        Util.logDate("firstShiftStart", firstShiftStart);
 //        Util.logDate("lastShiftStart", lastShiftStart);
-//        Log.d(LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
-//        Log.d(LOG_TAG, "wholeShifts.size(): " + String.valueOf(wholeShifts.size()));
+//        Log.d(Constants.LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
+//        Log.d(Constants.LOG_TAG, "wholeShifts.size(): " + String.valueOf(wholeShifts.size()));
     }
 
     private void processWholeShifts(ArrayList<Shift> wholeShifts) {

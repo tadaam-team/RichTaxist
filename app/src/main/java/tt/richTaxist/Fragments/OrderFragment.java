@@ -19,9 +19,9 @@ import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeButtons;
-import tt.richTaxist.FirstScreenActivity;
+import tt.richTaxist.Constants;
 import tt.richTaxist.Units.Order;
-import tt.richTaxist.Enums.TypeOfPayment;
+import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.OrderActivity;
 import tt.richTaxist.R;
@@ -30,13 +30,10 @@ import tt.richTaxist.Util;
 
 public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeButtonsInterface {
     public static final String FRAGMENT_TAG = "OrderFragment";
-    public static final String DATE_TIME_EXTRA = "DateTimeExtra";
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
-    private static Context context;
     private OrderFragmentInterface mListener;
 
     private Order order;
-    public static Calendar arrivalDateTime;
+    private Calendar arrivalDateTime;
     private RadioGroup typeOfPaymentUI;
     private EditText etPrice, etNote;
     private CustomSpinner spnTaxopark, spnBilling;
@@ -54,17 +51,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        arrivalDateTime = Calendar.getInstance();
-        if (savedInstanceState != null) {
-            arrivalDateTime.setTimeInMillis(savedInstanceState.getLong(DATE_TIME_EXTRA));
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        context = getContext();
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
 
         typeOfPaymentUI = (RadioGroup)    rootView.findViewById(R.id.payTypeRadioGroup);
@@ -77,9 +64,9 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             @Override
             public void onClick(View v) {
                 if (Util.showTaxometer){
-                    startActivityForResult(new Intent(context, OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
+                    startActivityForResult(new Intent(getContext(), OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
                 } else {
-                    createNewOrder(0, 0);
+                    wrapDataIntoOrder(0, 0);
                 }
             }
         });
@@ -87,22 +74,20 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             @Override
             public void onClick(View v) {
                 refreshWidgets(null);
-                spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -2);
-                spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, 0);
-                Toast.makeText(context, R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.formClearedMSG, Toast.LENGTH_SHORT).show();
             }
         });
 
         rootView.findViewById(R.id.btnTaxopark).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, Settings4ParksAndBillingsActivity.class));
+                startActivity(new Intent(getContext(), Settings4ParksAndBillingsActivity.class));
             }
         });
         rootView.findViewById(R.id.btnBilling).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(context, Settings4ParksAndBillingsActivity.class));
+                startActivity(new Intent(getContext(), Settings4ParksAndBillingsActivity.class));
             }
         });
         return rootView;
@@ -152,24 +137,34 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         this.order = order;
     }
 
+    public Order getOrder(){
+        return order;
+    }
+
     public void refreshWidgets(Order receivedOrder){
+        //is used to clear widgets if receivedOrder == null
         if (receivedOrder != null) {
+            order = receivedOrder;
+            arrivalDateTime = Calendar.getInstance();
             arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
             etPrice.setText(String.valueOf(receivedOrder.price));
             switch (receivedOrder.typeOfPayment) {
                 case CASH:  typeOfPaymentUI.check(R.id.choiceCash); break;
                 case CARD:  typeOfPaymentUI.check(R.id.choiceCard);  break;
                 case TIP:   typeOfPaymentUI.check(R.id.choiceBonus); break;
-                default:    typeOfPaymentUI.clearCheck();
+                default:    typeOfPaymentUI.check(R.id.choiceCash);
             }
             etNote.setText(receivedOrder.note);
             spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, receivedOrder.taxoparkID);
             spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, receivedOrder.billingID);
         } else{
+            order = null;
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
             typeOfPaymentUI.check(R.id.choiceCash);
             etNote.setText("");
+            spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, -2);
+            spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, 0);
         }
 
         //Nested fragments are only supported when added to a fragment dynamically.
@@ -193,36 +188,41 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GET_DATA_FROM_ORDER_ACTIVITY && resultCode == Activity.RESULT_OK){
-            //когда из таксометра мы будем получать результат, createNewOrder() будет получать дополнительные параметры
+            //когда из таксометра мы будем получать результат, wrapDataIntoOrder() будет получать дополнительные параметры
             int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
             long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);
-            createNewOrder(distance, travelTime);
+            wrapDataIntoOrder(distance, travelTime);
         }
     }
 
-    private void createNewOrder(int distance, long travelTime){
+    private void wrapDataIntoOrder(int distance, long travelTime) {
         int price;
-        try { price = Integer.parseInt(etPrice.getText().toString());
+        try {
+            price = Integer.parseInt(etPrice.getText().toString());
         } catch (NumberFormatException e) {
-            Log.d(LOG_TAG, "NumberFormatException caught while parsing price");
+            Log.d(Constants.LOG_TAG, getResources().getString(R.string.wrongPriceErrMsg));
+            Toast.makeText(getContext(), String.valueOf(getResources().getString(R.string.wrongPriceErrMsg)), Toast.LENGTH_LONG).show();
             price = 0;
         }
         String note;
-        try { note = etNote.getText().toString();
+        try {
+            note = etNote.getText().toString();
         } catch (Exception e) {
-            Log.d(LOG_TAG, "Exception caught while parsing note");
+            Log.d(Constants.LOG_TAG, getResources().getString(R.string.wrongNoteErrMsg));
+            Toast.makeText(getContext(), String.valueOf(getResources().getString(R.string.wrongNoteErrMsg)), Toast.LENGTH_LONG).show();
             note = "";
         }
-        Order newOrder = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
-                distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
-        mListener.addOrder(newOrder);
+        if (order == null) {
+            order = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
+                    distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
+        } else {
+            order.update(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
+                    distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
+        }
+        //fragment does not encapsulate db work. it only gets data from user and wraps it in Order
+        //it doesn't know what to do with Order. this is job for fragment host
+        mListener.addOrder(order);
         refreshWidgets(null);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putLong(DATE_TIME_EXTRA, arrivalDateTime.getTimeInMillis());
     }
 
     public void onDateOrTimeSet(Calendar cal){

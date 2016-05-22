@@ -20,9 +20,7 @@ import tt.richTaxist.Fragments.OrderFragment;
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static Shift currentShift;
-    private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
     private OrdersSource ordersSource;
     private BillingsSource billingsSource;
@@ -38,14 +36,17 @@ public class MainActivity extends AppCompatActivity implements
         billingsSource = new BillingsSource(getApplicationContext());
 
         //фрагментная логика
-        deviceIsInLandscape = (findViewById(R.id.container_orders_list) != null);
-        if (deviceIsInLandscape){
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
             //if deviceIsInLandscape then OrderFragment is statically added
             //we can't statically add OrdersListFragment because OrdersListFragment.adapter.notifyDataSetChanged()
             //doesn't work properly with RecyclerView
+            if (savedInstanceState != null && savedInstanceState.getParcelable(Order.ORDER_KEY) != null) {
+                OrderFragment fragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
+                fragment.setOrder((Order) savedInstanceState.getParcelable(Order.ORDER_KEY));
+            }
             addOrdersListFragment();
         } else {
-            addOrderFragment();
+            addOrderFragment(savedInstanceState);
         }
     }
 
@@ -56,39 +57,50 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    private void addOrderFragment(){
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+    private void addOrderFragment(Bundle savedInstanceState){
         OrderFragment fragment = new OrderFragment();
-        ft.replace(R.id.container_main, fragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        if (savedInstanceState != null && savedInstanceState.getParcelable(Order.ORDER_KEY) != null) {
+            fragment.setOrder((Order) savedInstanceState.getParcelable(Order.ORDER_KEY));
+        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.container_main, fragment, OrderFragment.FRAGMENT_TAG);
+        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
         ft.commit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (deviceIsInLandscape) {
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
             addOrdersListFragment();
         }
     }
 
     @Override
     public void addOrder(Order order){
-        //на входе заказ с id == -1
-        order.orderID = ordersSource.create(order);
+        //order.orderID == -1 if it is newly created order
+        boolean saveSuccess;
+        if (order.orderID == -1) {
+            order.orderID = ordersSource.create(order);
+            saveSuccess = order.orderID != -1;
+        } else {
+            saveSuccess = ordersSource.update(order);
+        }
+        String msg = saveSuccess ? getResources().getString(R.string.orderSaved) : getResources().getString(R.string.orderNotSaved);
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
         currentShift.calculateShiftTotals(0, order.taxoparkID, shiftsSource, ordersSource, billingsSource);
-        if (deviceIsInLandscape) {
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
             addOrdersListFragment();
         }
-        Toast.makeText(getApplicationContext(), "заказ добавлен", Toast.LENGTH_SHORT).show();
     }
 
+    //handles user tap on order in the list
     @Override
     public void returnToOrderFragment(Order order) {
         OrderFragment orderFragment;
-        if (deviceIsInLandscape){
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
             //if deviceIsInLandscape then OrderFragment is statically added
-            orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentByTag(OrderFragment.FRAGMENT_TAG);
+            orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
             orderFragment.setOrder(order);
             orderFragment.refreshWidgets(order);
         } else {
@@ -96,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager().popBackStackImmediate();
             orderFragment = new OrderFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.container_main, orderFragment);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.replace(R.id.container_main, orderFragment, OrderFragment.FRAGMENT_TAG);
+            ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
             ft.commit();
             orderFragment.setOrder(order);
         }
@@ -111,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_show_orders_list).setVisible(!deviceIsInLandscape);
+        menu.findItem(R.id.action_show_orders_list).setVisible(!getResources().getBoolean(R.bool.deviceIsInLandscape));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -129,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements
                         ordersListFragment = new OrdersListFragment();
                         ft.replace(R.id.container_main, ordersListFragment);
                         ft.addToBackStack("OrdersListFragmentTransaction");
-                        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
                         ft.commit();
                     }
                 } else {
@@ -162,6 +174,15 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        OrderFragment fragment = (OrderFragment) getSupportFragmentManager().findFragmentByTag(OrderFragment.FRAGMENT_TAG);
+        if (fragment != null && fragment.getOrder() != null) {
+            outState.putParcelable(Order.ORDER_KEY, fragment.getOrder());
+        }
     }
 
     @Override

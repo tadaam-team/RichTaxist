@@ -11,14 +11,12 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import tt.richTaxist.Bricks.RangeSeekBar;
 import tt.richTaxist.DB.Sources.LocationsSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.gps.google.MapPathActivity;
 
 public class RouteActivity extends FragmentActivity {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private MapPathActivity mapFragment;
     private AsyncTask updateTask;

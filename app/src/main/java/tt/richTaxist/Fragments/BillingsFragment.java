@@ -14,12 +14,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.R;
 
 public class BillingsFragment extends ListFragment {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     ArrayList<Billing> billings = new ArrayList<>();
     private Context context;
     private ArrayAdapter billingsAdapter;

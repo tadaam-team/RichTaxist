@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
-import tt.richTaxist.FirstScreenActivity;
 import tt.richTaxist.gps.google.GoogleMaps;
 import tt.richTaxist.gps.google.MapPathActivity;
 
@@ -21,7 +20,6 @@ public class GPSHelper extends AppCompatActivity {
     public static final int PARAM_DATA = 11;
     public static final int PARAM_RETURN_DATA = 100;
     public static final int LOCATION_UPDATE = 10;
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static boolean serviceStarted = false;
     private static MapProvider mapProvider = new GoogleMaps();
 

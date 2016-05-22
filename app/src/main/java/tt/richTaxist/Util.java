@@ -40,7 +40,6 @@ public class Util {
     // Если плохо, сбрасывать доступ, но так чтобы это отразилось на следующем опросе состояния, а не выкидывать его из платного процесса
 //    public static long sessionLength = 0;
 
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.UK);
 
 
@@ -62,7 +61,7 @@ public class Util {
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             return false;
         }
-//        Log.d(LOG_TAG, "email verified");
+//        Log.d(Constants.LOG_TAG, "email verified");
         //пользователь авторизован и почта подтверждена--------------------------------------------
 
 
@@ -72,7 +71,7 @@ public class Util {
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
             return false;
         }
-//        Log.d(LOG_TAG, "user is premium");
+//        Log.d(Constants.LOG_TAG, "user is premium");
         //пользователь авторизован, почта подтверждена и есть подписка-----------------------------
 
 
@@ -82,10 +81,10 @@ public class Util {
             currentUser.saveInBackground();
             String msg = context.getResources().getString(R.string.IMEIBindedAndGoodDay);
             Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-//            Log.d(LOG_TAG, "IMEI saved");
+//            Log.d(Constants.LOG_TAG, "IMEI saved");
             return true;
         }
-//        Log.d(LOG_TAG, "IMEI not null");
+//        Log.d(Constants.LOG_TAG, "IMEI not null");
         //пользователь авторизован, почта подтверждена, есть подписка и IMEI не пустой-------------
 
 
@@ -115,12 +114,12 @@ public class Util {
             notificationManager.notify(1, notification);
             return false;
         }
-//        Log.d(LOG_TAG, "IMEI check passed");
+//        Log.d(Constants.LOG_TAG, "IMEI check passed");
         //пользователь авторизован, почта подтверждена, есть подписка, IMEI не пустой и проверен---
 
         String msg = String.format(context.getResources().getString(R.string.helloAndGoodDay), user.getUsername());
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-//        Log.d(LOG_TAG, "user has access");
+//        Log.d(Constants.LOG_TAG, "user has access");
         return true;
     }
 
@@ -143,10 +142,10 @@ public class Util {
                 dateToLog.get(Calendar.MONTH) + 1, dateToLog.get(Calendar.YEAR), dateToLog.get(Calendar.HOUR_OF_DAY),
                 dateToLog.get(Calendar.MINUTE), dateToLog.get(Calendar.SECOND));
         if (dateName.length() >= 20) {
-            Log.d(LOG_TAG, dateName + log);
+            Log.d(Constants.LOG_TAG, dateName + log);
         } else {
             while (dateName.length() < 20) dateName += '.';
-            Log.d(LOG_TAG, dateName + log);
+            Log.d(Constants.LOG_TAG, dateName + log);
         }
     }
 
@@ -178,7 +177,7 @@ public class Util {
     //работает только с числом десятичных знаков 0-5
     public static double RoundResult (double value, int decimalSigns) {
         if (decimalSigns < 0 || decimalSigns > 5) {
-            Log.d(LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
+            Log.d(Constants.LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
             if (decimalSigns < 0) decimalSigns = 0;
             if (decimalSigns > 5) decimalSigns = 5;
         }

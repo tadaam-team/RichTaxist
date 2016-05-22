@@ -28,7 +28,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
     static AppCompatActivity activity;
     static Context context;
     public static final String LOG_TAG = "MY_LOG";
-    private boolean deviceIsInLandscape;
     private ShiftsSource shiftsSource;
     private SharedPrefsHelper sharedPrefsHelper;
 
@@ -64,8 +63,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         }
 
         //фрагментная логика
-        deviceIsInLandscape = (findViewById(R.id.container_shifts_list) != null);
-        if (deviceIsInLandscape){
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
             //if deviceIsInLandscape then FirstScreenFragment is statically added
             addShiftsListFragment(false);
         } else {
@@ -87,7 +85,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         if (isListSingleVisible){
             ft.replace(R.id.container_first_screen, fragment);
             ft.addToBackStack("OrdersListFragmentTransaction");
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
             ft.replace(R.id.container_shifts_list, fragment);
         }
@@ -98,7 +96,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         FirstScreenFragment fragment = new FirstScreenFragment();
         ft.replace(R.id.container_first_screen, fragment);
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
         ft.commit();
     }
 
@@ -106,7 +104,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         //TODO: this should be done in callback handler from settings action
-        if (deviceIsInLandscape) {
+        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
             addShiftsListFragment(false);
         }
     }
@@ -137,7 +135,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnOpenShift:
                 //Обработчик нажатия кнопки "Список смен"
-                if (!deviceIsInLandscape) {
+                if (!getResources().getBoolean(R.bool.deviceIsInLandscape)) {
                     if (MainActivity.currentShift != null){
                         addShiftsListFragment(true);
                     } else {

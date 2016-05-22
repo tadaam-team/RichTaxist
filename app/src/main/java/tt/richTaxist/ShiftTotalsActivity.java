@@ -33,7 +33,6 @@ import tt.richTaxist.DB.Tables.ShiftsTable;
  */
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.NumberInputDialogListener {
-    private static final String LOG_TAG = FirstScreenActivity.LOG_TAG;
     public static final String EXTRA_AUTHOR = "author";
     private Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;

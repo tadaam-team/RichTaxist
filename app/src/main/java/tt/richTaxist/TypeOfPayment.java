@@ -1,7 +1,6 @@
-package tt.richTaxist.Enums;
+package tt.richTaxist;
 
 import android.content.Context;
-import tt.richTaxist.R;
 
 public enum TypeOfPayment {
     CASH(0, R.string.payTypeCash),
