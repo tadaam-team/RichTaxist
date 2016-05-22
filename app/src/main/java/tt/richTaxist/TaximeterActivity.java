@@ -44,7 +44,7 @@ public class TaximeterActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order);
+        setContentView(R.layout.activity_taximeter);
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         context = getApplicationContext();
         Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.activity_order));
