@@ -23,7 +23,7 @@ import tt.richTaxist.Constants;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.OrderActivity;
+import tt.richTaxist.TaximeterActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Settings4ParksAndBillingsActivity;
 import tt.richTaxist.Util;
@@ -64,7 +64,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             @Override
             public void onClick(View v) {
                 if (Util.showTaxometer){
-                    startActivityForResult(new Intent(getContext(), OrderActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
+                    startActivityForResult(new Intent(getContext(), TaximeterActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
                 } else {
                     wrapDataIntoOrder(0, 0);
                 }
@@ -183,7 +183,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         }
     }
 
-    //выполняется после возврата из OrderActivity
+    //выполняется после возврата из TaximeterActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);

@@ -125,7 +125,7 @@ public class GPSService extends Service {
                 //Toast.makeText(GPSService.this, "gps servive: change location", Toast.LENGTH_SHORT).show();
 
                 //distanceTextView.setText(String.format("%d km %d m",distance/1000,distance % 1000));
-                //Toast.makeText(OrderActivity.this, "gps status: changed location", Toast.LENGTH_SHORT);
+                //Toast.makeText(TaximeterActivity.this, "gps status: changed location", Toast.LENGTH_SHORT);
             }
 
             @Override

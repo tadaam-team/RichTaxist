@@ -27,7 +27,7 @@ import tt.richTaxist.gps.GPSService;
 /**
  * Created by AlexShredder on 07.07.2015.
  */
-public class OrderActivity extends AppCompatActivity{
+public class TaximeterActivity extends AppCompatActivity{
     static Context context;
     private int distance;
     private long travelTime;
@@ -60,7 +60,7 @@ public class OrderActivity extends AppCompatActivity{
             Log.d(Constants.LOG_TAG, "Ошибка остановки сервиса");
         }
 
-       Intent intent = new Intent(OrderActivity.this, GPSService.class);//.putExtra(GPSHelper.PARAM_PINTENT, pi);
+       Intent intent = new Intent(TaximeterActivity.this, GPSService.class);//.putExtra(GPSHelper.PARAM_PINTENT, pi);
         // стартуем сервис
         //startService(intent);
         serviceConnection = new ServiceConnection() {
@@ -102,7 +102,7 @@ public class OrderActivity extends AppCompatActivity{
         buttonOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View p1) {
-                startActivity(new Intent(OrderActivity.this, GPSHelper.getLocActivityClass()));
+                startActivity(new Intent(TaximeterActivity.this, GPSHelper.getLocActivityClass()));
             }
         });
 

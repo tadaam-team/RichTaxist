@@ -54,7 +54,7 @@
             android:label="@string/appName" >
         </activity>
         <activity
-            android:name=".OrderActivity"
+            android:name=".TaximeterActivity"
             android:label="@string/mainScreenName" >
         </activity>
         <activity
