@@ -1,9 +1,11 @@
 package tt.richTaxist;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -21,6 +23,10 @@ public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
     public static Shift currentShift;
+    private Order currentOrder = null;
+    public final static String CURRENT_ORDER_EXTRA = "currentOrder";
+    private final static int TAXIMETER_CALLBACK = 1111;
+    private final static int ORDERS_LIST_CALLBACK = 2222;
     private ShiftsSource shiftsSource;
     private OrdersSource ordersSource;
     private BillingsSource billingsSource;
@@ -35,19 +41,18 @@ public class MainActivity extends AppCompatActivity implements
         ordersSource = new OrdersSource(getApplicationContext());
         billingsSource = new BillingsSource(getApplicationContext());
 
+        if (savedInstanceState != null) {
+            currentOrder = savedInstanceState.getParcelable(CURRENT_ORDER_EXTRA);
+        }
+
         //фрагментная логика
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
-            //if deviceIsInLandscape then OrderFragment is statically added
+        if (getResources().getBoolean(R.bool.screenWiderThan450)){
+            //TODO: remove
             //we can't statically add OrdersListFragment because OrdersListFragment.adapter.notifyDataSetChanged()
             //doesn't work properly with RecyclerView
-            if (savedInstanceState != null && savedInstanceState.getParcelable(Order.ORDER_KEY) != null) {
-                OrderFragment fragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
-                fragment.setOrder((Order) savedInstanceState.getParcelable(Order.ORDER_KEY));
-            }
             addOrdersListFragment();
-        } else {
-            addOrderFragment(savedInstanceState);
         }
+        showDetails(currentOrder);
     }
 
     private void addOrdersListFragment(){
@@ -57,23 +62,10 @@ public class MainActivity extends AppCompatActivity implements
         ft.commit();
     }
 
-    private void addOrderFragment(Bundle savedInstanceState){
-        OrderFragment fragment = new OrderFragment();
-        if (savedInstanceState != null && savedInstanceState.getParcelable(Order.ORDER_KEY) != null) {
-            fragment.setOrder((Order) savedInstanceState.getParcelable(Order.ORDER_KEY));
-        }
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.container_main, fragment, OrderFragment.FRAGMENT_TAG);
-        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-        ft.commit();
-    }
-
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
-            addOrdersListFragment();
-        }
+    public void returnToOrderFragment(Order selectedOrder) {
+        currentOrder = selectedOrder;
+        showDetails(selectedOrder);
     }
 
     @Override
@@ -89,29 +81,66 @@ public class MainActivity extends AppCompatActivity implements
         String msg = saveSuccess ? getResources().getString(R.string.orderSaved) : getResources().getString(R.string.orderNotSaved);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
         currentShift.calculateShiftTotals(0, order.taxoparkID, shiftsSource, ordersSource, billingsSource);
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
+        if (getResources().getBoolean(R.bool.screenWiderThan450)) {
             addOrdersListFragment();
+        }
+        currentOrder = null;
+    }
+
+    @Override
+    public Order getOrder() {
+        return currentOrder;
+    }
+
+    @Override
+    public void resetOrder() {
+        currentOrder = null;
+    }
+
+    @Override
+    public void startTaximeter(){
+        startActivityForResult(new Intent(this, TaximeterActivity.class), TAXIMETER_CALLBACK);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode, resultCode, data);
+        OrderFragment orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
+        if (orderFragment != null && resultCode == Activity.RESULT_OK) {
+            if (requestCode == TAXIMETER_CALLBACK){
+                //выполняется после возврата из OrdersListActivity
+                int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
+                long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);
+                addOrder(orderFragment.wrapDataIntoOrder(currentOrder, distance, travelTime));
+                currentOrder = null;
+            }
+            if (requestCode == ORDERS_LIST_CALLBACK){
+                //выполняется после возврата из OrdersListActivity
+                Order selectedOrder = data.getParcelableExtra(Order.ORDER_KEY);
+                if (selectedOrder != null) {
+                    showDetails(selectedOrder);
+                }
+            }
         }
     }
 
-    //handles user tap on order in the list
-    @Override
-    public void returnToOrderFragment(Order order) {
-        OrderFragment orderFragment;
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
-            //if deviceIsInLandscape then OrderFragment is statically added
-            orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
-            orderFragment.setOrder(order);
-            orderFragment.refreshWidgets(order);
-        } else {
-            //next line removes record of OrdersListFragmentTransaction from backStack
-            getSupportFragmentManager().popBackStackImmediate();
-            orderFragment = new OrderFragment();
+    private void showDetails(Order order) {
+        currentOrder = order;
+        if (getResources().getBoolean(R.bool.screenWiderThan450)) {
+            //ветка только для планшетов или телефонов в ландшафте. точнее для всего, что имеет ширину экрана 450dp+
+            OrderFragment orderFragment = new OrderFragment();
+            orderFragment.setOrder(currentOrder);
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.container_main, orderFragment, OrderFragment.FRAGMENT_TAG);
+            ft.replace(R.id.container_order, orderFragment);
             ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
             ft.commit();
-            orderFragment.setOrder(order);
+        } else {
+            OrderFragment orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
+            if (orderFragment != null) {
+                orderFragment.setOrder(currentOrder);
+            } else {
+                Log.d(Constants.LOG_TAG, "MainActivity.showDetails() failed to find OrderFragment");
+            }
         }
     }
 
@@ -123,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.action_show_orders_list).setVisible(!getResources().getBoolean(R.bool.deviceIsInLandscape));
+        menu.findItem(R.id.action_show_orders_list).setVisible(!getResources().getBoolean(R.bool.screenWiderThan450));
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -134,16 +163,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_show_orders_list:
                 //item is shown only in portrait
                 if (ordersSource.getOrdersListCount(currentShift.shiftID) != 0){
-                    OrdersListFragment ordersListFragment = (OrdersListFragment)
-                            getSupportFragmentManager().findFragmentByTag(OrdersListFragment.FRAGMENT_TAG);
-                    if (ordersListFragment == null) {
-                        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                        ordersListFragment = new OrdersListFragment();
-                        ft.replace(R.id.container_main, ordersListFragment);
-                        ft.addToBackStack("OrdersListFragmentTransaction");
-                        ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-                        ft.commit();
-                    }
+                    startActivityForResult(new Intent(this, OrdersListActivity.class), ORDERS_LIST_CALLBACK);
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
                 }
@@ -151,26 +171,26 @@ public class MainActivity extends AppCompatActivity implements
 
 
             case R.id.main_menu:
-                startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
+                startActivity(new Intent(this, FirstScreenActivity.class));
                 finish();
                 return true;
 
             case R.id.action_shift_totals:
-                Intent intent = new Intent(getApplicationContext(), ShiftTotalsActivity.class);
+                Intent intent = new Intent(this, ShiftTotalsActivity.class);
                 intent.putExtra("author", "MainActivity");
                 startActivity(intent);
                 finish();
                 return true;
 
             case R.id.action_grand_totals:
-                Intent intent2 = new Intent(getApplicationContext(), GrandTotalsActivity.class);
+                Intent intent2 = new Intent(this, GrandTotalsActivity.class);
                 intent2.putExtra(GrandTotalsActivity.AUTHOR, "MainActivity");
                 startActivity(intent2);
                 finish();
                 return true;
 
             case R.id.action_settings:
-                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -179,19 +199,12 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        OrderFragment fragment = (OrderFragment) getSupportFragmentManager().findFragmentByTag(OrderFragment.FRAGMENT_TAG);
-        if (fragment != null && fragment.getOrder() != null) {
-            outState.putParcelable(Order.ORDER_KEY, fragment.getOrder());
-        }
+        outState.putParcelable(CURRENT_ORDER_EXTRA, currentOrder);
     }
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
-            startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
-            finish();
-        } else {
-            getSupportFragmentManager().popBackStack();
-        }
+        startActivity(new Intent(this, FirstScreenActivity.class));
+        finish();
     }
 }

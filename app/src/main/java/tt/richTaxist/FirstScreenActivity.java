@@ -25,6 +25,7 @@ import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface {
+    //TODO: eliminate this nonsense
     static AppCompatActivity activity;
     static Context context;
     public static final String LOG_TAG = "MY_LOG";
@@ -63,7 +64,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         }
 
         //фрагментная логика
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)){
+        if (getResources().getBoolean(R.bool.screenWiderThan450)){
             //if deviceIsInLandscape then FirstScreenFragment is statically added
             addShiftsListFragment(false);
         } else {
@@ -104,7 +105,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         //TODO: this should be done in callback handler from settings action
-        if (getResources().getBoolean(R.bool.deviceIsInLandscape)) {
+        if (getResources().getBoolean(R.bool.screenWiderThan450)) {
             addShiftsListFragment(false);
         }
     }
@@ -135,7 +136,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnOpenShift:
                 //Обработчик нажатия кнопки "Список смен"
-                if (!getResources().getBoolean(R.bool.deviceIsInLandscape)) {
+                if (!getResources().getBoolean(R.bool.screenWiderThan450)) {
                     if (MainActivity.currentShift != null){
                         addShiftsListFragment(true);
                     } else {

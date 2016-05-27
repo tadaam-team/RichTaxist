@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="tt.richTaxist" >
+<manifest package="tt.richTaxist"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!-- The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but are recommended. -->
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but are recommended.
+    -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_taxi"
         android:label="@string/appName"
-        android:theme="@style/MyMaterialTheme" >
+        android:theme="@style/MyMaterialTheme">
         <activity
             android:name=".FirstScreenActivity"
-            android:label="@string/appName" >
+            android:label="@string/appName">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,49 +30,41 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="@string/mainScreenName" >
-        </activity>
+            android:label="@string/mainScreenName"/>
         <activity
             android:name=".ShiftTotalsActivity"
             android:label="@string/shiftTotalsScreenName"
-            android:windowSoftInputMode="stateAlwaysHidden" >
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".GrandTotalsActivity"
             android:label="@string/grandTotalsScreenName"
-            android:parentActivityName=".FirstScreenActivity">
-        </activity>
+            android:parentActivityName=".FirstScreenActivity"/>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/settingsScreenName" >
-        </activity>
+            android:label="@string/settingsScreenName"/>
         <activity
             android:name=".Settings4ParksAndBillingsActivity"
-            android:label="@string/settingsScreenName" >
-        </activity>
+            android:label="@string/settingsScreenName"/>
         <activity
             android:name=".gps.google.MapMyLocationChangeActivity"
-            android:label="@string/appName" >
-        </activity>
+            android:label="@string/appName"/>
         <activity
             android:name=".TaximeterActivity"
-            android:label="@string/mainScreenName" >
-        </activity>
+            android:label="@string/mainScreenName"/>
         <activity
             android:name=".gps.RouteActivity"
-            android:label="@string/routeMap" >
-        </activity>
+            android:label="@string/routeMap"/>
         <activity
             android:name=".SignInActivity"
-            android:label="@string/userAccountsScreenName" >
-        </activity>
-
+            android:label="@string/userAccountsScreenName"/>
+        <activity
+            android:name=".OrdersListActivity"
+            android:label="@string/ordersList"/>
 
         <service
             android:name=".gps.GPSService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

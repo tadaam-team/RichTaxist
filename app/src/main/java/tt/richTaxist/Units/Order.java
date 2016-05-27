@@ -26,6 +26,7 @@ public class Order implements Parcelable {
     public long orderID;
     public Date arrivalDateTime;
     public int price;
+    //TODO: typeOfPaymentID
     public TypeOfPayment typeOfPayment;
     public long shiftID;
     public String note;
@@ -52,6 +53,7 @@ public class Order implements Parcelable {
         orderID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
         arrivalDateTime = null;
         try {
+            //TODO: cursor.getLong
             arrivalDateTime = Util.dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
         } catch (ParseException e) {
             e.printStackTrace();
@@ -66,21 +68,23 @@ public class Order implements Parcelable {
         billingID = cursor.getLong(cursor.getColumnIndex(BILLING_ID));
     }
 
-    private Order(Parcel in) {
-        orderID = in.readLong();
-        price = in.readInt();
-        shiftID = in.readLong();
-        note = in.readString();
-        distance = in.readInt();
-        travelTime = in.readLong();
-        taxoparkID = in.readLong();
-        billingID = in.readLong();
+    private Order(Parcel parcel) {
+        orderID = parcel.readLong();
+        arrivalDateTime = new Date(parcel.readLong());
+        price = parcel.readInt();
+        typeOfPayment = TypeOfPayment.getById(parcel.readInt());
+        shiftID = parcel.readLong();
+        note = parcel.readString();
+        distance = parcel.readInt();
+        travelTime = parcel.readLong();
+        taxoparkID = parcel.readLong();
+        billingID = parcel.readLong();
     }
 
     public static final Creator<Order> CREATOR = new Creator<Order>() {
         @Override
-        public Order createFromParcel(Parcel in) {
-            return new Order(in);
+        public Order createFromParcel(Parcel parcel) {
+            return new Order(parcel);
         }
 
         @Override
@@ -90,10 +94,10 @@ public class Order implements Parcelable {
     };
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass() || arrivalDateTime == null) return false;
-        Order that = (Order) o;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass() || arrivalDateTime == null) return false;
+        Order that = (Order) obj;
         if (that.arrivalDateTime == null) return false;
         return arrivalDateTime.equals(that.arrivalDateTime);
     }
@@ -142,7 +146,9 @@ public class Order implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeLong(orderID);
+        parcel.writeLong(arrivalDateTime.getTime());
         parcel.writeInt(price);
+        parcel.writeInt(typeOfPayment.id);
         parcel.writeLong(shiftID);
         parcel.writeString(note);
         parcel.writeInt(distance);

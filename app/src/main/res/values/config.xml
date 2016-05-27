@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="bool" name="deviceIsInLandscape">false</item>
+    <item type="bool" name="screenWiderThan450">false</item>
 </resources>

@@ -29,9 +29,6 @@ public class OrdersListFragment extends Fragment {
     private OrdersSource ordersSource;
     private TaxoparksSource taxoparksSource;
     private BillingsSource billingsSource;
-    //TODO: private int currentShiftID;
-
-    public OrdersListFragment() { }
 
     @Override
     public void onAttach(Context context) {
@@ -41,7 +38,7 @@ public class OrdersListFragment extends Fragment {
         billingsSource = new BillingsSource(context.getApplicationContext());
         try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement " + mListener.getClass().getName());
+            throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
         }
     }
 
@@ -102,6 +99,6 @@ public class OrdersListFragment extends Fragment {
     }
 
     public interface OrdersListInterface {
-        void returnToOrderFragment(Order order);
+        void returnToOrderFragment(Order selectedOrder);
     }
 }

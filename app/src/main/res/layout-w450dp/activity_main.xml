@@ -11,11 +11,9 @@
         android:layout_weight="1"
         android:orientation="vertical"/>
 
-    <fragment
-        android:name="tt.richTaxist.Fragments.OrderFragment"
-        android:id="@+id/orderFragment"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        tools:layout="@layout/fragment_order" />
+        android:id="@+id/container_order"/>
 </LinearLayout>

@@ -2,7 +2,6 @@ package tt.richTaxist.Fragments;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -23,23 +22,26 @@ import tt.richTaxist.Constants;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.MainActivity;
-import tt.richTaxist.TaximeterActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Settings4ParksAndBillingsActivity;
 import tt.richTaxist.Util;
 
 public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeButtonsInterface {
-    public static final String FRAGMENT_TAG = "OrderFragment";
     private OrderFragmentInterface mListener;
 
-    private Order order;
     private Calendar arrivalDateTime;
     private RadioGroup typeOfPaymentUI;
     private EditText etPrice, etNote;
     private CustomSpinner spnTaxopark, spnBilling;
-    private final static int GET_DATA_FROM_ORDER_ACTIVITY = 1;
+    //TODO: private int currentShiftID;
 
-    public OrderFragment() { }
+    public void setOrder(Order order){
+        Log.d(Constants.LOG_TAG, "OrderFragment.setOrder() " + String.valueOf(order == null ? "null" : order.price));
+        try { refreshWidgets(order);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -52,6 +54,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(Constants.LOG_TAG, "OrderFragment.onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
 
         typeOfPaymentUI = (RadioGroup)    rootView.findViewById(R.id.payTypeRadioGroup);
@@ -64,9 +67,11 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             @Override
             public void onClick(View v) {
                 if (Util.showTaxometer){
-                    startActivityForResult(new Intent(getContext(), TaximeterActivity.class), GET_DATA_FROM_ORDER_ACTIVITY);
+                    mListener.startTaximeter();
                 } else {
-                    wrapDataIntoOrder(0, 0);
+                    Order order = wrapDataIntoOrder(mListener.getOrder(), 0, 0);
+                    mListener.addOrder(order);
+                    refreshWidgets(null);
                 }
             }
         });
@@ -98,7 +103,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         super.onResume();
         createTaxoparkSpinner();
         createBillingSpinner();
-        refreshWidgets(order);
+        refreshWidgets(mListener.getOrder());
     }
 
     public void createTaxoparkSpinner(){
@@ -129,22 +134,12 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             case R.id.choiceCash:   return TypeOfPayment.CASH;
             case R.id.choiceCard:   return TypeOfPayment.CARD;
             case R.id.choiceBonus:  return TypeOfPayment.TIP;
-            default:                throw new IllegalArgumentException("ошибка обработки типа оплаты");
+            default:                throw new IllegalArgumentException("unknown TypeOfPayment");
         }
     }
 
-    public void setOrder(Order order){
-        this.order = order;
-    }
-
-    public Order getOrder(){
-        return order;
-    }
-
-    public void refreshWidgets(Order receivedOrder){
-        //is used to clear widgets if receivedOrder == null
+    private void refreshWidgets(Order receivedOrder){
         if (receivedOrder != null) {
-            order = receivedOrder;
             arrivalDateTime = Calendar.getInstance();
             arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
             etPrice.setText(String.valueOf(receivedOrder.price));
@@ -158,7 +153,8 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             spnTaxopark.setPositionOfSpinner(TypeOfSpinner.TAXOPARK, receivedOrder.taxoparkID);
             spnBilling.setPositionOfSpinner(TypeOfSpinner.BILLING, receivedOrder.billingID);
         } else{
-            order = null;
+            //is used to clear widgets if receivedOrder == null
+            mListener.resetOrder();
             arrivalDateTime = Calendar.getInstance();
             etPrice.setText("");
             typeOfPaymentUI.check(R.id.choiceCash);
@@ -183,19 +179,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         }
     }
 
-    //выполняется после возврата из TaximeterActivity
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GET_DATA_FROM_ORDER_ACTIVITY && resultCode == Activity.RESULT_OK){
-            //когда из таксометра мы будем получать результат, wrapDataIntoOrder() будет получать дополнительные параметры
-            int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
-            long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);
-            wrapDataIntoOrder(distance, travelTime);
-        }
-    }
-
-    private void wrapDataIntoOrder(int distance, long travelTime) {
+    public Order wrapDataIntoOrder(Order order, int distance, long travelTime) {
         int price;
         try {
             price = Integer.parseInt(etPrice.getText().toString());
@@ -221,8 +205,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         }
         //fragment does not encapsulate db work. it only gets data from user and wraps it in Order
         //it doesn't know what to do with Order. this is job for fragment host
-        mListener.addOrder(order);
-        refreshWidgets(null);
+        return order;
     }
 
     public void onDateOrTimeSet(Calendar cal){
@@ -231,5 +214,8 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
 
     public interface OrderFragmentInterface {
         void addOrder(Order order);
+        Order getOrder();
+        void resetOrder();
+        void startTaximeter();
     }
 }
