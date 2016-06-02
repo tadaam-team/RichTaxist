@@ -94,6 +94,7 @@
     <string name="logIn">Войти</string>
     <string name="claimChangeDevice">Сменить устройство</string>
     <string name="logOut">Выйти</string>
+    <string name="dropDBConfirmation">Удалить все сохраненные смены? Это нельзя отменить!</string>
     <string name="userRegistered">- пользователь зарегистрирован</string>
     <string name="emailVerified">- почта подтверждена</string>
     <string name="IMEICorrect">- IMEI прошел проверку</string>
