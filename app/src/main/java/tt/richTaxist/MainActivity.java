@@ -22,6 +22,7 @@ import tt.richTaxist.Fragments.OrderFragment;
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
+    //TODO: remove static
     public static Shift currentShift;
     private Order currentOrder = null;
     public final static String CURRENT_ORDER_EXTRA = "currentOrder";

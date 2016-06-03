@@ -1,6 +1,5 @@
 package tt.richTaxist;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -25,10 +24,6 @@ import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface {
-    //TODO: eliminate this nonsense
-    static AppCompatActivity activity;
-    static Context context;
-    public static final String LOG_TAG = "MY_LOG";
     private ShiftsSource shiftsSource;
     private SharedPrefsHelper sharedPrefsHelper;
 
@@ -36,9 +31,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_screen);
-        activity = FirstScreenActivity.this;
-        context = getApplicationContext();
-//        Util.measureScreenWidth(context, (ViewGroup) findViewById(R.id.container_first_screen));
 //        GPSHelper.startService(MainActivity.context);
 
         shiftsSource = new ShiftsSource(getApplicationContext());
@@ -50,16 +42,16 @@ public class FirstScreenActivity extends AppCompatActivity implements
             ParseAnalytics.trackAppOpened(getIntent());
             ParseUser.enableAutomaticUser();
         } catch (RuntimeException e){
-            Log.d(LOG_TAG, "Parse already launched");
+            Log.d(Constants.LOG_TAG, "Parse already launched");
         }
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         Util.deviceIMEI = tm.getDeviceId();
-//        Log.d(LOG_TAG, "IMEI: " + Util.deviceIMEI);
+//        Log.d(Constants.LOG_TAG, "IMEI: " + Util.deviceIMEI);
 
         if (Util.currentUser == null) {
             // Отправляем данные на Parse.com для проверки только если юзер еще не авторизован
-            Log.d(LOG_TAG, "username: " + Util.username + ", password: " + Util.password);
+            Log.d(Constants.LOG_TAG, "username: " + Util.username + ", password: " + Util.password);
             authorize();
         }
 
@@ -115,22 +107,22 @@ public class FirstScreenActivity extends AppCompatActivity implements
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
                 if (MainActivity.currentShift != null){
-                    Intent intent = new Intent(activity, ShiftTotalsActivity.class);
+                    Intent intent = new Intent(this, ShiftTotalsActivity.class);
                     intent.putExtra("author", "FirstScreenActivity");
                     startActivity(intent);
-                    Log.d(LOG_TAG, "открываю последнюю сохранённую смену");
+                    Log.d(Constants.LOG_TAG, "открываю последнюю сохранённую смену");
                     finish();
                 }
                 else
-                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnNewShift:
                 Shift shift = new Shift();
                 shift.shiftID = shiftsSource.create(shift);
                 MainActivity.currentShift = shift;
-                startActivity(new Intent(activity, MainActivity.class));
-                Log.d(LOG_TAG, "открываю новую смену");
+                startActivity(new Intent(this, MainActivity.class));
+                Log.d(Constants.LOG_TAG, "открываю новую смену");
                 finish();
                 break;
 
@@ -140,41 +132,41 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     if (MainActivity.currentShift != null){
                         addShiftsListFragment(true);
                     } else {
-                        Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(activity, R.string.allowedOnlyInPortraitMSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.allowedOnlyInPortraitMSG, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.btnSettings:
-                startActivity(new Intent(activity, SettingsActivity.class));
-                Log.d(LOG_TAG, "открываю настройки");
+                startActivity(new Intent(this, SettingsActivity.class));
+                Log.d(Constants.LOG_TAG, "открываю настройки");
                 break;
 
             case R.id.btnSignIn:
-                startActivity(new Intent(activity, SignInActivity.class));
-                Log.d(LOG_TAG, "открываю экран учетных записей");
+                startActivity(new Intent(this, SignInActivity.class));
+                Log.d(Constants.LOG_TAG, "открываю экран учетных записей");
                 break;
 
             case R.id.btnRoute:
                 if (MainActivity.currentShift != null) {
-                    startActivity(new Intent(activity, RouteActivity.class));
-                    Log.d(LOG_TAG, "открываю карту маршрута смены");
+                    startActivity(new Intent(this, RouteActivity.class));
+                    Log.d(Constants.LOG_TAG, "открываю карту маршрута смены");
                 }
                 else
-                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnGrandTotals:
                 if (MainActivity.currentShift != null){
-                    Intent intent = new Intent(activity, GrandTotalsActivity.class);
+                    Intent intent = new Intent(this, GrandTotalsActivity.class);
                     intent.putExtra(GrandTotalsActivity.AUTHOR, "FirstScreenActivity");
                     startActivity(intent);
-                    Log.d(LOG_TAG, "открываю итоги по зарплате");
+                    Log.d(Constants.LOG_TAG, "открываю итоги по зарплате");
                 }
                 else
-                    Toast.makeText(activity, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btnExit:
@@ -196,7 +188,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     Util.userHasAccess = Util.verifyUser(user, getApplicationContext());
                     Util.saveSettingsToCloud();
                 } else {
-                    Log.d(LOG_TAG, "error code " + error.getCode());
+                    Log.d(Constants.LOG_TAG, "error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
                         case 100: msg = getResources().getString(R.string.noInternetMSG); break;
