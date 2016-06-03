@@ -77,7 +77,7 @@ public class DateTimeButtons extends Fragment implements DatePickerDialog.OnDate
                 TimePickerDialog timePD = TimePickerDialog.newInstance(timeSetListener,
                         dateTimeLocal.get(Calendar.HOUR_OF_DAY), dateTimeLocal.get(Calendar.MINUTE), true, false);
                 timePD.setVibrate(false);
-                timePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
+                timePD.setCloseOnSingleTapMinute(Util.singleTapTimePick);
                 timePD.show(getChildFragmentManager(), "timepicker");
             }
         });

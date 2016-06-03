@@ -41,8 +41,8 @@
                 <ToggleButton
                     android:id="@+id/tbTimePickClicks"
                     style="@style/ToggleButtonBordered"
-                    android:textOff="@string/singleTapTimePick"
-                    android:textOn="@string/twoTapTimePick"
+                    android:textOff="@string/twoTapTimePick"
+                    android:textOn="@string/singleTapTimePick"
                     android:layout_width="0dp" android:layout_height="60dp" android:layout_weight="1"
                     android:onClick="onTBTimePickClicksClick"
                     android:layout_gravity="center_vertical"/>

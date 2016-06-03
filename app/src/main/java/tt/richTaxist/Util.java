@@ -30,7 +30,7 @@ public class Util {
     public static Boolean premiumUser = false;
     public static Boolean emailVerified = false;
     public static Boolean youngIsOnTop = true;
-    public static Boolean twoTapTimePick = true;
+    public static Boolean singleTapTimePick = false;
     public static Boolean showTaxometer = false;
 
     public static String deviceIMEI = "";
@@ -50,7 +50,7 @@ public class Util {
         premiumUser     = user.getBoolean("premiumUser");
         emailVerified   = user.getBoolean("emailVerified");
         youngIsOnTop    = user.getBoolean("youngIsOnTop");
-        twoTapTimePick  = user.getBoolean("twoTapTimePick");
+        singleTapTimePick = user.getBoolean("singleTapTimePick");
         showTaxometer = user.getBoolean("showTaxometer");
 
         //если письмо с подтверждением не пришло, то оно не может быть запрошено повторно, т.к. юзер уже в базе
@@ -154,7 +154,7 @@ public class Util {
             currentUser.put("premiumUser", premiumUser);
             //emailVerified не отправляем в облако, т.к. эта информация генерируется там
             currentUser.put("youngIsOnTop", youngIsOnTop);
-            currentUser.put("twoTapTimePick", twoTapTimePick);
+            currentUser.put("singleTapTimePick", singleTapTimePick);
             currentUser.put("showTaxometer", showTaxometer);
             currentUser.put("userHasAccess", userHasAccess);
             //userHasAccess отправляется в облако только как индикатор для нас. из облака в прогу оно не подгружается!
@@ -166,12 +166,12 @@ public class Util {
         currentUser = null;
         username = "";
         password = "";
-        premiumUser     = false;
-        emailVerified   = false;
-        youngIsOnTop    = true;
-        twoTapTimePick  = true;
+        premiumUser = false;
+        emailVerified = false;
+        youngIsOnTop = true;
+        singleTapTimePick = true;
         showTaxometer = false;
-        userHasAccess   = false;
+        userHasAccess = false;
     }
 
     //работает только с числом десятичных знаков 0-5

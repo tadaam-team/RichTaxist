@@ -112,7 +112,7 @@ public class SignInActivity extends AppCompatActivity {
         user.put("IMEI", Util.deviceIMEI);
         user.put("premiumUser", Util.premiumUser);
         user.put("youngIsOnTop", Util.youngIsOnTop);
-        user.put("twoTapTimePick", Util.twoTapTimePick);
+        user.put("singleTapTimePick", Util.singleTapTimePick);
         user.put("showTaxometer", Util.showTaxometer);
         user.put("userHasAccess", Util.userHasAccess);
 

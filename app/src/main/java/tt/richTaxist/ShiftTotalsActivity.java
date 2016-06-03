@@ -145,7 +145,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener,
                         rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
-                startTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
+                startTimePD.setCloseOnSingleTapMinute(Util.singleTapTimePick);
                 startTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonShiftStartTime";
             }
@@ -168,7 +168,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener,
                         rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
-                endTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
+                endTimePD.setCloseOnSingleTapMinute(Util.singleTapTimePick);
                 endTimePD.show(getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonShiftEndTime";
             }
@@ -309,7 +309,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         createTaxoparkSpinner();
     }
 
-    //TODO: проверить, унифицированы ли остальные спиннеры
     private void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

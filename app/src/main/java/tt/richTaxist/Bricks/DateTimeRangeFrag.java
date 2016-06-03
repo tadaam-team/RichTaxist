@@ -98,7 +98,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 TimePickerDialog startTimePD = TimePickerDialog.newInstance(timeSetListener, rangeStart.get(Calendar.HOUR_OF_DAY), rangeStart.get(Calendar.MINUTE), true, false);
                 startTimePD.setVibrate(false);
-                startTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
+                startTimePD.setCloseOnSingleTapMinute(Util.singleTapTimePick);
                 startTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeStartTime";
             }
@@ -119,7 +119,7 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             public void onClick(View v) {
                 TimePickerDialog endTimePD = TimePickerDialog.newInstance(timeSetListener, rangeEnd.get(Calendar.HOUR_OF_DAY), rangeEnd.get(Calendar.MINUTE), true, false);
                 endTimePD.setVibrate(false);
-                endTimePD.setCloseOnSingleTapMinute(Util.twoTapTimePick);
+                endTimePD.setCloseOnSingleTapMinute(Util.singleTapTimePick);
                 endTimePD.show(mActivity.getSupportFragmentManager(), "timepicker");
                 clickedButtonID = "buttonRangeEndTime";
             }

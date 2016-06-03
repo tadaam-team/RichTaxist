@@ -3,6 +3,7 @@ package tt.richTaxist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ToggleButton;
@@ -16,7 +17,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         //applying saved settings state to controls when opening screen
         setToggleButtonState(R.id.tbListsSortOrder, Util.youngIsOnTop);
-        setToggleButtonState(R.id.tbTimePickClicks, Util.twoTapTimePick);
+        setToggleButtonState(R.id.tbTimePickClicks, Util.singleTapTimePick);
         setToggleButtonState(R.id.tbShowTaxometer, Util.showTaxometer);
     }
 
@@ -34,7 +35,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public void onTBTimePickClicksClick(View view) {
-        Util.twoTapTimePick = ((ToggleButton) view).isChecked();
+        Util.singleTapTimePick = ((ToggleButton) view).isChecked();
+        Log.d(Constants.LOG_TAG, "Util.singleTapTimePick: " + String.valueOf(Util.singleTapTimePick));
         Util.saveSettingsToCloud();
     }
 
