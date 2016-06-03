@@ -6,12 +6,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout.LayoutParams;
 import tt.richTaxist.R;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
     private FirstScreenInterface mListener;
-    //TODO: скрывать кнопку "список смен" if (getResources().getBoolean(R.bool.screenWiderThan450))
 
     public FirstScreenFragment() {
     }
@@ -31,15 +31,20 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
         LayoutParams layoutParams = new LayoutParams(0, LayoutParams.MATCH_PARENT, 2.0f);
         rootView.setLayoutParams(layoutParams);
 
-        (rootView.findViewById(R.id.btnOpenLastShift))  .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnNewShift))       .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnOpenShift))      .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnSettings))       .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnSignIn))         .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnChat))           .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnRoute))          .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnGrandTotals))    .setOnClickListener(this);
-        (rootView.findViewById(R.id.btnExit))           .setOnClickListener(this);
+        (rootView.findViewById(R.id.btnOpenLastShift)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnNewShift)).setOnClickListener(this);
+        Button btnOpenShift = (Button) rootView.findViewById(R.id.btnOpenShift);
+        if (!getResources().getBoolean(R.bool.screenWiderThan450)) {
+            btnOpenShift.setOnClickListener(this);
+        } else {
+            btnOpenShift.setEnabled(false);
+        }
+        (rootView.findViewById(R.id.btnSettings)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnSignIn)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnChat)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnRoute)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnGrandTotals)).setOnClickListener(this);
+        (rootView.findViewById(R.id.btnExit)).setOnClickListener(this);
 
         return rootView;
     }
