@@ -1,5 +1,7 @@
 package tt.richTaxist;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,6 +15,8 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+import tt.richTaxist.Bricks.SingleChoiceListDF;
+import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
@@ -23,7 +27,8 @@ import tt.richTaxist.gps.GPSHelper;
 import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
-        FirstScreenFragment.FirstScreenInterface {
+        FirstScreenFragment.FirstScreenInterface,
+        SingleChoiceListDF.SingleChoiceListDFInterface{
     private ShiftsSource shiftsSource;
 
     @Override
@@ -74,11 +79,11 @@ public class FirstScreenActivity extends AppCompatActivity implements
         ShiftsListFragment fragment = new ShiftsListFragment();
         fragment.setSoloView(isListSingleVisible);
         if (isListSingleVisible){
-            ft.replace(R.id.container_first_screen, fragment);
+            ft.replace(R.id.container_first_screen, fragment, ShiftsListFragment.TAG);
             ft.addToBackStack("OrdersListFragmentTransaction");
             ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
-            ft.replace(R.id.container_shifts_list, fragment);
+            ft.replace(R.id.container_shifts_list, fragment, ShiftsListFragment.TAG);
         }
         ft.commit();
     }
@@ -178,6 +183,60 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 Toast.makeText(getApplicationContext(), "кнопка не определена", Toast.LENGTH_LONG).show();
                 break;
         }
+    }
+
+    @Override
+    public void getSelectedAction(long selectedShiftID, int selectedActionID, int positionInRVList) {
+        Shift selectedShift = shiftsSource.getShiftByID(selectedShiftID);
+        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
+
+        switch (selectedActionID){
+            case 0://править
+                if (selectedShift != null) {
+                    Intent intent = new Intent(this, ShiftTotalsActivity.class);
+                    intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
+                    intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+
+            case 1://показать подробности
+                Toast.makeText(this, selectedShift.getDescription(this), Toast.LENGTH_LONG).show();
+                break;
+
+            case 2://удалить
+                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
+                    deleteShift(selectedShift, positionInRVList);
+                } else {
+                    openShiftDeleteDialog(selectedShift, positionInRVList);
+                }
+                break;
+        }
+    }
+
+    private void openShiftDeleteDialog(final Shift shift, final int positionInRVList) {
+        AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
+        quitDialog.setTitle(R.string.shiftNotEmptyMSG);
+        quitDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteShift(shift, positionInRVList);
+            }
+        });
+        quitDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {/*NOP*/}
+        });
+        quitDialog.show();
+    }
+
+    private void deleteShift(Shift shift, int positionInRVList){
+        shiftsSource.remove(shift);
+        ShiftsListFragment shiftsListFragment = (ShiftsListFragment) getSupportFragmentManager()
+                .findFragmentByTag(ShiftsListFragment.TAG);
+        shiftsListFragment.rvAdapter.removeObject(shift, positionInRVList);
+        Toast.makeText(this, R.string.shiftDeletedMSG, Toast.LENGTH_SHORT).show();
     }
 
     public void authorize(){

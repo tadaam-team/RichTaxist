@@ -1,7 +1,5 @@
 package tt.richTaxist.Fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
+import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.Constants;
-import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
@@ -33,13 +30,13 @@ import tt.richTaxist.Units.Shift;
  * Created by TAU on 18.04.2016.
  */
 public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.DateTimeRangeFragInterface {
+    public static final String TAG = "ShiftsListFragment";
     private FragmentActivity mActivity;
-    private RecyclerViewAdapter rvAdapter;
+    public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private DateTimeRangeFrag dateTimeRangeFrag;
     private boolean isListSingleVisible;
     private ShiftsSource shiftsSource;
-    private OrdersSource ordersSource;
 
     @Nullable
     @Override
@@ -49,7 +46,6 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
         shiftsSource = new ShiftsSource(getContext());
-        ordersSource = new OrdersSource(getContext());
         createDateTimeRangeFrag();
 
         //we don't need to update shiftsList hence we don't use rvAdapter.notifyDataSetChanged()
@@ -71,20 +67,15 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             }
 
             @Override
-            public void onClickMore(Object selectedObject) {
+            public void onClickMore(Object selectedObject, int positionInRVList) {
                 Shift selectedShift = (Shift) selectedObject;
-                Toast.makeText(getContext(), selectedShift.getDescription(getContext()), Toast.LENGTH_LONG).show();
+                SingleChoiceListDF dialog = new SingleChoiceListDF();
+                Bundle args = new Bundle();
+                args.putLong(Constants.OBJECT_ID_EXTRA, selectedShift.shiftID);
+                args.putInt(Constants.POSITION_EXTRA, positionInRVList);
+                dialog.setArguments(args);
+                dialog.show(getChildFragmentManager(), "SingleChoiceListDF");
             }
-
-//            @Override
-//            public void onClickDelete(Object selectedObject) {
-//                Shift selectedShift = (Shift) selectedObject;
-//                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
-//                    deleteShift(selectedShift);
-//                } else {
-//                    openShiftDeleteDialog(selectedShift);
-//                }
-//            }
         });
         return rootView;
     }
@@ -112,28 +103,6 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
 
     public void setSoloView(boolean isListSingleVisible){
         this.isListSingleVisible = isListSingleVisible;
-    }
-
-    private void openShiftDeleteDialog(final Shift shift) {
-        AlertDialog.Builder quitDialog = new AlertDialog.Builder(mActivity);
-        quitDialog.setTitle(R.string.shiftNotEmptyMSG);
-        quitDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                deleteShift(shift);
-            }
-        });
-        quitDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {/*NOP*/}
-        });
-        quitDialog.show();
-    }
-
-    private void deleteShift(Shift shift){
-        shiftsSource.remove(shift);
-        rvAdapter.removeObject(shift);
-        Toast.makeText(mActivity, R.string.shiftDeletedMSG, Toast.LENGTH_SHORT).show();
     }
 
     @Override

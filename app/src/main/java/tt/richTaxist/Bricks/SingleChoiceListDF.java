@@ -15,6 +15,7 @@ import tt.richTaxist.R;
 public class SingleChoiceListDF extends DialogFragment {
     private SingleChoiceListDFInterface mListener;
     private long selectedObjectID;
+    private int positionInRVList;
 
     @Override
     public void onAttach(Context context) {
@@ -24,6 +25,7 @@ public class SingleChoiceListDF extends DialogFragment {
             throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
         }
         selectedObjectID = getArguments().getLong(Constants.OBJECT_ID_EXTRA, -1);
+        positionInRVList = getArguments().getInt(Constants.POSITION_EXTRA, -1);
     }
 
     @NonNull
@@ -34,13 +36,13 @@ public class SingleChoiceListDF extends DialogFragment {
                 .setItems(R.array.shiftOrOrderAction, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position of the selected item
-                        mListener.getSelectedAction(selectedObjectID, which);
+                        mListener.getSelectedAction(selectedObjectID, which, positionInRVList);
                     }
                 });
         return builder.create();
     }
 
     public interface SingleChoiceListDFInterface{
-        void getSelectedAction(long selectedObjectID, int selectedActionID);
+        void getSelectedAction(long selectedObjectID, int selectedActionID, int positionInRVList);
     }
 }

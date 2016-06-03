@@ -93,7 +93,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClickMore(objects.get(holder.getAdapterPosition()));
+                    listener.onClickMore(objects.get(holder.getAdapterPosition()), holder.getAdapterPosition());
                 }
             }
         });
@@ -110,9 +110,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         notifyDataSetChanged();
     }
 
-    public void removeObject(Object object){
+    public void removeObject(Object object, int positionInRVList){
         objects.remove(object);
-        notifyDataSetChanged();
+        notifyItemRemoved(positionInRVList);
     }
 
     public void setListener(Listener listener){
@@ -121,7 +121,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public interface Listener {
         void onClick(Object selectedObject);
-        void onClickMore(Object selectedObject);
+        void onClickMore(Object selectedObject, int positionInRVList);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void getSelectedAction(long selectedOrderID, int selectedActionID) {
+    public void getSelectedAction(long selectedOrderID, int selectedActionID, int positionInRVList) {
         OrdersSource ordersSource = new OrdersSource(getApplicationContext());
         Order selectedOrder = ordersSource.getOrderByID(selectedOrderID);
         OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case 2://удалить
                 ordersSource.remove(selectedOrder);
-                ordersListFragment.rvAdapter.removeObject(selectedOrder);
+                ordersListFragment.rvAdapter.removeObject(selectedOrder, positionInRVList);
                 Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                 break;
         }

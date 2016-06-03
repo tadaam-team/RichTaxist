@@ -26,7 +26,6 @@ public class OrdersListFragment extends Fragment {
     public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private OrdersSource ordersSource;
-    private Order selectedOrder;
 
     @Override
     public void onAttach(Context context) {
@@ -58,11 +57,12 @@ public class OrdersListFragment extends Fragment {
             }
 
             @Override
-            public void onClickMore(Object selectedObject) {
-                selectedOrder = (Order) selectedObject;
+            public void onClickMore(Object selectedObject, int positionInRVList) {
+                Order selectedOrder = (Order) selectedObject;
                 SingleChoiceListDF dialog = new SingleChoiceListDF();
                 Bundle args = new Bundle();
                 args.putLong(Constants.OBJECT_ID_EXTRA, selectedOrder.orderID);
+                args.putInt(Constants.POSITION_EXTRA, positionInRVList);
                 dialog.setArguments(args);
                 dialog.show(getChildFragmentManager(), "SingleChoiceListDF");
             }

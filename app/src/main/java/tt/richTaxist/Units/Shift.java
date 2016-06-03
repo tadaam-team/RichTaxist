@@ -67,6 +67,20 @@ public class Shift {
         travelTime            = cursor.getInt(cursor.getColumnIndex(TRAVEL_TIME));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass() || shiftID == -1) return false;
+        Shift that = (Shift) obj;
+        if (that.shiftID == -1) return false;
+        return shiftID == that.shiftID;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (shiftID != -1 ? 31 * shiftID : 0);
+    }
+
     public void closeShift(ShiftsSource shiftsSource) {
         this.endShift = new Date();
         //в этой точке бензин уже введен и итоги уже рассчитаны
