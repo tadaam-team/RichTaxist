@@ -22,12 +22,8 @@ import tt.richTaxist.Fragments.OrderFragment;
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
         OrdersListFragment.OrdersListInterface {
-    //TODO: remove static
-    public static Shift currentShift;
+    private Shift currentShift;
     private Order currentOrder = null;
-    public final static String CURRENT_ORDER_EXTRA = "currentOrder";
-    private final static int TAXIMETER_CALLBACK = 1111;
-    private final static int ORDERS_LIST_CALLBACK = 2222;
     private ShiftsSource shiftsSource;
     private OrdersSource ordersSource;
     private BillingsSource billingsSource;
@@ -42,8 +38,21 @@ public class MainActivity extends AppCompatActivity implements
         ordersSource = new OrdersSource(getApplicationContext());
         billingsSource = new BillingsSource(getApplicationContext());
 
-        if (savedInstanceState != null) {
-            currentOrder = savedInstanceState.getParcelable(CURRENT_ORDER_EXTRA);
+        if (savedInstanceState == null) {
+            //при первом создании активити прочитаем интент и найдем смену в БД или создадим новую смену
+            long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
+            if (shiftID != -1){
+                currentShift = shiftsSource.getShiftByID(shiftID);
+            } else {
+                Shift shift = new Shift();
+                shift.shiftID = shiftsSource.create(shift);
+                currentShift = shift;
+            }
+        } else {
+            //если активити пересоздается, читаем текущую смену и заказ из savedInstanceState
+            long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA, -1);
+            currentShift = shiftsSource.getShiftByID(shiftID);
+            currentOrder = savedInstanceState.getParcelable(Constants.CURRENT_ORDER_EXTRA);
         }
 
         //фрагментная логика
@@ -71,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void addOrder(Order order){
-        //order.orderID == -1 if it is newly created order
+        //if it is newly created order than order.orderID == -1
         boolean saveSuccess;
         if (order.orderID == -1) {
             order.orderID = ordersSource.create(order);
@@ -100,7 +109,12 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void startTaximeter(){
-        startActivityForResult(new Intent(this, TaximeterActivity.class), TAXIMETER_CALLBACK);
+        startActivityForResult(new Intent(this, TaximeterActivity.class), Constants.TAXIMETER_CALLBACK);
+    }
+
+    @Override
+    public long getCurrentShiftId() {
+        return currentShift.shiftID;
     }
 
     @Override
@@ -108,14 +122,14 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         OrderFragment orderFragment = (OrderFragment) getSupportFragmentManager().findFragmentById(R.id.orderFragment);
         if (orderFragment != null && resultCode == Activity.RESULT_OK) {
-            if (requestCode == TAXIMETER_CALLBACK){
+            if (requestCode == Constants.TAXIMETER_CALLBACK){
                 //выполняется после возврата из OrdersListActivity
                 int distance = data.getIntExtra(Order.PARAM_DISTANCE, 0);
                 long travelTime = data.getIntExtra(Order.PARAM_TRAVEL_TIME, 0);
                 addOrder(orderFragment.wrapDataIntoOrder(currentOrder, distance, travelTime));
                 currentOrder = null;
             }
-            if (requestCode == ORDERS_LIST_CALLBACK){
+            if (requestCode == Constants.ORDERS_LIST_CALLBACK){
                 //выполняется после возврата из OrdersListActivity
                 Order selectedOrder = data.getParcelableExtra(Order.ORDER_KEY);
                 if (selectedOrder != null) {
@@ -164,7 +178,9 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_show_orders_list:
                 //item is shown only in portrait
                 if (ordersSource.getOrdersListCount(currentShift.shiftID) != 0){
-                    startActivityForResult(new Intent(this, OrdersListActivity.class), ORDERS_LIST_CALLBACK);
+                    Intent intent = new Intent(this, OrdersListActivity.class);
+                    intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
+                    startActivityForResult(intent, Constants.ORDERS_LIST_CALLBACK);
                 } else {
                     Toast.makeText(getApplicationContext(), R.string.noOrdersMSG, Toast.LENGTH_SHORT).show();
                 }
@@ -178,14 +194,15 @@ public class MainActivity extends AppCompatActivity implements
 
             case R.id.action_shift_totals:
                 Intent intent = new Intent(this, ShiftTotalsActivity.class);
-                intent.putExtra("author", "MainActivity");
+                intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
+                intent.putExtra(Constants.AUTHOR_EXTRA, "MainActivity");
                 startActivity(intent);
                 finish();
                 return true;
 
             case R.id.action_grand_totals:
                 Intent intent2 = new Intent(this, GrandTotalsActivity.class);
-                intent2.putExtra(GrandTotalsActivity.AUTHOR, "MainActivity");
+                intent2.putExtra(Constants.AUTHOR_EXTRA, "MainActivity");
                 startActivity(intent2);
                 finish();
                 return true;
@@ -200,7 +217,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(CURRENT_ORDER_EXTRA, currentOrder);
+        outState.putLong(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
+        outState.putParcelable(Constants.CURRENT_ORDER_EXTRA, currentOrder);
     }
 
     @Override

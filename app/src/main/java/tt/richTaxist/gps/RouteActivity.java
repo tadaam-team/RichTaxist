@@ -10,7 +10,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import tt.richTaxist.Bricks.RangeSeekBar;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.Sources.LocationsSource;
+import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
@@ -21,6 +23,7 @@ public class RouteActivity extends FragmentActivity {
     private MapPathActivity mapFragment;
     private AsyncTask updateTask;
     private LocationsSource locationsSource;
+    private Shift currentShift;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,17 @@ public class RouteActivity extends FragmentActivity {
         ft.add(R.id.mapFragment, mapFragment);
         ft.commit();
 
-        final Shift currentShift = MainActivity.currentShift;
+        ShiftsSource shiftsSource = new ShiftsSource(getApplicationContext());
+        if (savedInstanceState == null) {
+            //при первом создании активити прочитаем интент и найдем смену в БД
+            long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
+            if (shiftID != -1){
+                currentShift = shiftsSource.getShiftByID(shiftID);
+            }
+        } else {
+            long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA);
+            currentShift = shiftsSource.getShiftByID(shiftID);
+        }
 
         //add RangeSeekBar to map window
         final Calendar rangeStart = Calendar.getInstance();
@@ -49,7 +62,7 @@ public class RouteActivity extends FragmentActivity {
         tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
         tvRangeEnd  .setText(getStringDateTimeFromCal(rangeEnd));
 
-        final RangeSeekBar<Long> seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), RouteActivity.this);
+        final RangeSeekBar<Long> seekBar = new RangeSeekBar<>(rangeStart.getTimeInMillis(), rangeEnd.getTimeInMillis(), this);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Long>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Long minValue, Long maxValue) {
@@ -155,5 +168,11 @@ public class RouteActivity extends FragmentActivity {
      */
     private void setUpMap() {
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
     }
 }

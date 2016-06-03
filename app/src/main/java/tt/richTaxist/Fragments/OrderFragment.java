@@ -33,7 +33,6 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
     private RadioGroup typeOfPaymentUI;
     private EditText etPrice, etNote;
     private CustomSpinner spnTaxopark, spnBilling;
-    //TODO: private int currentShiftID;
 
     public void setOrder(Order order){
         Log.d(Constants.LOG_TAG, "OrderFragment.setOrder() " + String.valueOf(order == null ? "null" : order.price));
@@ -197,10 +196,10 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             note = "";
         }
         if (order == null) {
-            order = new Order(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
+            order = new Order(arrivalDateTime.getTime(), price, getRadioState(), mListener.getCurrentShiftId(), note,
                     distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         } else {
-            order.update(arrivalDateTime.getTime(), price, getRadioState(), MainActivity.currentShift.shiftID, note,
+            order.update(arrivalDateTime.getTime(), price, getRadioState(), mListener.getCurrentShiftId(), note,
                     distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         }
         //fragment does not encapsulate db work. it only gets data from user and wraps it in Order
@@ -217,5 +216,6 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         Order getOrder();
         void resetOrder();
         void startTaximeter();
+        long getCurrentShiftId();
     }
 }

@@ -63,6 +63,10 @@
     <string name="summInputMsg">Enter summ</string>
     <string name="ok" translatable="false">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="actualPetrolNotSet">You haven\'t stated actually spent petrol</string>
+    <string name="ignore">Ignore</string>
+    <string name="goBack">Go back</string>
+    <string name="inputError">Input error</string>
 
     <string name="settingsScreenName">Settings</string>
     <string name="listsSortOrder">List sort order</string>

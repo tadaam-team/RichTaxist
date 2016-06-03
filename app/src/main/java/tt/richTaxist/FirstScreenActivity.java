@@ -25,7 +25,6 @@ import tt.richTaxist.gps.RouteActivity;
 public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface {
     private ShiftsSource shiftsSource;
-    private SharedPrefsHelper sharedPrefsHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +33,6 @@ public class FirstScreenActivity extends AppCompatActivity implements
 //        GPSHelper.startService(MainActivity.context);
 
         shiftsSource = new ShiftsSource(getApplicationContext());
-        MainActivity.currentShift = shiftsSource.getLastShift();
         loadSharedPrefs();
 
         try {
@@ -57,7 +55,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
         //фрагментная логика
         if (getResources().getBoolean(R.bool.screenWiderThan450)){
-            //if deviceIsInLandscape then FirstScreenFragment is statically added
+            //if screenWiderThan450 then FirstScreenFragment is statically added
             addShiftsListFragment(false);
         } else {
             addFirstScreenFragment();
@@ -65,7 +63,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     }
 
     private void loadSharedPrefs(){
-        sharedPrefsHelper = new SharedPrefsHelper(PreferenceManager.getDefaultSharedPreferences(this));
+        SharedPrefsHelper sharedPrefsHelper = new SharedPrefsHelper(PreferenceManager.getDefaultSharedPreferences(this));
         SharedPrefEntry sharedPrefEntry = sharedPrefsHelper.getPersonalInfo();
         Util.username = sharedPrefEntry.getName();
         Util.password = sharedPrefEntry.getPassword();
@@ -104,23 +102,22 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
     @Override
     public void onButtonSelected(int buttonIndex){
+        Shift lastShift = shiftsSource.getLastShift();
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
-                if (MainActivity.currentShift != null){
+                if (lastShift != null){
                     Intent intent = new Intent(this, ShiftTotalsActivity.class);
-                    intent.putExtra("author", "FirstScreenActivity");
+                    intent.putExtra(Constants.SHIFT_ID_EXTRA, lastShift.shiftID);
+                    intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
                     startActivity(intent);
                     Log.d(Constants.LOG_TAG, "открываю последнюю сохранённую смену");
                     finish();
-                }
-                else
+                } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.btnNewShift:
-                Shift shift = new Shift();
-                shift.shiftID = shiftsSource.create(shift);
-                MainActivity.currentShift = shift;
                 startActivity(new Intent(this, MainActivity.class));
                 Log.d(Constants.LOG_TAG, "открываю новую смену");
                 finish();
@@ -129,7 +126,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnOpenShift:
                 //Обработчик нажатия кнопки "Список смен"
                 if (!getResources().getBoolean(R.bool.screenWiderThan450)) {
-                    if (MainActivity.currentShift != null){
+                    if (lastShift != null){
                         addShiftsListFragment(true);
                     } else {
                         Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
@@ -150,23 +147,26 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case R.id.btnRoute:
-                if (MainActivity.currentShift != null) {
-                    startActivity(new Intent(this, RouteActivity.class));
+                //TODO: запуск RouteActivity нужно вынести в ShiftsListFragment чтобы маршрут был доступен для любой смены
+                if (lastShift != null) {
+                    Intent intent3 = new Intent(this, RouteActivity.class);
+                    intent3.putExtra(Constants.SHIFT_ID_EXTRA, lastShift.shiftID);
+                    startActivity(intent3);
                     Log.d(Constants.LOG_TAG, "открываю карту маршрута смены");
-                }
-                else
+                } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.btnGrandTotals:
-                if (MainActivity.currentShift != null){
-                    Intent intent = new Intent(this, GrandTotalsActivity.class);
-                    intent.putExtra(GrandTotalsActivity.AUTHOR, "FirstScreenActivity");
-                    startActivity(intent);
+                if (lastShift != null){
+                    Intent intent2 = new Intent(this, GrandTotalsActivity.class);
+                    intent2.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
+                    startActivity(intent2);
                     Log.d(Constants.LOG_TAG, "открываю итоги по зарплате");
-                }
-                else
+                } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.btnExit:

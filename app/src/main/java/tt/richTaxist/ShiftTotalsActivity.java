@@ -26,20 +26,18 @@ import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.Units.Shift;
-import tt.richTaxist.DB.Tables.ShiftsTable;
 
 /**
  * Created by Tau on 27.06.2015.
  */
 public class ShiftTotalsActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener, DF_NumberInput.NumberInputDialogListener {
-    public static final String EXTRA_AUTHOR = "author";
     private Shift currentShift;
     private DatePickerDialog.OnDateSetListener dateSetListener;
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private Calendar shiftStart, shiftEnd;
     private String clickedButtonID;
-    private String author;
+    private String author = "";
 
     private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime,
             tv_petrol, tv_carRent, buttonContinueShift;
@@ -57,15 +55,28 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shift_totals);
         Util.measureScreenWidth(this, (ViewGroup) findViewById(R.id.activity_shift_totals));
-        dateSetListener = ShiftTotalsActivity.this;
-        timeSetListener = ShiftTotalsActivity.this;
+        dateSetListener = this;
+        timeSetListener = this;
 
         shiftsSource = new ShiftsSource(getApplicationContext());
         ordersSource = new OrdersSource(getApplicationContext());
         billingsSource = new BillingsSource(getApplicationContext());
 
         locale = getResources().getConfiguration().locale;
-        currentShift = MainActivity.currentShift;
+        if (savedInstanceState == null) {
+            //при первом создании активити прочитаем интент и найдем смену в БД
+            long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
+            author = getIntent().getStringExtra(Constants.AUTHOR_EXTRA);
+            if (shiftID != -1){
+                currentShift = shiftsSource.getShiftByID(shiftID);
+            }
+        } else {
+            //если активити пересоздается, читаем текущую смену и автора из savedInstanceState
+            long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA);
+            currentShift = shiftsSource.getShiftByID(shiftID);
+            author = savedInstanceState.getString(Constants.AUTHOR_EXTRA);
+        }
+
         if (currentShift != null) {
             currentShift.calculateShiftTotals(0, 0, shiftsSource, ordersSource, billingsSource);
         }
@@ -87,8 +98,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         }
         createButtons(shiftStart, shiftEnd);
         refreshSTControls();
-        if (getIntent() != null) author = getIntent().getStringExtra("author");
-        else author = "";
     }
 
     @Override
@@ -98,12 +107,14 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     }
 
     public void onButtonExitToMainMenuClick(View button) {
-        startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
+        startActivity(new Intent(this, FirstScreenActivity.class));
         finish();
     }
 
     public void onContinueShiftClick(View v) {
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
+        startActivity(intent);
         finish();
     }
 
@@ -197,7 +208,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 shiftEnd.set(Calendar.MINUTE, minute);
                 updateShiftTime(shiftEnd, currentShift.endShift);
                 break;
-            default: Toast.makeText(getApplicationContext(), "ошибка ввода", Toast.LENGTH_SHORT).show(); break;
+            default:
+                Toast.makeText(getApplicationContext(), getString(R.string.inputError), Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -229,8 +242,8 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         if (goingToCloseShift) {
             if (!currentShift.petrolFilledByHands){
                 AlertDialog.Builder quitDialog = new AlertDialog.Builder(this);
-                quitDialog.setTitle("Вы не записали фактически потраченный бензин");
-                quitDialog.setPositiveButton("Игнорировать", new DialogInterface.OnClickListener() {
+                quitDialog.setTitle(getString(R.string.actualPetrolNotSet));
+                quitDialog.setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         currentShift.closeShift(shiftsSource);
@@ -239,7 +252,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                         buttonContinueShift.setEnabled(false);
                     }
                 });
-                quitDialog.setNegativeButton("Вернуться", new DialogInterface.OnClickListener() {
+                quitDialog.setNegativeButton(getString(R.string.goBack), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         buttonShiftIsClosed.setChecked(false);
@@ -296,6 +309,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         createTaxoparkSpinner();
     }
 
+    //TODO: проверить, унифицированы ли остальные спиннеры
     private void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -311,10 +325,10 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     }
 
     private void refreshSTControls(){
-        buttonShiftStartDate    .setText(getStringDateFromCal(shiftStart));
-        buttonShiftEndDate      .setText(getStringDateFromCal(shiftEnd));
-        buttonShiftStartTime    .setText(getStringTimeFromCal(shiftStart));
-        buttonShiftEndTime      .setText(getStringTimeFromCal(shiftEnd));
+        buttonShiftStartDate    .setText(Util.getStringDateFromCal(shiftStart, getApplicationContext()));
+        buttonShiftEndDate      .setText(Util.getStringDateFromCal(shiftEnd, getApplicationContext()));
+        buttonShiftStartTime    .setText(Util.getStringTimeFromCal(shiftStart, getApplicationContext()));
+        buttonShiftEndTime      .setText(Util.getStringTimeFromCal(shiftEnd, getApplicationContext()));
 
         tv_revenueOfficial      .setText(String.format(locale, "%,d", currentShift.revenueOfficial));
         tv_revenueCash          .setText(String.format(locale, "%,d", currentShift.revenueCash));
@@ -340,26 +354,20 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         }
         buttonShiftIsClosed.setChecked(currentShift.isClosed());
     }
-    private String getStringDateFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format(locale, "%02d.%02d.%02d", cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH) + 1,
-                cal.get(Calendar.YEAR) % 100);
-    }
-    private String getStringTimeFromCal(Calendar date){
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTimeInMillis());
-        return String.format(locale, "%02d:%02d", cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
+        outState.putString(Constants.AUTHOR_EXTRA, author);
+    }
 
     @Override
     public void onBackPressed() {
         if (author.equals("FirstScreenActivity")) {
-            startActivity(new Intent(getApplicationContext(), FirstScreenActivity.class));
-        }
-        else if (author.equals("MainActivity")) {
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(this, FirstScreenActivity.class));
+        } else if (author.equals("MainActivity")) {
+            startActivity(new Intent(this, MainActivity.class));
         }
         finish();
     }

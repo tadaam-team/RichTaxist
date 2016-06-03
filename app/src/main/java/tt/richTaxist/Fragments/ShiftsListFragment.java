@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +21,18 @@ import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DateTimeRangeFrag;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.ShiftTotalsActivity;
 import tt.richTaxist.Util;
 import tt.richTaxist.Units.Shift;
-
 /**
  * Created by TAU on 18.04.2016.
  */
-
 public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.DateTimeRangeFragInterface {
-    public static final String FRAGMENT_TAG = "ShiftsListFragment";
     private FragmentActivity mActivity;
     private RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
@@ -64,11 +60,10 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
         rvAdapter.setListener(new RecyclerViewAdapter.Listener() {
             @Override
             public void onClick(Object selectedObject) {
-                //TODO: rough violation of encapsulation
-                MainActivity.currentShift = (Shift) selectedObject;
+                Shift selectedShift = (Shift) selectedObject;
                 Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
-                intent.putExtra(ShiftTotalsActivity.EXTRA_AUTHOR, "FirstScreenActivity");
-//                TODO: intent.putExtra("selectedShiftId", selectedShift.shiftID);
+                intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
+                intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
                 getActivity().startActivity(intent);//возможно достаточно startActivity(intent)
 
                 //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран

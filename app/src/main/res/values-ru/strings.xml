@@ -60,6 +60,10 @@
     <string name="shiftIsClosed">Смена закрыта</string>
     <string name="summInputMsg">Введите сумму</string>
     <string name="cancel">Отмена</string>
+    <string name="actualPetrolNotSet">Вы не записали фактически потраченный бензин</string>
+    <string name="ignore">Игнорировать</string>
+    <string name="goBack">Вернуться</string>
+    <string name="inputError">Ошибка ввода</string>
 
     <string name="settingsScreenName">Настройки</string>
     <string name="listsSortOrder">Сортировка списков</string>

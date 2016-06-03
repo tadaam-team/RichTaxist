@@ -11,6 +11,7 @@ import tt.richTaxist.R;
 
 public class FirstScreenFragment extends Fragment implements View.OnClickListener {
     private FirstScreenInterface mListener;
+    //TODO: скрывать кнопку "список смен" if (getResources().getBoolean(R.bool.screenWiderThan450))
 
     public FirstScreenFragment() {
     }

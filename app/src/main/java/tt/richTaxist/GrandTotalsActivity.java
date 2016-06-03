@@ -26,7 +26,6 @@ import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.Units.Shift;
 
 public class GrandTotalsActivity extends AppCompatActivity {
-    public static final String AUTHOR = "author";
     private Shift firstShift, lastShift;
 
     private int revenueOfficial, revenueCash, revenueCard, revenueBonus, petrol,
@@ -56,7 +55,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         initiateWidgets();
 
         if (getIntent() != null){
-            author = getIntent().getStringExtra(AUTHOR);
+            author = getIntent().getStringExtra(Constants.AUTHOR_EXTRA);
         }
         EventBus.getDefault().register(this);
     }
@@ -144,8 +143,10 @@ public class GrandTotalsActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
-                Shift selectedShift = shiftsSource.getShiftByItsStart(((TextView) itemSelected).getText().toString());
-                EventBus.getDefault().postSticky(new SpinnerEvent(spinnerRefersToFirstShift, selectedShift));
+                if (itemSelected != null) {
+                    Shift selectedShift = shiftsSource.getShiftByItsStart(((TextView) itemSelected).getText().toString());
+                    EventBus.getDefault().postSticky(new SpinnerEvent(spinnerRefersToFirstShift, selectedShift));
+                }
                 calculateGrandTotals();
                 refreshGTControls();
             }

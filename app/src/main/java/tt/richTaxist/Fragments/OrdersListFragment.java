@@ -16,13 +16,11 @@ import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.TaxoparksSource;
-import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.Units.Order;
 
 public class OrdersListFragment extends Fragment {
-    public static final String FRAGMENT_TAG = "OrdersListFragment";
     private OrdersListInterface mListener;
     private RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
@@ -48,7 +46,7 @@ public class OrdersListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
-        ArrayList<Order> ordersList = ordersSource.getOrdersList(MainActivity.currentShift.shiftID, spnTaxopark.getSelectedItemId());
+        ArrayList<Order> ordersList = ordersSource.getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.getSelectedItemId());
         rvAdapter = new RecyclerViewAdapter(ordersList, RecyclerViewAdapter.AdapterDataType.ORDER);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -91,7 +89,7 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                rvAdapter.setObjects(ordersSource.getOrdersList(MainActivity.currentShift.shiftID, spnTaxopark.taxoparkID));
+                rvAdapter.setObjects(ordersSource.getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.taxoparkID));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
@@ -100,5 +98,6 @@ public class OrdersListFragment extends Fragment {
 
     public interface OrdersListInterface {
         void returnToOrderFragment(Order selectedOrder);
+        long getCurrentShiftId();
     }
 }
