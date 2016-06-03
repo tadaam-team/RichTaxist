@@ -27,8 +27,8 @@ public class ShiftsTable {
     public static final String TRAVEL_TIME             = "travelTime";
 
     public static final String FIELDS = MySQLHelper.PRIMARY_KEY
-            + BEGIN_SHIFT               + " NUMERIC, "
-            + END_SHIFT                 + " NUMERIC, "
+            + BEGIN_SHIFT               + " TEXT, "
+            + END_SHIFT                 + " TEXT, "
             + REVENUE_OFFICIAL          + " INTEGER,"
             + REVENUE_CASH              + " INTEGER,"
             + REVENUE_CARD              + " INTEGER,"

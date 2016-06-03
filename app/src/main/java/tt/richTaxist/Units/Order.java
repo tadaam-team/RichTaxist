@@ -53,7 +53,6 @@ public class Order implements Parcelable {
         orderID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
         arrivalDateTime = null;
         try {
-            //TODO: cursor.getLong
             arrivalDateTime = Util.dateFormat.parse(cursor.getString(cursor.getColumnIndex(ARRIVAL_DATE_TIME)));
         } catch (ParseException e) {
             e.printStackTrace();

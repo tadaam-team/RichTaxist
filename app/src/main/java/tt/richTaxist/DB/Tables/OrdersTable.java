@@ -22,7 +22,7 @@ public class OrdersTable {
     public OrdersTable() { } //table cannot be instantiated
 
     public static final String FIELDS = MySQLHelper.PRIMARY_KEY
-            + ARRIVAL_DATE_TIME + " NUMERIC, "
+            + ARRIVAL_DATE_TIME + " TEXT, "
             + PRICE             + " INTEGER, "
             + TYPE_OF_PAYMENT   + " INTEGER, "
             + SHIFT_ID          + " INTEGER, "

@@ -14,7 +14,7 @@ public class LocationsTable {
     public static final String LAT = "lat";
 
     public static final String FIELDS = MySQLHelper.PRIMARY_KEY
-            + DATE_TIME + " NUMERIC, "
+            + DATE_TIME + " TEXT, "
             + LON + " REAL, "
             + LAT + " REAL";
 
