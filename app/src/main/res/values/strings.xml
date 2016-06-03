@@ -158,4 +158,12 @@
     <string name="textExampleAdditional">text example additional</string>
 
     <string name="defaultTaxoparkName">Taksi Helsinki</string>
+
+
+    <string name="chooseShiftOrOrderAction">Choose action</string>
+    <string-array name="shiftOrOrderAction">
+        <item>Edit</item>
+        <item>Show details</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

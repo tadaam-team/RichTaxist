@@ -88,22 +88,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             }
         });
 
-        ImageView descriptionIcon = (ImageView) cardView.findViewById(R.id.descriptionIcon);
-        descriptionIcon.setOnClickListener(new View.OnClickListener() {
+        ImageView moreIcon = (ImageView) cardView.findViewById(R.id.moreIcon);
+        moreIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClickDescription(objects.get(holder.getAdapterPosition()));
-                }
-            }
-        });
-
-        ImageView deleteIcon = (ImageView) cardView.findViewById(R.id.deleteIcon);
-        deleteIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener != null) {
-                    listener.onClickDelete(objects.get(holder.getAdapterPosition()));
+                    listener.onClickMore(objects.get(holder.getAdapterPosition()));
                 }
             }
         });
@@ -131,8 +121,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public interface Listener {
         void onClick(Object selectedObject);
-        void onClickDescription(Object selectedObject);
-        void onClickDelete(Object selectedObject);
+        void onClickMore(Object selectedObject);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

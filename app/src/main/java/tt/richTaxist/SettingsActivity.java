@@ -21,7 +21,7 @@ public class SettingsActivity extends AppCompatActivity {
         setToggleButtonState(R.id.tbShowTaxometer, Util.showTaxometer);
     }
 
-    //it is important to remember that default of ToggleButton.isChecked() is false. text of defaulf is textOff
+    //it is important to remember that default of ToggleButton.isChecked() is false. text of default is textOff
     private void setToggleButtonState(int tbID, boolean state){
         ToggleButton tb = ((ToggleButton) findViewById(tbID));
         if (tb != null) {
@@ -36,7 +36,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void onTBTimePickClicksClick(View view) {
         Util.singleTapTimePick = ((ToggleButton) view).isChecked();
-        Log.d(Constants.LOG_TAG, "Util.singleTapTimePick: " + String.valueOf(Util.singleTapTimePick));
         Util.saveSettingsToCloud();
     }
 

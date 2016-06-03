@@ -51,18 +51,8 @@
 
 
         <ImageView
-            android:id="@+id/descriptionIcon"
-            android:src="@drawable/ic_description_black"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp" />
-
-        <ImageView
-            android:id="@+id/deleteIcon"
-            android:src="@drawable/ic_delete_black"
+            android:id="@+id/moreIcon"
+            android:src="@drawable/ic_more_horiz_black_48dp"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="2dp"

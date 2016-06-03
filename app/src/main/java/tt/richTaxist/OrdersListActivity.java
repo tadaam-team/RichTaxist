@@ -3,13 +3,19 @@ package tt.richTaxist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+import tt.richTaxist.Bricks.SingleChoiceListDF;
+import tt.richTaxist.DB.Sources.BillingsSource;
+import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.Sources.TaxoparksSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
 
 public class OrdersListActivity extends AppCompatActivity implements
-        OrdersListFragment.OrdersListInterface {
+        OrdersListFragment.OrdersListInterface,
+        SingleChoiceListDF.SingleChoiceListDFInterface {
     private Shift currentShift;
 
     @Override
@@ -32,7 +38,8 @@ public class OrdersListActivity extends AppCompatActivity implements
             // During initial setup, plug in the details fragment.
             OrdersListFragment ordersListFragment = new OrdersListFragment();
             //activity, containing only one fragment doesn't need a layout
-            getSupportFragmentManager().beginTransaction().add(android.R.id.content, ordersListFragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, ordersListFragment, OrdersListFragment.TAG).commit();
         }
     }
 
@@ -51,6 +58,34 @@ public class OrdersListActivity extends AppCompatActivity implements
             return currentShift.shiftID;
         } else {
             return -1;
+        }
+    }
+
+    @Override
+    public void getSelectedAction(long selectedOrderID, int selectedActionID) {
+        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
+        Order selectedOrder = ordersSource.getOrderByID(selectedOrderID);
+        OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
+                .findFragmentByTag(OrdersListFragment.TAG);
+
+        switch (selectedActionID){
+            case 0://править
+                if (selectedOrder != null) {
+                    returnToOrderFragment(selectedOrder);
+                }
+                break;
+
+            case 1://показать подробности
+                TaxoparksSource taxoparksSource = new TaxoparksSource(getApplicationContext());
+                BillingsSource billingsSource = new BillingsSource(getApplicationContext());
+                Toast.makeText(this, selectedOrder.getDescription(this, taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
+                break;
+
+            case 2://удалить
+                ordersSource.remove(selectedOrder);
+                ordersListFragment.rvAdapter.removeObject(selectedOrder);
+                Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 }

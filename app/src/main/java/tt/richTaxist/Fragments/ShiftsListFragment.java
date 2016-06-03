@@ -71,20 +71,20 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             }
 
             @Override
-            public void onClickDescription(Object selectedObject) {
+            public void onClickMore(Object selectedObject) {
                 Shift selectedShift = (Shift) selectedObject;
                 Toast.makeText(getContext(), selectedShift.getDescription(getContext()), Toast.LENGTH_LONG).show();
             }
 
-            @Override
-            public void onClickDelete(Object selectedObject) {
-                Shift selectedShift = (Shift) selectedObject;
-                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
-                    deleteShift(selectedShift);
-                } else {
-                    openShiftDeleteDialog(selectedShift);
-                }
-            }
+//            @Override
+//            public void onClickDelete(Object selectedObject) {
+//                Shift selectedShift = (Shift) selectedObject;
+//                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
+//                    deleteShift(selectedShift);
+//                } else {
+//                    openShiftDeleteDialog(selectedShift);
+//                }
+//            }
         });
         return rootView;
     }

@@ -9,9 +9,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.Sources.TaxoparksSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
@@ -21,11 +23,13 @@ import tt.richTaxist.Fragments.OrderFragment;
  */
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
-        OrdersListFragment.OrdersListInterface {
+        OrdersListFragment.OrdersListInterface,
+        SingleChoiceListDF.SingleChoiceListDFInterface{
     private Shift currentShift;
     private Order currentOrder = null;
     private ShiftsSource shiftsSource;
     private OrdersSource ordersSource;
+    private TaxoparksSource taxoparksSource;
     private BillingsSource billingsSource;
 
     @Override
@@ -36,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
 
         shiftsSource = new ShiftsSource(getApplicationContext());
         ordersSource = new OrdersSource(getApplicationContext());
+        taxoparksSource = new TaxoparksSource(getApplicationContext());
         billingsSource = new BillingsSource(getApplicationContext());
 
         if (savedInstanceState == null) {
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements
     private void addOrdersListFragment(){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         OrdersListFragment fragment = new OrdersListFragment();
-        ft.replace(R.id.container_orders_list, fragment);
+        ft.replace(R.id.container_orders_list, fragment, OrdersListFragment.TAG);
         ft.commit();
     }
 
@@ -136,6 +141,32 @@ public class MainActivity extends AppCompatActivity implements
                     showDetails(selectedOrder);
                 }
             }
+        }
+    }
+
+    @Override
+    public void getSelectedAction(long selectedOrderID, int selectedActionID) {
+        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
+        Order selectedOrder = ordersSource.getOrderByID(selectedOrderID);
+        OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
+                .findFragmentByTag(OrdersListFragment.TAG);
+
+        switch (selectedActionID){
+            case 0://править
+                if (selectedOrder != null) {
+                    showDetails(selectedOrder);
+                }
+                break;
+
+            case 1://показать подробности
+                Toast.makeText(this, selectedOrder.getDescription(this, taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
+                break;
+
+            case 2://удалить
+                ordersSource.remove(selectedOrder);
+                ordersListFragment.rvAdapter.removeObject(selectedOrder);
+                Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 

@@ -13,27 +13,25 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
-import tt.richTaxist.DB.Sources.BillingsSource;
+import tt.richTaxist.Bricks.SingleChoiceListDF;
+import tt.richTaxist.Constants;
 import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.TaxoparksSource;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.Units.Order;
 
 public class OrdersListFragment extends Fragment {
+    public static final String TAG = "OrdersListFragment";
     private OrdersListInterface mListener;
-    private RecyclerViewAdapter rvAdapter;
+    public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private OrdersSource ordersSource;
-    private TaxoparksSource taxoparksSource;
-    private BillingsSource billingsSource;
+    private Order selectedOrder;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         ordersSource = new OrdersSource(context.getApplicationContext());
-        taxoparksSource = new TaxoparksSource(context.getApplicationContext());
-        billingsSource = new BillingsSource(context.getApplicationContext());
         try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
@@ -60,17 +58,13 @@ public class OrdersListFragment extends Fragment {
             }
 
             @Override
-            public void onClickDescription(Object selectedObject) {
-                Order selectedOrder = (Order) selectedObject;
-                Toast.makeText(getContext(), selectedOrder.getDescription(getContext(), taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onClickDelete(Object selectedObject) {
-                Order selectedOrder = (Order) selectedObject;
-                ordersSource.remove(selectedOrder);
-                rvAdapter.removeObject(selectedOrder);
-                Toast.makeText(getContext(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
+            public void onClickMore(Object selectedObject) {
+                selectedOrder = (Order) selectedObject;
+                SingleChoiceListDF dialog = new SingleChoiceListDF();
+                Bundle args = new Bundle();
+                args.putLong(Constants.OBJECT_ID_EXTRA, selectedOrder.orderID);
+                dialog.setArguments(args);
+                dialog.show(getChildFragmentManager(), "SingleChoiceListDF");
             }
         });
 

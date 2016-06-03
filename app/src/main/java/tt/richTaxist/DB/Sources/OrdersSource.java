@@ -159,4 +159,16 @@ public class OrdersSource {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
     }
+
+    public Order getOrderByID(long orderID) {
+        Order order = null;
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + BaseColumns._ID + "='" + String.valueOf(orderID) + "'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            order = new Order(cursor);
+        }
+        cursor.close();
+        return order;
+    }
 }
