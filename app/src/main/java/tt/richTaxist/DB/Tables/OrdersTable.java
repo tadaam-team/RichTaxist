@@ -39,7 +39,7 @@ public class OrdersTable {
         }
         cv.put(ARRIVAL_DATE_TIME, Util.dateFormat.format(order.arrivalDateTime));
         cv.put(PRICE, order.price);
-        cv.put(TYPE_OF_PAYMENT, order.typeOfPayment.id);
+        cv.put(TYPE_OF_PAYMENT, order.typeOfPaymentID);
         cv.put(SHIFT_ID, order.shiftID);
         cv.put(DISTANCE, order.shiftID);
         cv.put(TRAVEL_TIME, order.shiftID);

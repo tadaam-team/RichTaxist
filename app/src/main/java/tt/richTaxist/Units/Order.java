@@ -14,6 +14,7 @@ import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
 import java.text.ParseException;
+import java.util.Locale;
 import static tt.richTaxist.DB.Tables.OrdersTable.*;
 /**
  * Created by Tau on 27.06.2015.
@@ -26,8 +27,7 @@ public class Order implements Parcelable {
     public long orderID;
     public Date arrivalDateTime;
     public int price;
-    //TODO: typeOfPaymentID
-    public TypeOfPayment typeOfPayment;
+    public long typeOfPaymentID;
     public long shiftID;
     public String note;
     public int distance;
@@ -35,12 +35,12 @@ public class Order implements Parcelable {
     public long taxoparkID;
     public long billingID;
 
-    public Order(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, long shiftID, String note,
+    public Order(Date arrivalDateTime, int price, long typeOfPaymentID, long shiftID, String note,
                  int distance, long travelTime, long taxoparkID, long billingID) {
         this.orderID = -1;//необходимо для использования автоинкремента id новой записи в sql
         this.arrivalDateTime = arrivalDateTime;
         this.price           = price;
-        this.typeOfPayment   = typeOfPayment;
+        this.typeOfPaymentID = typeOfPaymentID;
         this.shiftID         = shiftID;
         this.note            = note;
         this.distance        = distance;
@@ -58,7 +58,7 @@ public class Order implements Parcelable {
             e.printStackTrace();
         }
         price = cursor.getInt(cursor.getColumnIndex(PRICE));
-        typeOfPayment = TypeOfPayment.getById(cursor.getInt(cursor.getColumnIndex(TYPE_OF_PAYMENT)));
+        typeOfPaymentID = cursor.getLong(cursor.getColumnIndex(TYPE_OF_PAYMENT));
         shiftID = cursor.getLong(cursor.getColumnIndex(SHIFT_ID));
         note = cursor.getString(cursor.getColumnIndex(NOTE));
         distance = cursor.getInt(cursor.getColumnIndex(DISTANCE));
@@ -71,7 +71,7 @@ public class Order implements Parcelable {
         orderID = parcel.readLong();
         arrivalDateTime = new Date(parcel.readLong());
         price = parcel.readInt();
-        typeOfPayment = TypeOfPayment.getById(parcel.readInt());
+        typeOfPaymentID = parcel.readLong();
         shiftID = parcel.readLong();
         note = parcel.readString();
         distance = parcel.readInt();
@@ -106,11 +106,11 @@ public class Order implements Parcelable {
         return arrivalDateTime != null ? 31 * Integer.parseInt(arrivalDateTime.toString()) : 0;
     }
 
-    public void update(Date arrivalDateTime, int price, TypeOfPayment typeOfPayment, long shiftID, String note,
+    public void update(Date arrivalDateTime, int price, long typeOfPaymentID, long shiftID, String note,
         int distance, long travelTime, long taxoparkID, long billingID) {
             this.arrivalDateTime = arrivalDateTime;
             this.price           = price;
-            this.typeOfPayment   = typeOfPayment;
+            this.typeOfPaymentID = typeOfPaymentID;
             this.shiftID         = shiftID;
             this.note            = note;
             this.distance        = distance;
@@ -123,16 +123,16 @@ public class Order implements Parcelable {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
         Resources res = context.getResources();
-        String text = String.format(res.getString(R.string.arrivalDateTime) + ": %02d.%02d.%02d %02d:%02d,\n" +
-                        res.getString(R.string.price) + ": %d, " +
-                        res.getString(R.string.payType) + ": %s,\n" +
-                        res.getString(R.string.taxopark) + ": %s, " +
-                        res.getString(R.string.billing) + ": %s",
+        Locale locale = res.getConfiguration().locale;
+        String text = String.format(locale, res.getString(R.string.orderDescriptionFormatter),
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price, typeOfPayment.getDescription(context),
+                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price,
+                TypeOfPayment.getById(typeOfPaymentID).getDescription(context),
                 taxoparksSource.getTaxoparkByID(taxoparkID),
                 billingsSource.getBillingByID(billingID));
-        if (!"".equals(note)) text += String.format(",\n" + res.getString(R.string.note) + ": %s", note);
+        if (!"".equals(note)) {
+            text += String.format(locale, res.getString(R.string.noteFormatter), note);
+        }
         return text;
     }
 
@@ -147,7 +147,7 @@ public class Order implements Parcelable {
         parcel.writeLong(orderID);
         parcel.writeLong(arrivalDateTime.getTime());
         parcel.writeInt(price);
-        parcel.writeInt(typeOfPayment.id);
+        parcel.writeLong(typeOfPaymentID);
         parcel.writeLong(shiftID);
         parcel.writeString(note);
         parcel.writeInt(distance);

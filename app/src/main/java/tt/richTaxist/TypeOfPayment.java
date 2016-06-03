@@ -7,7 +7,7 @@ public enum TypeOfPayment {
     CARD(1, R.string.payTypeCard),
     TIP(2, R.string.payTypeTip);
 
-    public final int id;
+    public final long id;
     private final int captionId;
 
     TypeOfPayment(int id, int captionId) {
@@ -15,7 +15,7 @@ public enum TypeOfPayment {
         this.captionId = captionId;
     }
 
-    public static TypeOfPayment getById(int id) {
+    public static TypeOfPayment getById(long id) {
         for (TypeOfPayment x : TypeOfPayment.values()) {
             if (x.id == id) return x;
         }

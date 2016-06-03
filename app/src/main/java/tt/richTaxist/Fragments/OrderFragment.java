@@ -21,7 +21,6 @@ import tt.richTaxist.Bricks.DateTimeButtons;
 import tt.richTaxist.Constants;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.TypeOfPayment;
-import tt.richTaxist.MainActivity;
 import tt.richTaxist.R;
 import tt.richTaxist.Settings4ParksAndBillingsActivity;
 import tt.richTaxist.Util;
@@ -142,7 +141,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             arrivalDateTime = Calendar.getInstance();
             arrivalDateTime.setTime(receivedOrder.arrivalDateTime);
             etPrice.setText(String.valueOf(receivedOrder.price));
-            switch (receivedOrder.typeOfPayment) {
+            switch (TypeOfPayment.getById(receivedOrder.typeOfPaymentID)) {
                 case CASH:  typeOfPaymentUI.check(R.id.choiceCash); break;
                 case CARD:  typeOfPaymentUI.check(R.id.choiceCard);  break;
                 case TIP:   typeOfPaymentUI.check(R.id.choiceBonus); break;
@@ -196,10 +195,10 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
             note = "";
         }
         if (order == null) {
-            order = new Order(arrivalDateTime.getTime(), price, getRadioState(), mListener.getCurrentShiftId(), note,
+            order = new Order(arrivalDateTime.getTime(), price, getRadioState().id, mListener.getCurrentShiftId(), note,
                     distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         } else {
-            order.update(arrivalDateTime.getTime(), price, getRadioState(), mListener.getCurrentShiftId(), note,
+            order.update(arrivalDateTime.getTime(), price, getRadioState().id, mListener.getCurrentShiftId(), note,
                     distance, travelTime, spnTaxopark.taxoparkID, spnBilling.billingID);
         }
         //fragment does not encapsulate db work. it only gets data from user and wraps it in Order

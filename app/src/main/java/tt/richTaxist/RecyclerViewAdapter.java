@@ -56,9 +56,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 entryIcon.setImageResource(R.drawable.ic_lock_open_black);
             }
         } else if (order != null) {
-            if (TypeOfPayment.CASH.equals(order.typeOfPayment))  entryIcon.setImageResource(R.drawable.ic_cash);
-            if (TypeOfPayment.CARD.equals(order.typeOfPayment))  entryIcon.setImageResource(R.drawable.ic_card);
-            if (TypeOfPayment.TIP.equals(order.typeOfPayment))   entryIcon.setImageResource(R.drawable.ic_tip);
+            if (TypeOfPayment.CASH.id == order.typeOfPaymentID)  entryIcon.setImageResource(R.drawable.ic_cash);
+            if (TypeOfPayment.CARD.id == order.typeOfPaymentID)  entryIcon.setImageResource(R.drawable.ic_card);
+            if (TypeOfPayment.TIP.id == order.typeOfPaymentID)   entryIcon.setImageResource(R.drawable.ic_tip);
         }
 
         //установим, какие данные из Shift/Order отобразятся в полях списка

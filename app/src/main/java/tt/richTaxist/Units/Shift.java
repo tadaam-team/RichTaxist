@@ -11,8 +11,10 @@ import tt.richTaxist.DB.Sources.BillingsSource;
 import tt.richTaxist.DB.Sources.OrdersSource;
 import tt.richTaxist.DB.Sources.ShiftsSource;
 import tt.richTaxist.R;
+import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.Util;
 import java.text.ParseException;
+import java.util.Locale;
 import static tt.richTaxist.DB.Tables.ShiftsTable.*;
 /**
  * Created by Tau on 27.06.2015.
@@ -86,7 +88,7 @@ public class Shift {
 
         for (Order order : orders){
             float commission = billingsSource.getBillingByID(order.billingID).commission;
-            switch (order.typeOfPayment){
+            switch (TypeOfPayment.getById(order.typeOfPaymentID)){
                 case CASH: revenueCash += order.price;
                     salaryOfficial += order.price * (1 - commission/100);
                     break;
@@ -122,16 +124,13 @@ public class Shift {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(beginShift);
         Resources res = context.getResources();
-        String text = String.format(res.getString(R.string.shiftStart) + ": %02d.%02d %02d:%02d,\n" +
-                        res.getString(R.string.revenueOfficial) + ": %d,\n" +
-                        res.getString(R.string.toTheCashier) + ": %d,\n" +
-                        res.getString(R.string.petrol) + ": %d, " +
-                        res.getString(R.string.shiftIsClosed) + "? %s",
-                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1,
+        Locale locale = res.getConfiguration().locale;
+        String text = String.format(locale, res.getString(R.string.shiftDescriptionFormatter),
+                calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),
-                revenueOfficial, toTheCashier, petrol, this.isClosed() ? res.getString(R.string.yes) : res.getString(R.string.no));
+                revenueOfficial, toTheCashier, petrol, !this.isClosed() ? res.getString(R.string.not) : "");
         if (carRent != 0) {
-            text += String.format("\n" + res.getString(R.string.carRent) + ": %d", carRent);
+            text += String.format(locale, res.getString(R.string.carRentFormatter), carRent);
         }
         return text;
     }

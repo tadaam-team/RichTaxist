@@ -24,11 +24,16 @@
     <string name="time">Time</string>
     <string name="price">price</string>
     <string name="note">note</string>
+    <string name="noteFormatter">,\nnote: %s</string>
     <string name="ordersList">Orders list</string>
     <string name="wrongPriceErrMsg">price is incorrect</string>
     <string name="wrongNoteErrMsg">Note text not saved</string>
     <string name="orderSaved">Order saved</string>
     <string name="orderNotSaved">Order not saved</string>
+    <string name="orderDescriptionFormatter">Arrival: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+        \nprice: %6$d, payType: %7$s,
+        \ntaxopark: %8$s,
+        \nbilling: %9$s</string>
 
     <string name="payType">Pay type</string>
     <string name="payTypeCash">cash</string>
@@ -52,6 +57,7 @@
     <string name="salaryOfficial">Salary official</string>
     <string name="revenueBonus">Tip</string>
     <string name="carRent">Car rent</string>
+    <string name="carRentFormatter">\ncar rent: %d</string>
     <string name="salaryUnofficial">Salary plus tip</string>
     <string name="salaryUnofficialFormatter">sal: %d</string>
     <string name="workHoursSpent">Work hours spent</string>
@@ -67,6 +73,10 @@
     <string name="ignore">Ignore</string>
     <string name="goBack">Go back</string>
     <string name="inputError">Input error</string>
+    <string name="shiftDescriptionFormatter">Shift start: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+        \nrevenue official: %6$d,
+        \nhand to the cashier: %7$s,
+        \npetrol: %8$s, %9$s closed</string>
 
     <string name="settingsScreenName">Settings</string>
     <string name="listsSortOrder">List sort order</string>
@@ -78,6 +88,7 @@
     <string name="showTaximeter">Show taximeter</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
+    <string name="not">not</string>
     <string name="chooseNumber">Choose number</string>
 
     <string name="taxoparksAndBillings">Taxi stations and billings</string>

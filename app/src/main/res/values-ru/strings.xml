@@ -24,11 +24,15 @@
     <string name="time">Время</string>
     <string name="price">цена</string>
     <string name="note">заметка</string>
+    <string name="noteFormatter">,\nзаметка: %s</string>
     <string name="ordersList">Список заказов</string>
     <string name="wrongPriceErrMsg">Странная цена заказа</string>
     <string name="wrongNoteErrMsg">Текст заметки не сохранен</string>
     <string name="orderSaved">Заказ сохранен</string>
     <string name="orderNotSaved">Заказ не сохранен</string>
+    <string name="orderDescriptionFormatter">Подача: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+        \nцена: %6$d, тип оплаты: %7$s,
+        \nтаксопарк: %8$s, система расчетов: %9$s</string>
 
     <string name="payType">Тип оплаты</string>
     <string name="payTypeCash">нал</string>
@@ -51,6 +55,7 @@
     <string name="salaryOfficial">Зарплата белая</string>
     <string name="revenueBonus">Чаевые</string>
     <string name="carRent">Аренда машины</string>
+    <string name="carRentFormatter">\nаренда машины: %d</string>
     <string name="salaryUnofficial">Зарплата с чаем</string>
     <string name="salaryUnofficialFormatter">зп: %d</string>
     <string name="workHoursSpent">Отработано часов</string>
@@ -64,6 +69,10 @@
     <string name="ignore">Игнорировать</string>
     <string name="goBack">Вернуться</string>
     <string name="inputError">Ошибка ввода</string>
+    <string name="shiftDescriptionFormatter">Начало смены: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+        \nвыручка офиц.: %6$d,
+        \nсдать в кассу: %7$s,
+        \nбензин: %8$s, %9$s закрыта</string>
 
     <string name="settingsScreenName">Настройки</string>
     <string name="listsSortOrder">Сортировка списков</string>
@@ -75,6 +84,7 @@
     <string name="showTaximeter">Открывать таксометр</string>
     <string name="yes">да</string>
     <string name="no">нет</string>
+    <string name="not">не</string>
     <string name="chooseNumber">Выберите число</string>
 
     <string name="taxoparksAndBillings">Таксопарки и системы</string>
