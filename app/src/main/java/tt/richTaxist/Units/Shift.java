@@ -7,9 +7,7 @@ import android.provider.BaseColumns;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.Util;
@@ -81,27 +79,26 @@ public class Shift {
         return (int) (shiftID != -1 ? 31 * shiftID : 0);
     }
 
-    public void closeShift(ShiftsSource shiftsSource) {
+    public void closeShift(DataSource dataSource) {
         this.endShift = new Date();
         //в этой точке бензин уже введен и итоги уже рассчитаны
-        shiftsSource.update(this);
+        dataSource.getShiftsSource().update(this);
     }
 
-    public void openShift(ShiftsSource shiftsSource) {
+    public void openShift(DataSource dataSource) {
         this.endShift = null;
-        shiftsSource.update(this);
+        dataSource.getShiftsSource().update(this);
     }
     public boolean isClosed(){
         return this.endShift != null;
     }
 
-    public void calculateShiftTotals(int petrol, long taxoparkID, ShiftsSource shiftsSource,
-                                     OrdersSource ordersSource, BillingsSource billingsSource) {
-        ArrayList<Order> orders = ordersSource.getOrdersList(this.shiftID, taxoparkID);
+    public void calculateShiftTotals(int petrol, long taxoparkID, DataSource dataSource) {
+        ArrayList<Order> orders = dataSource.getOrdersSource().getOrdersList(this.shiftID, taxoparkID);
         revenueCash = revenueCard = revenueOfficial = revenueBonus = toTheCashier = salaryOfficial = salaryUnofficial = 0;
 
         for (Order order : orders){
-            float commission = billingsSource.getBillingByID(order.billingID).commission;
+            float commission = dataSource.getBillingsSource().getBillingByID(order.billingID).commission;
             switch (TypeOfPayment.getById(order.typeOfPaymentID)){
                 case CASH: revenueCash += order.price;
                     salaryOfficial += order.price * (1 - commission/100);
@@ -131,7 +128,7 @@ public class Shift {
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
         workHoursSpent = Util.RoundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryUnofficial / workHoursSpent);
-        shiftsSource.update(this);
+        dataSource.getShiftsSource().update(this);
     }
 
     public String getDescription(Context context){

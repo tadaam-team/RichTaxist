@@ -14,7 +14,7 @@ import com.sleepbot.datetimepicker.time.RadialPickerLayout;
 import com.sleepbot.datetimepicker.time.TimePickerDialog;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.Util;
@@ -62,8 +62,8 @@ public class DateTimeRangeFrag extends Fragment implements DatePickerDialog.OnDa
             rangeEnd.setTimeInMillis (savedInstanceState.getLong("rangeEnd"));
         } else {
             //отсечем заведомо пустой кусок шкалы между 01.01.2016 и минимальной датой
-            ShiftsSource shiftsSource = new ShiftsSource(getContext().getApplicationContext());
-            Shift firstShift = shiftsSource.getFirstShift();
+            DataSource dataSource = new DataSource(getContext().getApplicationContext());
+            Shift firstShift = dataSource.getShiftsSource().getFirstShift();
             rangeStart.setTime(firstShift.beginShift);
         }
         refreshControls();

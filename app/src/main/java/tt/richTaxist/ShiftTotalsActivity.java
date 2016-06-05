@@ -22,9 +22,7 @@ import java.util.Locale;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.DF_NumberInput;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Units.Shift;
 
 /**
@@ -46,9 +44,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private ToggleButton buttonShiftIsClosed;
     private CustomSpinner spnTaxopark;
     private Locale locale;
-    private ShiftsSource shiftsSource;
-    private OrdersSource ordersSource;
-    private BillingsSource billingsSource;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +54,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         dateSetListener = this;
         timeSetListener = this;
 
-        shiftsSource = new ShiftsSource(getApplicationContext());
-        ordersSource = new OrdersSource(getApplicationContext());
-        billingsSource = new BillingsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
 
         locale = getResources().getConfiguration().locale;
         if (savedInstanceState == null) {
@@ -68,17 +62,17 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
             author = getIntent().getStringExtra(Constants.AUTHOR_EXTRA);
             if (shiftID != -1){
-                currentShift = shiftsSource.getShiftByID(shiftID);
+                currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             }
         } else {
             //если активити пересоздается, читаем текущую смену и автора из savedInstanceState
             long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA);
-            currentShift = shiftsSource.getShiftByID(shiftID);
+            currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             author = savedInstanceState.getString(Constants.AUTHOR_EXTRA);
         }
 
         if (currentShift != null) {
-            currentShift.calculateShiftTotals(0, 0, shiftsSource, ordersSource, billingsSource);
+            currentShift.calculateShiftTotals(0, 0, dataSource);
         }
 
         //найдем даты начала и конца смены
@@ -221,9 +215,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.MONTH, source.get(Calendar.MONTH));
         buffer.set(Calendar.DAY_OF_MONTH, source.get(Calendar.DAY_OF_MONTH));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, shiftsSource, ordersSource, billingsSource);
+        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, dataSource);
         refreshSTControls();
-        shiftsSource.update(currentShift);
+        dataSource.getShiftsSource().update(currentShift);
     }
 
     public void updateShiftTime(Calendar source, Date destination) {
@@ -232,9 +226,9 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         buffer.set(Calendar.HOUR_OF_DAY, source.get(Calendar.HOUR_OF_DAY));
         buffer.set(Calendar.MINUTE, source.get(Calendar.MINUTE));
         destination.setTime(buffer.getTime().getTime());
-        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, shiftsSource, ordersSource, billingsSource);
+        currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, dataSource);
         refreshSTControls();
-        shiftsSource.update(currentShift);
+        dataSource.getShiftsSource().update(currentShift);
     }
 
     public void onButtonShiftIsClosedClick(View button) {
@@ -246,7 +240,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 quitDialog.setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        currentShift.closeShift(shiftsSource);
+                        currentShift.closeShift(dataSource);
                         buttonShiftEndDate.setEnabled(true);
                         buttonShiftEndTime.setEnabled(true);
                         buttonContinueShift.setEnabled(false);
@@ -260,14 +254,14 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 });
                 quitDialog.show();
             } else{
-                currentShift.closeShift(shiftsSource);
+                currentShift.closeShift(dataSource);
                 buttonShiftEndDate.setEnabled(true);
                 buttonShiftEndTime.setEnabled(true);
                 buttonContinueShift.setEnabled(false);
             }
         }
         else {
-            currentShift.openShift(shiftsSource);
+            currentShift.openShift(dataSource);
             buttonShiftEndDate.setEnabled(false);
             buttonShiftEndTime.setEnabled(false);
             buttonContinueShift.setEnabled(true);
@@ -279,10 +273,10 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         if ("fragment_petrol_input".equals(authorTag)) {
             currentShift.petrol = inputNumber;
             currentShift.petrolFilledByHands = true;
-            currentShift.calculateShiftTotals(inputNumber, spnTaxopark.taxoparkID, shiftsSource, ordersSource, billingsSource);
+            currentShift.calculateShiftTotals(inputNumber, spnTaxopark.taxoparkID, dataSource);
         } else if ("fragment_car_rent_input".equals(authorTag)){
             currentShift.carRent = inputNumber;
-            currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, shiftsSource, ordersSource, billingsSource);
+            currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, dataSource);
         }
         refreshSTControls();
     }
@@ -315,7 +309,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, shiftsSource, ordersSource, billingsSource);
+                currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, dataSource);
                 refreshSTControls();
             }
             @Override

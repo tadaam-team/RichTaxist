@@ -8,8 +8,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import java.util.Calendar;
 import java.util.Date;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.TypeOfPayment;
 import tt.richTaxist.R;
 import tt.richTaxist.Util;
@@ -119,7 +118,7 @@ public class Order implements Parcelable {
             this.billingID       = billingID;
     }
 
-    public String getDescription(Context context, TaxoparksSource taxoparksSource, BillingsSource billingsSource) {
+    public String getDescription(Context context, DataSource dataSource) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(arrivalDateTime);
         Resources res = context.getResources();
@@ -128,8 +127,8 @@ public class Order implements Parcelable {
                 calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), price,
                 TypeOfPayment.getById(typeOfPaymentID).getDescription(context),
-                taxoparksSource.getTaxoparkByID(taxoparkID),
-                billingsSource.getBillingByID(billingID));
+                dataSource.getTaxoparksSource().getTaxoparkByID(taxoparkID),
+                dataSource.getBillingsSource().getBillingByID(billingID));
         if (!"".equals(note)) {
             text += String.format(locale, res.getString(R.string.noteFormatter), note);
         }

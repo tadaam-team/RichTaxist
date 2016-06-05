@@ -11,9 +11,7 @@ import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 import tt.richTaxist.Bricks.RangeSeekBar;
 import tt.richTaxist.Constants;
-import tt.richTaxist.DB.Sources.LocationsSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.MainActivity;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Shift;
 import tt.richTaxist.gps.google.MapPathActivity;
@@ -22,7 +20,7 @@ public class RouteActivity extends FragmentActivity {
     //private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private MapPathActivity mapFragment;
     private AsyncTask updateTask;
-    private LocationsSource locationsSource;
+    private DataSource dataSource;
     private Shift currentShift;
 
     @Override
@@ -31,23 +29,22 @@ public class RouteActivity extends FragmentActivity {
 
         setContentView(R.layout.gps_activity_route);
         setUpMapIfNeeded();
-        locationsSource = new LocationsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
 
         mapFragment = new MapPathActivity();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.add(R.id.mapFragment, mapFragment);
         ft.commit();
 
-        ShiftsSource shiftsSource = new ShiftsSource(getApplicationContext());
         if (savedInstanceState == null) {
             //при первом создании активити прочитаем интент и найдем смену в БД
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
             if (shiftID != -1){
-                currentShift = shiftsSource.getShiftByID(shiftID);
+                currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             }
         } else {
             long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA);
-            currentShift = shiftsSource.getShiftByID(shiftID);
+            currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
         }
 
         //add RangeSeekBar to map window
@@ -56,7 +53,7 @@ public class RouteActivity extends FragmentActivity {
         final Calendar rangeEnd = Calendar.getInstance();
         if (currentShift.isClosed()) rangeEnd.setTime(currentShift.endShift);
 
-        mapFragment.showPath(locationsSource.getLocationsByShift(currentShift));
+        mapFragment.showPath(dataSource.getLocationsSource().getLocationsByShift(currentShift));
         final TextView tvRangeStart = (TextView) findViewById(R.id.tvRangeStart);
         final TextView tvRangeEnd   = (TextView) findViewById(R.id.tvRangeEnd);
         tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
@@ -72,7 +69,7 @@ public class RouteActivity extends FragmentActivity {
                 rangeEnd.setTimeInMillis(maxValue);
                 tvRangeStart.setText(getStringDateTimeFromCal(rangeStart));
                 tvRangeEnd.setText(getStringDateTimeFromCal(rangeEnd));
-                mapFragment.showPath(locationsSource.getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
+                mapFragment.showPath(dataSource.getLocationsSource().getLocationsByPeriod(rangeStart.getTime(), rangeEnd.getTime()));
             }
         });
 
@@ -103,7 +100,7 @@ public class RouteActivity extends FragmentActivity {
                 //Log.d(LOG_TAG,"Updating map");
                 try {
                     seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
-                    mapFragment.showPath(locationsSource.getLocationsByPeriod
+                    mapFragment.showPath(dataSource.getLocationsSource().getLocationsByPeriod
                             (rangeStart.getTime(), Calendar.getInstance().getTime()));
                 } catch (Exception e) {
                     e.printStackTrace();

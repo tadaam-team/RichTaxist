@@ -21,7 +21,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.Units.Shift;
 
@@ -38,7 +38,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private Locale locale;
     private String author = "";
     private Cursor shiftCursor;
-    private ShiftsSource shiftsSource;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
 
         locale = getResources().getConfiguration().locale;
         ArrayList<Shift> list = new ArrayList<>();
-        shiftsSource = new ShiftsSource(getApplicationContext());
-        list.addAll(shiftsSource.getAllShifts(Util.youngIsOnTop));
+        dataSource = new DataSource(getApplicationContext());
+        list.addAll(dataSource.getShiftsSource().getAllShifts(Util.youngIsOnTop));
         firstShift = list.get(0);
         lastShift = list.get(list.size() - 1);
         initiateWidgets();
@@ -83,7 +83,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
         Calendar lastShiftStart = Calendar.getInstance();
         lastShiftStart.setTime(lastShift.beginShift);
 
-        ArrayList<Shift> wholeShifts = shiftsSource.getShiftsInRangeByTaxopark(
+        ArrayList<Shift> wholeShifts = dataSource.getShiftsSource().getShiftsInRangeByTaxopark(
                 firstShiftStart, lastShiftStart, true, spnTaxopark.taxoparkID);
         processWholeShifts(wholeShifts);
 //        Util.logDate("firstShiftStart", firstShiftStart);
@@ -128,7 +128,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        shiftCursor = shiftsSource.getShiftCursor();
+        shiftCursor = dataSource.getShiftsSource().getShiftCursor();
 
         createShiftSpinner(true, spnFirstShift);
         createShiftSpinner(false, spnLastShift);
@@ -144,7 +144,7 @@ public class GrandTotalsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 if (itemSelected != null) {
-                    Shift selectedShift = shiftsSource.getShiftByItsStart(((TextView) itemSelected).getText().toString());
+                    Shift selectedShift = dataSource.getShiftsSource().getShiftByItsStart(((TextView) itemSelected).getText().toString());
                     EventBus.getDefault().postSticky(new SpinnerEvent(spinnerRefersToFirstShift, selectedShift));
                 }
                 calculateGrandTotals();

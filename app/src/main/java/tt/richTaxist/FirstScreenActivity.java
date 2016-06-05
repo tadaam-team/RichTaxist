@@ -16,8 +16,7 @@ import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
-import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
 import tt.richTaxist.SharedPreferences.SharedPrefsHelper;
@@ -29,7 +28,7 @@ import tt.richTaxist.gps.RouteActivity;
 public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface,
         SingleChoiceListDF.SingleChoiceListDFInterface{
-    private ShiftsSource shiftsSource;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_first_screen);
 //        GPSHelper.startService(MainActivity.context);
 
-        shiftsSource = new ShiftsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
         loadSharedPrefs();
 
         try {
@@ -107,7 +106,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
     @Override
     public void onButtonSelected(int buttonIndex){
-        Shift lastShift = shiftsSource.getLastShift();
+        Shift lastShift = dataSource.getShiftsSource().getLastShift();
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
                 if (lastShift != null){
@@ -187,8 +186,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
     @Override
     public void getSelectedAction(long selectedShiftID, int selectedActionID, int positionInRVList) {
-        Shift selectedShift = shiftsSource.getShiftByID(selectedShiftID);
-        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
+        Shift selectedShift = dataSource.getShiftsSource().getShiftByID(selectedShiftID);
 
         switch (selectedActionID){
             case 0://править
@@ -206,7 +204,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                 break;
 
             case 2://удалить
-                if (ordersSource.getOrdersList(selectedShift.shiftID, 0).size() == 0) {
+                if (dataSource.getOrdersSource().getOrdersList(selectedShift.shiftID, 0).size() == 0) {
                     deleteShift(selectedShift, positionInRVList);
                 } else {
                     openShiftDeleteDialog(selectedShift, positionInRVList);
@@ -232,7 +230,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     }
 
     private void deleteShift(Shift shift, int positionInRVList){
-        shiftsSource.remove(shift);
+        dataSource.getShiftsSource().remove(shift);
         ShiftsListFragment shiftsListFragment = (ShiftsListFragment) getSupportFragmentManager()
                 .findFragmentByTag(ShiftsListFragment.TAG);
         shiftsListFragment.rvAdapter.removeObject(shift, positionInRVList);

@@ -12,8 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import java.util.ArrayList;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Units.Billing;
 import tt.richTaxist.R;
 
@@ -21,17 +20,15 @@ public class BillingsFragment extends ListFragment {
     ArrayList<Billing> billings = new ArrayList<>();
     private Context context;
     private ArrayAdapter billingsAdapter;
-    private BillingsSource billingsSource;
-    private OrdersSource ordersSource;
+    private DataSource dataSource;
 
     public BillingsFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
-        billingsSource = new BillingsSource(context);
-        ordersSource = new OrdersSource(context);
-        billings.addAll(billingsSource.getAllBillings());
+        dataSource = new DataSource(context);
+        billings.addAll(dataSource.getBillingsSource().getAllBillings());
         billingsAdapter = new BillingsAdapter(context);
         setListAdapter(billingsAdapter);
 
@@ -43,7 +40,7 @@ public class BillingsFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 Billing billing = new Billing("", 0.0f);
-                billing.billingID = billingsSource.create(billing);
+                billing.billingID = dataSource.getBillingsSource().create(billing);
                 billings.add(billing);
                 billingsAdapter.notifyDataSetChanged();
             }
@@ -96,9 +93,9 @@ public class BillingsFragment extends ListFragment {
             (convertView.findViewById(R.id.delBilling)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (ordersSource.canWeDeleteBilling(billing)) {
+                    if (dataSource.getOrdersSource().canWeDeleteBilling(billing)) {
                         billings.remove(billing);
-                        billingsSource.remove(billing);
+                        dataSource.getBillingsSource().remove(billing);
                         notifyDataSetChanged();
                     }
                     else Toast.makeText(context, getResources().getString(R.string.billing) + " " +
@@ -111,7 +108,7 @@ public class BillingsFragment extends ListFragment {
         private void saveBilling(Billing currentBilling, EditText billingName, EditText commission){
             String newName = billingName.getText().toString();
             boolean isInTheList = false;
-            for (Billing billingIter : billingsSource.getAllBillings())
+            for (Billing billingIter : dataSource.getBillingsSource().getAllBillings())
                 if (newName.equals(billingIter.billingName) && currentBilling.billingID != billingIter.billingID) isInTheList = true;
             if (isInTheList) {
                 Toast.makeText(context, getResources().getString(R.string.billing) + " " + String.valueOf(newName) + " " +
@@ -124,7 +121,7 @@ public class BillingsFragment extends ListFragment {
                 if (!"".equals(commission.getText().toString())) {
                     currentBilling.commission = Float.valueOf(commission.getText().toString());
                 }
-                billingsSource.update(currentBilling);
+                dataSource.getBillingsSource().update(currentBilling);
             }
         }
     }

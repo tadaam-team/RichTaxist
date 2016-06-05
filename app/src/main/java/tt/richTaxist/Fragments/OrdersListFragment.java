@@ -15,7 +15,7 @@ import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.Constants;
-import tt.richTaxist.DB.Sources.OrdersSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.Units.Order;
@@ -25,12 +25,12 @@ public class OrdersListFragment extends Fragment {
     private OrdersListInterface mListener;
     public RecyclerViewAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
-    private OrdersSource ordersSource;
+    private DataSource dataSource;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ordersSource = new OrdersSource(context.getApplicationContext());
+        dataSource = new DataSource(context.getApplicationContext());
         try { mListener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
@@ -43,7 +43,7 @@ public class OrdersListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
-        ArrayList<Order> ordersList = ordersSource.getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.getSelectedItemId());
+        ArrayList<Order> ordersList = dataSource.getOrdersSource().getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.getSelectedItemId());
         rvAdapter = new RecyclerViewAdapter(ordersList, RecyclerViewAdapter.AdapterDataType.ORDER);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -83,7 +83,7 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                rvAdapter.setObjects(ordersSource.getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.taxoparkID));
+                rvAdapter.setObjects(dataSource.getOrdersSource().getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.taxoparkID));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}

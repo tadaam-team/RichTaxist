@@ -10,10 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
@@ -27,10 +24,7 @@ public class MainActivity extends AppCompatActivity implements
         SingleChoiceListDF.SingleChoiceListDFInterface{
     private Shift currentShift;
     private Order currentOrder = null;
-    private ShiftsSource shiftsSource;
-    private OrdersSource ordersSource;
-    private TaxoparksSource taxoparksSource;
-    private BillingsSource billingsSource;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,25 +32,22 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 //        Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.container_main));
 
-        shiftsSource = new ShiftsSource(getApplicationContext());
-        ordersSource = new OrdersSource(getApplicationContext());
-        taxoparksSource = new TaxoparksSource(getApplicationContext());
-        billingsSource = new BillingsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
 
         if (savedInstanceState == null) {
             //при первом создании активити прочитаем интент и найдем смену в БД или создадим новую смену
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
             if (shiftID != -1){
-                currentShift = shiftsSource.getShiftByID(shiftID);
+                currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             } else {
                 Shift shift = new Shift();
-                shift.shiftID = shiftsSource.create(shift);
+                shift.shiftID = dataSource.getShiftsSource().create(shift);
                 currentShift = shift;
             }
         } else {
             //если активити пересоздается, читаем текущую смену и заказ из savedInstanceState
             long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA, -1);
-            currentShift = shiftsSource.getShiftByID(shiftID);
+            currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             currentOrder = savedInstanceState.getParcelable(Constants.CURRENT_ORDER_EXTRA);
         }
 
@@ -88,14 +79,14 @@ public class MainActivity extends AppCompatActivity implements
         //if it is newly created order than order.orderID == -1
         boolean saveSuccess;
         if (order.orderID == -1) {
-            order.orderID = ordersSource.create(order);
+            order.orderID = dataSource.getOrdersSource().create(order);
             saveSuccess = order.orderID != -1;
         } else {
-            saveSuccess = ordersSource.update(order);
+            saveSuccess = dataSource.getOrdersSource().update(order);
         }
         String msg = saveSuccess ? getResources().getString(R.string.orderSaved) : getResources().getString(R.string.orderNotSaved);
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-        currentShift.calculateShiftTotals(0, order.taxoparkID, shiftsSource, ordersSource, billingsSource);
+        currentShift.calculateShiftTotals(0, order.taxoparkID, dataSource);
         if (getResources().getBoolean(R.bool.screenWiderThan450)) {
             addOrdersListFragment();
         }
@@ -146,8 +137,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void getSelectedAction(long selectedOrderID, int selectedActionID, int positionInRVList) {
-        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
-        Order selectedOrder = ordersSource.getOrderByID(selectedOrderID);
+        Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
         OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
                 .findFragmentByTag(OrdersListFragment.TAG);
 
@@ -159,11 +149,11 @@ public class MainActivity extends AppCompatActivity implements
                 break;
 
             case 1://показать подробности
-                Toast.makeText(this, selectedOrder.getDescription(this, taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, selectedOrder.getDescription(this, dataSource), Toast.LENGTH_LONG).show();
                 break;
 
             case 2://удалить
-                ordersSource.remove(selectedOrder);
+                dataSource.getOrdersSource().remove(selectedOrder);
                 ordersListFragment.rvAdapter.removeObject(selectedOrder, positionInRVList);
                 Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                 break;
@@ -208,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id){
             case R.id.action_show_orders_list:
                 //item is shown only in portrait
-                if (ordersSource.getOrdersListCount(currentShift.shiftID) != 0){
+                if (dataSource.getOrdersSource().getOrdersListCount(currentShift.shiftID) != 0){
                     Intent intent = new Intent(this, OrdersListActivity.class);
                     intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
                     startActivityForResult(intent, Constants.ORDERS_LIST_CALLBACK);

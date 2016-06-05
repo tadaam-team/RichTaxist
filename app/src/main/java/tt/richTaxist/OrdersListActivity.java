@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
-import tt.richTaxist.DB.Sources.BillingsSource;
-import tt.richTaxist.DB.Sources.OrdersSource;
-import tt.richTaxist.DB.Sources.ShiftsSource;
-import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
@@ -17,6 +14,7 @@ public class OrdersListActivity extends AppCompatActivity implements
         OrdersListFragment.OrdersListInterface,
         SingleChoiceListDF.SingleChoiceListDFInterface {
     private Shift currentShift;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +25,13 @@ public class OrdersListActivity extends AppCompatActivity implements
             finish();
             return;
         }
+        dataSource = new DataSource(getApplicationContext());
 
         if (savedInstanceState == null) {
             //при первом создании активити прочитаем интент и найдем смену в БД
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
             if (shiftID != -1){
-                ShiftsSource shiftsSource = new ShiftsSource(getApplicationContext());
-                currentShift = shiftsSource.getShiftByID(shiftID);
+                currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             }
             // During initial setup, plug in the details fragment.
             OrdersListFragment ordersListFragment = new OrdersListFragment();
@@ -63,8 +61,8 @@ public class OrdersListActivity extends AppCompatActivity implements
 
     @Override
     public void getSelectedAction(long selectedOrderID, int selectedActionID, int positionInRVList) {
-        OrdersSource ordersSource = new OrdersSource(getApplicationContext());
-        Order selectedOrder = ordersSource.getOrderByID(selectedOrderID);
+        DataSource dataSource = new DataSource(getApplicationContext());
+        Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
         OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
                 .findFragmentByTag(OrdersListFragment.TAG);
 
@@ -76,13 +74,11 @@ public class OrdersListActivity extends AppCompatActivity implements
                 break;
 
             case 1://показать подробности
-                TaxoparksSource taxoparksSource = new TaxoparksSource(getApplicationContext());
-                BillingsSource billingsSource = new BillingsSource(getApplicationContext());
-                Toast.makeText(this, selectedOrder.getDescription(this, taxoparksSource, billingsSource), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, selectedOrder.getDescription(this, dataSource), Toast.LENGTH_LONG).show();
                 break;
 
             case 2://удалить
-                ordersSource.remove(selectedOrder);
+                dataSource.getOrdersSource().remove(selectedOrder);
                 ordersListFragment.rvAdapter.removeObject(selectedOrder, positionInRVList);
                 Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                 break;

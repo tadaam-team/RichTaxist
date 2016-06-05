@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import java.util.ArrayList;
-import tt.richTaxist.DB.Sources.TaxoparksSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Units.Taxopark;
 import tt.richTaxist.R;
 
@@ -21,15 +21,15 @@ public class TaxoparksFragment extends ListFragment {
     ArrayList<Taxopark> taxoparks = new ArrayList<>();
     private Context context;
     private ArrayAdapter taxoparksAdapter;
-    private TaxoparksSource taxoparksSource;
+    private DataSource dataSource;
 
     public TaxoparksFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         context = getContext();
-        taxoparksSource = new TaxoparksSource(context);
-        taxoparks.addAll(taxoparksSource.getAllTaxoparks());
+        dataSource = new DataSource(context);
+        taxoparks.addAll(dataSource.getTaxoparksSource().getAllTaxoparks());
         taxoparksAdapter = new TaxoparksAdapter(context);
         setListAdapter(taxoparksAdapter);
 
@@ -41,7 +41,7 @@ public class TaxoparksFragment extends ListFragment {
             @Override
             public void onClick(View v) {
                 Taxopark taxopark = new Taxopark("", false, 0);
-                taxopark.taxoparkID = taxoparksSource.create(taxopark);
+                taxopark.taxoparkID = dataSource.getTaxoparksSource().create(taxopark);
                 taxoparks.add(taxopark);
                 taxoparksAdapter.notifyDataSetChanged();
             }
@@ -95,10 +95,10 @@ public class TaxoparksFragment extends ListFragment {
                     //сбрасываем все таксопарки в недефолтные и устанавливаем дефолтным текущий
                     for (Taxopark taxoparkIter : taxoparks) {
                         taxoparkIter.isDefault = false;
-                        taxoparksSource.update(taxoparkIter);
+                        dataSource.getTaxoparksSource().update(taxoparkIter);
                     }
                     taxopark.isDefault = true;
-                    taxoparksSource.update(taxopark);
+                    dataSource.getTaxoparksSource().update(taxopark);
                     notifyDataSetChanged();
                 }
             });
@@ -107,7 +107,7 @@ public class TaxoparksFragment extends ListFragment {
                 @Override
                 public void onClick(View view) {
                     taxoparks.remove(taxopark);
-                    taxoparksSource.remove(taxopark);
+                    dataSource.getTaxoparksSource().remove(taxopark);
                     notifyDataSetChanged();
                 }
             });
@@ -117,7 +117,7 @@ public class TaxoparksFragment extends ListFragment {
         private void saveTaxoparkName(Taxopark currentTaxopark, EditText taxoparkName){
             String newName = taxoparkName.getText().toString();
             boolean isInTheList = false;
-            for (Taxopark taxoparkIter : taxoparksSource.getAllTaxoparks()) {
+            for (Taxopark taxoparkIter : dataSource.getTaxoparksSource().getAllTaxoparks()) {
                 if (newName.equals(taxoparkIter.taxoparkName) && currentTaxopark.taxoparkID != taxoparkIter.taxoparkID) {
                     isInTheList = true;
                 }
@@ -129,7 +129,7 @@ public class TaxoparksFragment extends ListFragment {
             }
             else {
                 currentTaxopark.taxoparkName = newName;
-                taxoparksSource.update(currentTaxopark);
+                dataSource.getTaxoparksSource().update(currentTaxopark);
             }
         }
     }

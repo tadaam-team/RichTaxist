@@ -18,7 +18,7 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-import tt.richTaxist.DB.Sources.ShiftsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
 import tt.richTaxist.SharedPreferences.SharedPrefsHelper;
 /**
@@ -34,7 +34,7 @@ public class SignInActivity extends AppCompatActivity {
     private View mProgress;
     private TextView tvWelcome;
     private CheckBox cbUserActive, cbEmailVerified, cbIMEICorrect, cbPremiumUser;
-    private ShiftsSource shiftsSource;
+    private DataSource dataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
         Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.activity_sign_in));
 
-        shiftsSource = new ShiftsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
         initiateWidgets();
         emailValidator = new EmailValidator();
         etEmail.addTextChangedListener(emailValidator);
@@ -212,7 +212,7 @@ public class SignInActivity extends AppCompatActivity {
         dropDBDialog.setPositiveButton(getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                shiftsSource.dropAllTablesInDB();
+                dataSource.getShiftsSource().dropAllTablesInDB();
             }
         });
         dropDBDialog.show();

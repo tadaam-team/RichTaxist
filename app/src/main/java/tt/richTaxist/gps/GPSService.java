@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
-import tt.richTaxist.DB.Sources.LocationsSource;
+import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Constants;
 
 public class GPSService extends Service {
@@ -20,7 +20,7 @@ public class GPSService extends Service {
     Thread gpsTracking;
     private int distance;
     private Location lastLocation;
-    private LocationsSource locationsSource;
+    private DataSource dataSource;
 
     public GPSService() {
     }
@@ -28,7 +28,7 @@ public class GPSService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        locationsSource = new LocationsSource(getApplicationContext());
+        dataSource = new DataSource(getApplicationContext());
     }
 
     @Override
@@ -84,7 +84,7 @@ public class GPSService extends Service {
                 Log.d(Constants.LOG_TAG, "pi == null");
             }
             try {
-                locationsSource.create(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
+                dataSource.getLocationsSource().create(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
             } catch (Exception e) {
                 e.printStackTrace();
 
