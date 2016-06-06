@@ -157,7 +157,8 @@
     <string name="textExampleMain">text example main</string>
     <string name="textExampleAdditional">text example additional</string>
 
-    <string name="defaultTaxoparkName">Taksi Helsinki</string>
+    <string name="defaultTaxoparkName1">Taksi Helsinki</string>
+    <string name="defaultTaxoparkName2">The London Taxi</string>
 
 
     <string name="chooseShiftOrOrderAction">Choose action</string>

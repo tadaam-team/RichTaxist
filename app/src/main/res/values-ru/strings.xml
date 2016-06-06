@@ -154,7 +154,8 @@
     <string name="textExampleMain">пример основного текста</string>
     <string name="textExampleAdditional">пример поясняющего текста</string>
 
-    <string name="defaultTaxoparkName">Таксовичков</string>
+    <string name="defaultTaxoparkName1">Таксовичков</string>
+    <string name="defaultTaxoparkName2">Такси 068</string>
 
 
     <string name="chooseShiftOrOrderAction">Выберите действие</string>

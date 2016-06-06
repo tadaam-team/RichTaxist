@@ -157,7 +157,7 @@ public class ShiftsSource {
     public Shift getFirstShift() {
         Shift shift = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id ASC LIMIT 1";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + BEGIN_SHIFT + " ASC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -170,7 +170,7 @@ public class ShiftsSource {
     public Shift getLastShift() {
         Shift shift = null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id DESC LIMIT 1";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY " + BEGIN_SHIFT + " DESC LIMIT 1";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {

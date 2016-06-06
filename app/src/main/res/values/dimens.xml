@@ -4,5 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="button_margins">6dp</dimen>
     <dimen name="view_paddings_tb">2dp</dimen>
-    <dimen name="view_paddings_lr">7dp</dimen>
+    <dimen name="view_paddings_lr">8dp</dimen>
 </resources>

@@ -128,8 +128,8 @@ public class Util {
     public static void measureScreenWidth(Context context, ViewGroup layout){
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         double screenWidthInches = metrics.widthPixels / metrics.xdpi;
-        screenWidthInches = RoundResult(screenWidthInches, 3);
-        double screenWidthSm = RoundResult(screenWidthInches * 2.54, 3);
+        screenWidthInches = roundResult(screenWidthInches, 3);
+        double screenWidthSm = roundResult(screenWidthInches * 2.54, 3);
         if (screenWidthSm > 6.5 && layout != null) {// 720/320*2.54=5.715
             ViewGroup.LayoutParams params = layout.getLayoutParams();
             params.width = (int) Math.round(6.5 / 2.54 * metrics.xdpi);
@@ -175,7 +175,7 @@ public class Util {
     }
 
     //работает только с числом десятичных знаков 0-5
-    public static double RoundResult (double value, int decimalSigns) {
+    public static double roundResult(double value, int decimalSigns) {
         if (decimalSigns < 0 || decimalSigns > 5) {
             Log.d(Constants.LOG_TAG, "decimalSigns meant to be bw 0-5. Request is: " + String.valueOf(decimalSigns));
             if (decimalSigns < 0) decimalSigns = 0;
@@ -184,6 +184,11 @@ public class Util {
         double multiplier = Math.pow(10.0, (double) decimalSigns);//всегда .0
         long numerator  = Math.round(value * multiplier);
         return numerator / multiplier;
+    }
+
+    public static int generateInt(int from, int to) {
+        to -= from;
+        return from + (int) (Math.random() * ++to);
     }
 
     public static String getStringDateFromCal(Calendar date, Context context){

@@ -1,6 +1,5 @@
 package tt.richTaxist.DB;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,9 +12,6 @@ import tt.richTaxist.DB.Tables.LocationsTable;
 import tt.richTaxist.DB.Tables.OrdersTable;
 import tt.richTaxist.DB.Tables.ShiftsTable;
 import tt.richTaxist.DB.Tables.TaxoparksTable;
-import tt.richTaxist.R;
-import tt.richTaxist.Units.Billing;
-import tt.richTaxist.Units.Taxopark;
 
 public class MySQLHelper extends SQLiteOpenHelper {
     //helper is one no matter how much tables there are
@@ -65,24 +61,9 @@ public class MySQLHelper extends SQLiteOpenHelper {
             if (oldVersion < 2) {
 //                db.execSQL("ALTER TABLE " + BillingsTable.TABLE_NAME + " ADD COLUMN " + BillingsTable.FAVORITE + " NUMERIC;");
             }
-            populateBase(db);
             db.setTransactionSuccessful();
         } finally {
             db.endTransaction();
-        }
-    }
-    private void populateBase(SQLiteDatabase db){
-        insertObject(db, new Billing("85/15", 15f));
-        insertObject(db, new Billing("50/50", 50f));
-        insertObject(db, new Taxopark(res.getString(R.string.defaultTaxoparkName), true, 0));
-    }
-    private void insertObject(SQLiteDatabase db, Object object){
-        if (object instanceof Billing) {
-            ContentValues cv = BillingsTable.getContentValues((Billing) object);
-            db.insert(BillingsTable.TABLE_NAME, null, cv);
-        } else if (object instanceof Taxopark) {
-            ContentValues cv = TaxoparksTable.getContentValues((Taxopark) object);
-            db.insert(TaxoparksTable.TABLE_NAME, null, cv);
         }
     }
 

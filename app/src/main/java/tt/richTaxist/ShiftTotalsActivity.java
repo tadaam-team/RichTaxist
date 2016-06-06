@@ -240,7 +240,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 quitDialog.setPositiveButton(getString(R.string.ignore), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        currentShift.closeShift(dataSource);
+                        currentShift.closeShift(new Date(), dataSource);
                         buttonShiftEndDate.setEnabled(true);
                         buttonShiftEndTime.setEnabled(true);
                         buttonContinueShift.setEnabled(false);
@@ -254,7 +254,7 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
                 });
                 quitDialog.show();
             } else{
-                currentShift.closeShift(dataSource);
+                currentShift.closeShift(new Date(), dataSource);
                 buttonShiftEndDate.setEnabled(true);
                 buttonShiftEndTime.setEnabled(true);
                 buttonContinueShift.setEnabled(false);

@@ -28,9 +28,9 @@ public class Shift {
     public int salaryPerHour, distance;
     public long travelTime;
 
-    public Shift() {
+    public Shift(Date shiftStart) {
         shiftID = -1;//необходимо для использования автоинкремента id новой записи в sql
-        beginShift = new Date();
+        beginShift = shiftStart;
         petrolFilledByHands = false;
     }
 
@@ -79,9 +79,9 @@ public class Shift {
         return (int) (shiftID != -1 ? 31 * shiftID : 0);
     }
 
-    public void closeShift(DataSource dataSource) {
-        this.endShift = new Date();
-        //в этой точке бензин уже введен и итоги уже рассчитаны
+    public void closeShift(Date date, DataSource dataSource) {
+        this.endShift = date;
+        calculateShiftTotals(petrol, 0, dataSource);
         dataSource.getShiftsSource().update(this);
     }
 
@@ -126,7 +126,7 @@ public class Shift {
 
         long rangeEnd  = (endShift == null) ? Calendar.getInstance().getTimeInMillis() : endShift.getTime();
         workHoursSpent = (double) (rangeEnd - beginShift.getTime()) / (1000 * 60 * 60);
-        workHoursSpent = Util.RoundResult(workHoursSpent, 2);
+        workHoursSpent = Util.roundResult(workHoursSpent, 2);
         salaryPerHour  = (int) Math.round(salaryUnofficial / workHoursSpent);
         dataSource.getShiftsSource().update(this);
     }

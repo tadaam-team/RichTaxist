@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import java.util.Date;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements
             if (shiftID != -1){
                 currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             } else {
-                Shift shift = new Shift();
+                Shift shift = new Shift(new Date());
                 shift.shiftID = dataSource.getShiftsSource().create(shift);
                 currentShift = shift;
             }

@@ -41,8 +41,8 @@ public class OrdersTable {
         cv.put(PRICE, order.price);
         cv.put(TYPE_OF_PAYMENT, order.typeOfPaymentID);
         cv.put(SHIFT_ID, order.shiftID);
-        cv.put(DISTANCE, order.shiftID);
-        cv.put(TRAVEL_TIME, order.shiftID);
+        cv.put(DISTANCE, order.distance);
+        cv.put(TRAVEL_TIME, order.travelTime);
         cv.put(NOTE, order.note);
         cv.put(TAXOPARK_ID, order.taxoparkID);
         cv.put(BILLING_ID, order.billingID);
