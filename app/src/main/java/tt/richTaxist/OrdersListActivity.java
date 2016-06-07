@@ -59,8 +59,9 @@ public class OrdersListActivity extends AppCompatActivity implements
         }
     }
 
+    //TODO: move this to fragment
     @Override
-    public void getSelectedAction(long selectedOrderID, int selectedActionID, int positionInRVList) {
+    public void processListItem(long selectedOrderID, int selectedActionID, int positionInRVList) {
         DataSource dataSource = new DataSource(getApplicationContext());
         Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
         OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
@@ -79,7 +80,7 @@ public class OrdersListActivity extends AppCompatActivity implements
 
             case 2://удалить
                 dataSource.getOrdersSource().remove(selectedOrder);
-                ordersListFragment.rvAdapter.removeObject(selectedOrder, positionInRVList);
+                ordersListFragment.rvAdapter.removeOrder(selectedOrder, positionInRVList);
                 Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                 break;
         }

@@ -13,14 +13,14 @@ import tt.richTaxist.R;
  * Created by TAU on 21.05.2016.
  */
 public class SingleChoiceListDF extends DialogFragment {
-    private SingleChoiceListDFInterface mListener;
+    private SingleChoiceListDFInterface listener;
     private long selectedObjectID;
     private int positionInRVList;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try { mListener = (SingleChoiceListDFInterface) context;
+        try { listener = (SingleChoiceListDFInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
         }
@@ -36,13 +36,13 @@ public class SingleChoiceListDF extends DialogFragment {
                 .setItems(R.array.shiftOrOrderAction, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position of the selected item
-                        mListener.getSelectedAction(selectedObjectID, which, positionInRVList);
+                        listener.processListItem(selectedObjectID, which, positionInRVList);
                     }
                 });
         return builder.create();
     }
 
     public interface SingleChoiceListDFInterface{
-        void getSelectedAction(long selectedObjectID, int selectedActionID, int positionInRVList);
+        void processListItem(long selectedObjectID, int selectedActionID, int positionInRVList);
     }
 }

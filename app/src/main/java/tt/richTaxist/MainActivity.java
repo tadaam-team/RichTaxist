@@ -30,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-//        Util.measureScreenWidth(getApplicationContext(), (ViewGroup) findViewById(R.id.container_main));
 
         dataSource = new DataSource(getApplicationContext());
 
@@ -52,21 +50,10 @@ public class MainActivity extends AppCompatActivity implements
             currentOrder = savedInstanceState.getParcelable(Constants.CURRENT_ORDER_EXTRA);
         }
 
-        //фрагментная логика
-        if (getResources().getBoolean(R.bool.screenWiderThan450)){
-            //TODO: remove
-            //we can't statically add OrdersListFragment because OrdersListFragment.adapter.notifyDataSetChanged()
-            //doesn't work properly with RecyclerView
-            addOrdersListFragment();
-        }
-        showDetails(currentOrder);
-    }
+        //если фрагмент, использующий currentShift вшит в xml, то currentShift должен назначаться до вызова setContentView
+        setContentView(R.layout.activity_main);
 
-    private void addOrdersListFragment(){
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        OrdersListFragment fragment = new OrdersListFragment();
-        ft.replace(R.id.container_orders_list, fragment, OrdersListFragment.TAG);
-        ft.commit();
+        showDetails(currentOrder);
     }
 
     @Override
@@ -89,7 +76,9 @@ public class MainActivity extends AppCompatActivity implements
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
         currentShift.calculateShiftTotals(0, order.taxoparkID, dataSource);
         if (getResources().getBoolean(R.bool.screenWiderThan450)) {
-            addOrdersListFragment();
+            OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
+                    .findFragmentByTag(OrdersListFragment.TAG);
+            ordersListFragment.rvAdapter.addOrder(order);
         }
         currentOrder = null;
     }
@@ -137,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void getSelectedAction(long selectedOrderID, int selectedActionID, int positionInRVList) {
+    public void processListItem(long selectedOrderID, int selectedActionID, int positionInRVList) {
         Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
         OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
                 .findFragmentByTag(OrdersListFragment.TAG);
@@ -155,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
 
             case 2://удалить
                 dataSource.getOrdersSource().remove(selectedOrder);
-                ordersListFragment.rvAdapter.removeObject(selectedOrder, positionInRVList);
+                ordersListFragment.rvAdapter.removeOrder(selectedOrder, positionInRVList);
                 Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
                 break;
         }

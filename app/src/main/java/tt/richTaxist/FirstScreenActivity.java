@@ -185,7 +185,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void getSelectedAction(long selectedShiftID, int selectedActionID, int positionInRVList) {
+    public void processListItem(long selectedShiftID, int selectedActionID, int positionInRVList) {
         Shift selectedShift = dataSource.getShiftsSource().getShiftByID(selectedShiftID);
 
         switch (selectedActionID){

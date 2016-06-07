@@ -11,19 +11,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import tt.richTaxist.Adapters.RecyclerViewOrderAdapter;
 import tt.richTaxist.Bricks.CustomSpinner;
 import tt.richTaxist.Bricks.CustomSpinner.TypeOfSpinner;
 import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.Constants;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
-import tt.richTaxist.RecyclerViewAdapter;
 import tt.richTaxist.Units.Order;
 
 public class OrdersListFragment extends Fragment {
     public static final String TAG = "OrdersListFragment";
-    private OrdersListInterface mListener;
-    public RecyclerViewAdapter rvAdapter;
+    private OrdersListInterface listener;
+    public RecyclerViewOrderAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private DataSource dataSource;
 
@@ -31,7 +31,7 @@ public class OrdersListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         dataSource = new DataSource(context.getApplicationContext());
-        try { mListener = (OrdersListInterface) context;
+        try { listener = (OrdersListInterface) context;
         } catch (ClassCastException e) {
             throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
         }
@@ -43,17 +43,17 @@ public class OrdersListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
 
-        ArrayList<Order> ordersList = dataSource.getOrdersSource().getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.getSelectedItemId());
-        rvAdapter = new RecyclerViewAdapter(ordersList, RecyclerViewAdapter.AdapterDataType.ORDER);
+        ArrayList<Order> ordersList = dataSource.getOrdersSource().getOrdersList(listener.getCurrentShiftId(), spnTaxopark.getSelectedItemId());
+        rvAdapter = new RecyclerViewOrderAdapter(ordersList);
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        rvAdapter.setListener(new RecyclerViewAdapter.Listener() {
+        rvAdapter.setListener(new RecyclerViewOrderAdapter.Listener() {
             @Override
             public void onClick(Object selectedObject) {
                 Order selectedOrder = (Order) selectedObject;
                 Toast.makeText(getContext(), R.string.orderSelectedMSG, Toast.LENGTH_SHORT).show();
-                mListener.returnToOrderFragment(selectedOrder);
+                listener.returnToOrderFragment(selectedOrder);
             }
 
             @Override
@@ -83,7 +83,7 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View itemSelected, int selectedItemPosition, long selectedId) {
                 spnTaxopark.saveSpinner(TypeOfSpinner.TAXOPARK);
-                rvAdapter.setObjects(dataSource.getOrdersSource().getOrdersList(mListener.getCurrentShiftId(), spnTaxopark.taxoparkID));
+                rvAdapter.setOrders(dataSource.getOrdersSource().getOrdersList(listener.getCurrentShiftId(), spnTaxopark.taxoparkID));
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
