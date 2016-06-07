@@ -94,15 +94,15 @@ public class Order implements Parcelable {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass() || arrivalDateTime == null) return false;
+        if (obj == null || getClass() != obj.getClass() || orderID == -1) return false;
         Order that = (Order) obj;
-        if (that.arrivalDateTime == null) return false;
-        return arrivalDateTime.equals(that.arrivalDateTime);
+        if (that.orderID == -1) return false;
+        return orderID == that.orderID;
     }
 
     @Override
     public int hashCode() {
-        return arrivalDateTime != null ? 31 * Integer.parseInt(arrivalDateTime.toString()) : 0;
+        return (int) (orderID != -1 ? 31 * orderID : 0);
     }
 
     public void update(Date arrivalDateTime, int price, long typeOfPaymentID, long shiftID, String note,

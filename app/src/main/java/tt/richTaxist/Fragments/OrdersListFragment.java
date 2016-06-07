@@ -78,6 +78,7 @@ public class OrdersListFragment extends Fragment implements
         createTaxoparkSpinner();
     }
 
+    //NB: каждый раз создавая спиннер мы обрабатываем установку его дефолтного значения как нажатие
     public void createTaxoparkSpinner(){
         spnTaxopark.createSpinner(TypeOfSpinner.TAXOPARK, true);
         spnTaxopark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -93,7 +94,9 @@ public class OrdersListFragment extends Fragment implements
 
     public void addOrderToList(Order order) {
         if (rvAdapter != null) {
-            rvAdapter.addOrderToList(order);
+            ArrayList<Order> newListFromDB = dataSource.getOrdersSource().getOrdersList(listener.getCurrentShiftId(), spnTaxopark.taxoparkID);
+            int positionInNewList = newListFromDB.indexOf(order);
+            rvAdapter.addOrderToList(order, positionInNewList);
         }
     }
 

@@ -64,7 +64,6 @@ public class ShiftsListFragment extends Fragment implements
         dataSource = new DataSource(getContext());
         createDateTimeRangeFrag();
 
-        //we don't need to update shiftsList hence we don't use rvAdapter.notifyDataSetChanged()
         rvAdapter = new RecyclerViewShiftAdapter(dataSource.getShiftsSource().getAllShifts(Util.youngIsOnTop));
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

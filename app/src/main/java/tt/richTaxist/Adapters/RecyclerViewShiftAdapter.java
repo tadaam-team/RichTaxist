@@ -17,7 +17,7 @@ import tt.richTaxist.Units.Shift;
 /**
  * Created by TAU on 18.04.2016.
  */
-public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<RecyclerViewShiftAdapter.ViewHolder> {
+public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<ViewHolder> {
     private ArrayList<Shift> shifts;
     private Listener listener;
 
@@ -26,7 +26,7 @@ public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<RecyclerViewS
     }
 
     @Override
-    public RecyclerViewShiftAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         CardView cv = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.list_entry_recycler, parent, false);
         return new ViewHolder(cv);
     }
@@ -34,7 +34,7 @@ public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<RecyclerViewS
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position){
         //Заполнение заданного представления данными
-        CardView cardView = holder.cardView;
+        CardView cardView = holder.getCardView();
         Resources res = cardView.getContext().getResources();
         Locale locale = res.getConfiguration().locale;
         Shift shift = shifts.get(position);
@@ -109,14 +109,4 @@ public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<RecyclerViewS
         void onClick(Object selectedObject);
         void onClickMore(Object selectedObject, int positionInRVList);
     }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
-        public ViewHolder(CardView v) {
-            super(v);
-            cardView = v;
-        }
-    }
-
-    public enum AdapterDataType {SHIFT, ORDER}
 }

@@ -113,19 +113,6 @@ public class OrdersSource {
         return ordersListCount;
     }
 
-    public Order getLastOrder() {
-        Order order = null;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " ORDER BY _id ASC LIMIT 1";
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor.moveToFirst()) {
-            order = new Order(cursor);
-        }
-        cursor.close();
-        return order;
-    }
-
     public boolean canWeDeleteBilling (Billing billing){
         String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE "
                 + BILLING_ID + "='" + String.valueOf(billing.billingID) + "'";
@@ -155,6 +142,7 @@ public class OrdersSource {
         return result;
     }
 
+    //TODO: проверить, удаляем ли мы заказы, удаляя смену
     public void deleteOrdersByShift(Shift shift) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
