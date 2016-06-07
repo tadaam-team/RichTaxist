@@ -199,6 +199,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         quitDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dataSource.getOrdersSource().deleteOrdersByShift(shift);
                 deleteShift(shift, positionInRVList);
             }
         });

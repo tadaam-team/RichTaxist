@@ -142,7 +142,6 @@ public class OrdersSource {
         return result;
     }
 
-    //TODO: проверить, удаляем ли мы заказы, удаляя смену
     public void deleteOrdersByShift(Shift shift) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(TABLE_NAME, SHIFT_ID + " = ?", new String[]{String.valueOf(shift.shiftID)});
