@@ -96,7 +96,7 @@ public class RecyclerViewShiftAdapter extends RecyclerView.Adapter<RecyclerViewS
         notifyDataSetChanged();
     }
 
-    public void removeObject(Shift shift, int positionInRVList){
+    public void removeShiftFromList(Shift shift, int positionInRVList){
         shifts.remove(shift);
         notifyItemRemoved(positionInRVList);
     }

@@ -20,10 +20,16 @@ public class SingleChoiceListDF extends DialogFragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try { listener = (SingleChoiceListDFInterface) context;
+        try {
+            //проверим, реализован ли нужный интерфейс родительским фрагментом или активностью
+            listener = (SingleChoiceListDFInterface) getParentFragment();
+            if (listener == null) {
+                listener = (SingleChoiceListDFInterface) context;
+            }
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + " must implement OrdersListInterface");
+            throw new ClassCastException(context.toString() + " must implement SingleChoiceListDFInterface");
         }
+
         selectedObjectID = getArguments().getLong(Constants.OBJECT_ID_EXTRA, -1);
         positionInRVList = getArguments().getInt(Constants.POSITION_EXTRA, -1);
     }

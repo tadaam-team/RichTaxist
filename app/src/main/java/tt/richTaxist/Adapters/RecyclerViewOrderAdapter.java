@@ -94,7 +94,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addOrder(Order order) {
+    public void addOrderToList(Order order) {
         orders.add(0, order);
         //TODO: add item not always on top
         if (Util.youngIsOnTop) {
@@ -104,7 +104,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<ViewHolder> {
         }
     }
 
-    public void removeOrder(Order order, int positionInRVList){
+    public void removeOrderFromList(Order order, int positionInRVList){
         orders.remove(order);
         notifyItemRemoved(positionInRVList);
     }

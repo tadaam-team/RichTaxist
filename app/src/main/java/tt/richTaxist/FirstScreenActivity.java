@@ -27,7 +27,7 @@ import tt.richTaxist.gps.RouteActivity;
 
 public class FirstScreenActivity extends AppCompatActivity implements
         FirstScreenFragment.FirstScreenInterface,
-        SingleChoiceListDF.SingleChoiceListDFInterface{
+        ShiftsListFragment.ShiftsListFragmentInterface{
     private DataSource dataSource;
 
     @Override
@@ -185,31 +185,11 @@ public class FirstScreenActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void processListItem(long selectedShiftID, int selectedActionID, int positionInRVList) {
-        Shift selectedShift = dataSource.getShiftsSource().getShiftByID(selectedShiftID);
-
-        switch (selectedActionID){
-            case 0://править
-                if (selectedShift != null) {
-                    Intent intent = new Intent(this, ShiftTotalsActivity.class);
-                    intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
-                    intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
-                    startActivity(intent);
-                    finish();
-                }
-                break;
-
-            case 1://показать подробности
-                Toast.makeText(this, selectedShift.getDescription(this), Toast.LENGTH_LONG).show();
-                break;
-
-            case 2://удалить
-                if (dataSource.getOrdersSource().getOrdersList(selectedShift.shiftID, 0).size() == 0) {
-                    deleteShift(selectedShift, positionInRVList);
-                } else {
-                    openShiftDeleteDialog(selectedShift, positionInRVList);
-                }
-                break;
+    public void requestDeleteShift (final Shift selectedShift, final int positionInRVList) {
+        if (dataSource.getOrdersSource().getOrdersList(selectedShift.shiftID, 0).size() == 0) {
+            deleteShift(selectedShift, positionInRVList);
+        } else {
+            openShiftDeleteDialog(selectedShift, positionInRVList);
         }
     }
 
@@ -233,7 +213,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         dataSource.getShiftsSource().remove(shift);
         ShiftsListFragment shiftsListFragment = (ShiftsListFragment) getSupportFragmentManager()
                 .findFragmentByTag(ShiftsListFragment.TAG);
-        shiftsListFragment.rvAdapter.removeObject(shift, positionInRVList);
+        shiftsListFragment.removeShiftFromList(shift, positionInRVList);
         Toast.makeText(this, R.string.shiftDeletedMSG, Toast.LENGTH_SHORT).show();
     }
 

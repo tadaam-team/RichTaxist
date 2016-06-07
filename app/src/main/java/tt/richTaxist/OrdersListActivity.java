@@ -3,16 +3,13 @@ package tt.richTaxist;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
-import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
 import tt.richTaxist.Units.Shift;
 
 public class OrdersListActivity extends AppCompatActivity implements
-        OrdersListFragment.OrdersListInterface,
-        SingleChoiceListDF.SingleChoiceListDFInterface {
+        OrdersListFragment.OrdersListInterface {
     private Shift currentShift;
     private DataSource dataSource;
 
@@ -56,33 +53,6 @@ public class OrdersListActivity extends AppCompatActivity implements
             return currentShift.shiftID;
         } else {
             return -1;
-        }
-    }
-
-    //TODO: move this to fragment
-    @Override
-    public void processListItem(long selectedOrderID, int selectedActionID, int positionInRVList) {
-        DataSource dataSource = new DataSource(getApplicationContext());
-        Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
-        OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
-                .findFragmentByTag(OrdersListFragment.TAG);
-
-        switch (selectedActionID){
-            case 0://править
-                if (selectedOrder != null) {
-                    returnToOrderFragment(selectedOrder);
-                }
-                break;
-
-            case 1://показать подробности
-                Toast.makeText(this, selectedOrder.getDescription(this, dataSource), Toast.LENGTH_LONG).show();
-                break;
-
-            case 2://удалить
-                dataSource.getOrdersSource().remove(selectedOrder);
-                ordersListFragment.rvAdapter.removeOrder(selectedOrder, positionInRVList);
-                Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
-                break;
         }
     }
 }

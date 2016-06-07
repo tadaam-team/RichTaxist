@@ -20,10 +20,11 @@ import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.Units.Order;
 
-public class OrdersListFragment extends Fragment {
+public class OrdersListFragment extends Fragment implements
+        SingleChoiceListDF.SingleChoiceListDFInterface {
     public static final String TAG = "OrdersListFragment";
     private OrdersListInterface listener;
-    public RecyclerViewOrderAdapter rvAdapter;
+    private RecyclerViewOrderAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private DataSource dataSource;
 
@@ -88,6 +89,33 @@ public class OrdersListFragment extends Fragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {/*NOP*/}
         });
+    }
+
+    public void addOrderToList(Order order) {
+        if (rvAdapter != null) {
+            rvAdapter.addOrderToList(order);
+        }
+    }
+
+    @Override
+    public void processListItem(long selectedOrderID, int selectedActionID, int positionInRVList) {
+        Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
+
+        switch (selectedActionID){
+            case 0://править
+                listener.returnToOrderFragment(selectedOrder);
+                break;
+
+            case 1://показать подробности
+                Toast.makeText(getContext(), selectedOrder.getDescription(getContext(), dataSource), Toast.LENGTH_LONG).show();
+                break;
+
+            case 2://удалить
+                dataSource.getOrdersSource().remove(selectedOrder);
+                rvAdapter.removeOrderFromList(selectedOrder, positionInRVList);
+                Toast.makeText(getContext(), R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     public interface OrdersListInterface {

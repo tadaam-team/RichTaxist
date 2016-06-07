@@ -1,10 +1,10 @@
 package tt.richTaxist.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
@@ -29,19 +30,34 @@ import tt.richTaxist.Units.Shift;
 /**
  * Created by TAU on 18.04.2016.
  */
-public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.DateTimeRangeFragInterface {
+public class ShiftsListFragment extends Fragment implements
+        DateTimeRangeFrag.DateTimeRangeFragInterface,
+        SingleChoiceListDF.SingleChoiceListDFInterface {
     public static final String TAG = "ShiftsListFragment";
-    private FragmentActivity mActivity;
-    public RecyclerViewShiftAdapter rvAdapter;
+    private RecyclerViewShiftAdapter rvAdapter;
     private CustomSpinner spnTaxopark;
     private DateTimeRangeFrag dateTimeRangeFrag;
     private boolean isListSingleVisible;
     private DataSource dataSource;
+    private ShiftsListFragmentInterface listener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            //проверим, реализован ли нужный интерфейс родительским фрагментом или активностью
+            listener = (ShiftsListFragmentInterface) getParentFragment();
+            if (listener == null) {
+                listener = (ShiftsListFragmentInterface) context;
+            }
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + " must implement ShiftsListFragmentInterface");
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mActivity = getActivity();
         View rootView = inflater.inflate(R.layout.fragment_shifts_list, container, false);
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         spnTaxopark = (CustomSpinner) rootView.findViewById(R.id.spnTaxopark);
@@ -56,14 +72,7 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
         rvAdapter.setListener(new RecyclerViewShiftAdapter.Listener() {
             @Override
             public void onClick(Object selectedObject) {
-                Shift selectedShift = (Shift) selectedObject;
-                Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
-                intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
-                intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
-                getActivity().startActivity(intent);//возможно достаточно startActivity(intent)
-
-                //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран
-                mActivity.finish();
+                editShift((Shift) selectedObject);
             }
 
             @Override
@@ -78,6 +87,16 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
             }
         });
         return rootView;
+    }
+
+    private void editShift(Shift selectedShift) {
+        Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
+        intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
+        intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
+        getActivity().startActivity(intent);//возможно достаточно startActivity(intent)
+
+        //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран
+        getActivity().finish();
     }
 
     private void createDateTimeRangeFrag(){
@@ -131,10 +150,39 @@ public class ShiftsListFragment extends Fragment implements DateTimeRangeFrag.Da
         });
     }
 
+    public void removeShiftFromList(Shift shift, int positionInRVList){
+        if (rvAdapter != null) {
+            rvAdapter.removeShiftFromList(shift, positionInRVList);
+        }
+    }
+
+    @Override
+    public void processListItem(long selectedShiftID, int selectedActionID, int positionInRVList) {
+        Shift selectedShift = dataSource.getShiftsSource().getShiftByID(selectedShiftID);
+
+        switch (selectedActionID){
+            case 0://править
+                editShift(selectedShift);
+                break;
+
+            case 1://показать подробности
+                Toast.makeText(getContext(), selectedShift.getDescription(getContext()), Toast.LENGTH_LONG).show();
+                break;
+
+            case 2://удалить
+                listener.requestDeleteShift(selectedShift, positionInRVList);
+                break;
+        }
+    }
+
     @Override
     public void calculate(Calendar rangeStart, Calendar rangeEnd) {
         //been executed each time upon input finish of date/time start/end
         rvAdapter.setShifts(dataSource.getShiftsSource().getShiftsInRangeByTaxopark(rangeStart, rangeEnd,
                 Util.youngIsOnTop, spnTaxopark.taxoparkID));
+    }
+
+    public interface ShiftsListFragmentInterface{
+        void requestDeleteShift (Shift selectedShift, int positionInRVList);
     }
 }

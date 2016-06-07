@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.Date;
-import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.OrdersListFragment;
 import tt.richTaxist.Units.Order;
@@ -21,8 +20,7 @@ import tt.richTaxist.Fragments.OrderFragment;
  */
 public class MainActivity extends AppCompatActivity implements
         OrderFragment.OrderFragmentInterface,
-        OrdersListFragment.OrdersListInterface,
-        SingleChoiceListDF.SingleChoiceListDFInterface{
+        OrdersListFragment.OrdersListInterface{
     private Shift currentShift;
     private Order currentOrder = null;
     private DataSource dataSource;
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements
         if (getResources().getBoolean(R.bool.screenWiderThan450)) {
             OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
                     .findFragmentByTag(OrdersListFragment.TAG);
-            ordersListFragment.rvAdapter.addOrder(order);
+            ordersListFragment.addOrderToList(order);
         }
         currentOrder = null;
     }
@@ -125,30 +123,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void processListItem(long selectedOrderID, int selectedActionID, int positionInRVList) {
-        Order selectedOrder = dataSource.getOrdersSource().getOrderByID(selectedOrderID);
-        OrdersListFragment ordersListFragment = (OrdersListFragment) getSupportFragmentManager()
-                .findFragmentByTag(OrdersListFragment.TAG);
 
-        switch (selectedActionID){
-            case 0://править
-                if (selectedOrder != null) {
-                    showDetails(selectedOrder);
-                }
-                break;
-
-            case 1://показать подробности
-                Toast.makeText(this, selectedOrder.getDescription(this, dataSource), Toast.LENGTH_LONG).show();
-                break;
-
-            case 2://удалить
-                dataSource.getOrdersSource().remove(selectedOrder);
-                ordersListFragment.rvAdapter.removeOrder(selectedOrder, positionInRVList);
-                Toast.makeText(this, R.string.orderDeletedMSG, Toast.LENGTH_SHORT).show();
-                break;
-        }
-    }
 
     private void showDetails(Order order) {
         currentOrder = order;
