@@ -1,7 +1,6 @@
 package tt.richTaxist;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -36,7 +35,6 @@ public class GrandTotalsActivity extends AppCompatActivity {
     private Spinner spnFirstShift, spnLastShift;
     private CustomSpinner spnTaxopark;
     private Locale locale;
-    private String author = "";
     private Cursor shiftCursor;
     private DataSource dataSource;
 
@@ -54,9 +52,6 @@ public class GrandTotalsActivity extends AppCompatActivity {
         lastShift = list.get(list.size() - 1);
         initiateWidgets();
 
-        if (getIntent() != null){
-            author = getIntent().getStringExtra(Constants.AUTHOR_EXTRA);
-        }
         EventBus.getDefault().register(this);
     }
 
@@ -197,16 +192,6 @@ public class GrandTotalsActivity extends AppCompatActivity {
         shiftCursor.close();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (author.equals("FirstScreenActivity")) {
-            startActivity(new Intent(this, FirstScreenActivity.class));
-        }
-        else if (author.equals("MainActivity")) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
-        finish();
-    }
 
     class ShiftCursorAdapter extends CursorAdapter {
         private LayoutInflater mInflater;

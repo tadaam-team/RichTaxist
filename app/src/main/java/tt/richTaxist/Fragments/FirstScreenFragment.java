@@ -33,7 +33,7 @@ public class FirstScreenFragment extends Fragment implements View.OnClickListene
 
         (rootView.findViewById(R.id.btnOpenLastShift)).setOnClickListener(this);
         (rootView.findViewById(R.id.btnNewShift)).setOnClickListener(this);
-        Button btnOpenShift = (Button) rootView.findViewById(R.id.btnOpenShift);
+        Button btnOpenShift = (Button) rootView.findViewById(R.id.btnOpenShiftsList);
         if (!getResources().getBoolean(R.bool.screenWiderThan450)) {
             btnOpenShift.setOnClickListener(this);
         } else {

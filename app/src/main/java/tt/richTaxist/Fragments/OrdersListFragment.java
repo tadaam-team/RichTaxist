@@ -1,8 +1,10 @@
 package tt.richTaxist.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -110,7 +112,15 @@ public class OrdersListFragment extends Fragment implements
                 break;
 
             case 1://показать подробности
-                Toast.makeText(getContext(), selectedOrder.getDescription(getContext(), dataSource), Toast.LENGTH_LONG).show();
+                AlertDialog.Builder quitDialog = new AlertDialog.Builder(getContext());
+                quitDialog.setMessage(selectedOrder.getDescription(getContext(), dataSource));
+                //пользователь может нажать на OK или просто в любое место вне окна диалога. оно закроется
+                quitDialog.setCancelable(true);
+                quitDialog.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { /*NOP*/ }
+                });
+                quitDialog.show();
                 break;
 
             case 2://удалить

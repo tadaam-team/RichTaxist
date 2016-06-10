@@ -2,7 +2,6 @@ package tt.richTaxist;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -35,7 +34,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     private TimePickerDialog.OnTimeSetListener timeSetListener;
     private Calendar shiftStart, shiftEnd;
     private String clickedButtonID;
-    private String author = "";
 
     private Button buttonShiftStartDate, buttonShiftStartTime, buttonShiftEndDate, buttonShiftEndTime,
             tv_petrol, tv_carRent, buttonContinueShift;
@@ -60,7 +58,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         if (savedInstanceState == null) {
             //при первом создании активити прочитаем интент и найдем смену в БД
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
-            author = getIntent().getStringExtra(Constants.AUTHOR_EXTRA);
             if (shiftID != -1){
                 currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             }
@@ -68,7 +65,6 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
             //если активити пересоздается, читаем текущую смену и автора из savedInstanceState
             long shiftID = savedInstanceState.getLong(Constants.SHIFT_ID_EXTRA);
             currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
-            author = savedInstanceState.getString(Constants.AUTHOR_EXTRA);
         }
 
         if (currentShift != null) {
@@ -100,25 +96,19 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
         createTaxoparkSpinner();
     }
 
-    public void onButtonExitToMainMenuClick(View button) {
-        startActivity(new Intent(this, FirstScreenActivity.class));
+
+    public void onContinueShiftClick(View button) {
         finish();
     }
 
-    public void onContinueShiftClick(View v) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
-        startActivity(intent);
-        finish();
+    public void onPetrolClick(View button) {
+        new DF_NumberInput().show(getSupportFragmentManager(), Constants.PETROL_INPUT_FRAGMENT_TAG);
     }
 
-    public void onPetrolClick(View v) {
-        new DF_NumberInput().show(getSupportFragmentManager(), "fragment_petrol_input");
+    public void onCarRentClick(View button) {
+        new DF_NumberInput().show(getSupportFragmentManager(), Constants.CAR_RENT_INPUT_FRAGMENT_TAG);
     }
 
-    public void onCarRentClick(View v) {
-        new DF_NumberInput().show(getSupportFragmentManager(), "fragment_car_rent_input");
-    }
 
     private void createButtons(final Calendar rangeStart, final Calendar rangeEnd) {
         buttonShiftStartDate.setOnClickListener(new View.OnClickListener() {
@@ -270,11 +260,11 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
 
     @Override
     public void onFinishEditDialog(int inputNumber, String authorTag) {
-        if ("fragment_petrol_input".equals(authorTag)) {
+        if (Constants.PETROL_INPUT_FRAGMENT_TAG.equals(authorTag)) {
             currentShift.petrol = inputNumber;
             currentShift.petrolFilledByHands = true;
             currentShift.calculateShiftTotals(inputNumber, spnTaxopark.taxoparkID, dataSource);
-        } else if ("fragment_car_rent_input".equals(authorTag)){
+        } else if (Constants.CAR_RENT_INPUT_FRAGMENT_TAG.equals(authorTag)){
             currentShift.carRent = inputNumber;
             currentShift.calculateShiftTotals(0, spnTaxopark.taxoparkID, dataSource);
         }
@@ -352,16 +342,5 @@ public class ShiftTotalsActivity extends AppCompatActivity implements DatePicker
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
-        outState.putString(Constants.AUTHOR_EXTRA, author);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (author.equals("FirstScreenActivity")) {
-            startActivity(new Intent(this, FirstScreenActivity.class));
-        } else if (author.equals("MainActivity")) {
-            startActivity(new Intent(this, MainActivity.class));
-        }
-        finish();
     }
 }

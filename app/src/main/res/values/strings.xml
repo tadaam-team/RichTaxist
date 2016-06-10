@@ -13,6 +13,7 @@
     <string name="shiftsListScreenName">Shifts list</string>
     <string name="shiftNotEmptyMSG">Shift is not empty. Delete?</string>
     <string name="shiftDeletedMSG">shift deleted</string>
+    <string name="shiftIsClosedMsg">Reopen it and edit?</string>
 
     <string name="mainScreenName">Order</string>
     <string name="noOrdersMSG">no saved orders</string>
@@ -30,7 +31,7 @@
     <string name="wrongNoteErrMsg">Note text not saved</string>
     <string name="orderSaved">Order saved</string>
     <string name="orderNotSaved">Order not saved</string>
-    <string name="orderDescriptionFormatter">Arrival: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+    <string name="orderDescriptionFormatter">arrival: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
         \nprice: %6$d, payType: %7$s,
         \ntaxopark: %8$s,
         \nbilling: %9$s</string>
@@ -73,7 +74,7 @@
     <string name="ignore">Ignore</string>
     <string name="goBack">Go back</string>
     <string name="inputError">Input error</string>
-    <string name="shiftDescriptionFormatter">Shift start: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
+    <string name="shiftDescriptionFormatter">shift start: %1$02d.%2$02d.%3$02d %4$02d:%5$02d,
         \nrevenue official: %6$d,
         \nhand to the cashier: %7$s,
         \npetrol: %8$s, %9$s closed</string>

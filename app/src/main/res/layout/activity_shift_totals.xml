@@ -300,15 +300,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical">
-        <Button
-            android:text="@string/mainMenu"
-            android:id="@+id/buttonExitToMainMenu"
-            style="@style/ButtonBordered"
-            android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="1"
-            android:onClick="onButtonExitToMainMenuClick"
-            android:gravity="center" />
         <ToggleButton
             android:id="@+id/buttonShiftIsClosed"
             style="@style/ToggleButtonBordered"

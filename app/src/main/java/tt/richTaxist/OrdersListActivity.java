@@ -17,28 +17,27 @@ public class OrdersListActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getResources().getBoolean(R.bool.screenWiderThan450)) {
-            // If the screen is now in landscape mode, we can show the
-            // dialog in-line with the list so we don't need this activity.
+            //здесь достаточно места чтобы фрагмент листа заказов показать вместе с подробностями
+            //значит эту активность можно закрыть
             finish();
             return;
         }
         dataSource = new DataSource(getApplicationContext());
 
         if (savedInstanceState == null) {
-            //при первом создании активити прочитаем интент и найдем смену в БД
+            //при первом создании активности прочитаем интент и найдем смену в БД
             long shiftID = getIntent().getLongExtra(Constants.SHIFT_ID_EXTRA, -1);
             if (shiftID != -1){
                 currentShift = dataSource.getShiftsSource().getShiftByID(shiftID);
             }
-            // During initial setup, plug in the details fragment.
             OrdersListFragment ordersListFragment = new OrdersListFragment();
-            //activity, containing only one fragment doesn't need a layout
+            //если у активности только один внутренний фрагмент, файл разметки не нужен
             getSupportFragmentManager().beginTransaction()
                     .add(android.R.id.content, ordersListFragment, OrdersListFragment.TAG).commit();
         }
     }
 
-    //handles user tap on order in the list
+    //обработчик выбора заказа из листа
     @Override
     public void returnToOrderFragment(Order selectedOrder) {
         Intent response = new Intent();

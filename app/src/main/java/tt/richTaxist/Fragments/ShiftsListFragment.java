@@ -1,19 +1,19 @@
 package tt.richTaxist.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
 import tt.richTaxist.Bricks.CustomSpinner;
@@ -24,7 +24,6 @@ import tt.richTaxist.Constants;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.R;
 import tt.richTaxist.Adapters.RecyclerViewShiftAdapter;
-import tt.richTaxist.ShiftTotalsActivity;
 import tt.richTaxist.Util;
 import tt.richTaxist.Units.Shift;
 /**
@@ -71,7 +70,12 @@ public class ShiftsListFragment extends Fragment implements
         rvAdapter.setListener(new RecyclerViewShiftAdapter.Listener() {
             @Override
             public void onClick(Object selectedObject) {
-                editShift((Shift) selectedObject);
+                Shift selectedShift = (Shift) selectedObject;
+                if (!selectedShift.isClosed()) {
+                    listener.editShift(selectedShift);
+                } else {
+                    showShiftIsClosedDialog(selectedShift);
+                }
             }
 
             @Override
@@ -88,14 +92,24 @@ public class ShiftsListFragment extends Fragment implements
         return rootView;
     }
 
-    private void editShift(Shift selectedShift) {
-        Intent intent = new Intent(getActivity(), ShiftTotalsActivity.class);
-        intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
-        intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
-        getActivity().startActivity(intent);//возможно достаточно startActivity(intent)
-
-        //закрывать стартовый экран можно только после выбора смены, т.к. пользователь может захотеть вернуться в стартовый экран
-        getActivity().finish();
+    private void showShiftIsClosedDialog(final Shift selectedShift) {
+        android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(getActivity());
+        dialog.setTitle(getString(R.string.shiftIsClosed));
+        dialog.setMessage(getString(R.string.shiftIsClosedMsg));
+        dialog.setPositiveButton(getString(R.string.yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedShift.openShift(dataSource);
+                listener.editShift(selectedShift);
+            }
+        });
+        dialog.setNegativeButton(getString(R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               /*NOP*/
+            }
+        });
+        dialog.show();
     }
 
     private void createDateTimeRangeFrag(){
@@ -161,11 +175,23 @@ public class ShiftsListFragment extends Fragment implements
 
         switch (selectedActionID){
             case 0://править
-                editShift(selectedShift);
+                if (!selectedShift.isClosed()) {
+                    listener.editShift(selectedShift);
+                } else {
+                    showShiftIsClosedDialog(selectedShift);
+                }
                 break;
 
             case 1://показать подробности
-                Toast.makeText(getContext(), selectedShift.getDescription(getContext()), Toast.LENGTH_LONG).show();
+                AlertDialog.Builder quitDialog = new AlertDialog.Builder(getContext());
+                quitDialog.setMessage(selectedShift.getDescription(getContext()));
+                //пользователь может нажать на OK или просто в любое место вне окна диалога. оно закроется
+                quitDialog.setCancelable(true);
+                quitDialog.setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { /*NOP*/ }
+                });
+                quitDialog.show();
                 break;
 
             case 2://удалить
@@ -182,6 +208,7 @@ public class ShiftsListFragment extends Fragment implements
     }
 
     public interface ShiftsListFragmentInterface{
-        void requestDeleteShift (Shift selectedShift, int positionInRVList);
+        void requestDeleteShift(Shift selectedShift, int positionInRVList);
+        void editShift(Shift selectedShift);
     }
 }

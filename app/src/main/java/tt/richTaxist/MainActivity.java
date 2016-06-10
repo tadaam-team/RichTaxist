@@ -174,23 +174,18 @@ public class MainActivity extends AppCompatActivity implements
 
 
             case R.id.main_menu:
-                startActivity(new Intent(this, FirstScreenActivity.class));
                 finish();
                 return true;
 
             case R.id.action_shift_totals:
                 Intent intent = new Intent(this, ShiftTotalsActivity.class);
                 intent.putExtra(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
-                intent.putExtra(Constants.AUTHOR_EXTRA, "MainActivity");
                 startActivity(intent);
-                finish();
                 return true;
 
             case R.id.action_grand_totals:
                 Intent intent2 = new Intent(this, GrandTotalsActivity.class);
-                intent2.putExtra(Constants.AUTHOR_EXTRA, "MainActivity");
                 startActivity(intent2);
-                finish();
                 return true;
 
             case R.id.action_settings:
@@ -205,11 +200,5 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putLong(Constants.SHIFT_ID_EXTRA, currentShift.shiftID);
         outState.putParcelable(Constants.CURRENT_ORDER_EXTRA, currentOrder);
-    }
-
-    @Override
-    public void onBackPressed() {
-        startActivity(new Intent(this, FirstScreenActivity.class));
-        finish();
     }
 }

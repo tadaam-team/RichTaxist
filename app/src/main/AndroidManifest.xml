@@ -37,8 +37,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
             android:name=".GrandTotalsActivity"
-            android:label="@string/grandTotalsScreenName"
-            android:parentActivityName=".FirstScreenActivity"/>
+            android:label="@string/grandTotalsScreenName"/>
         <activity
             android:name=".SettingsActivity"
             android:label="@string/settingsScreenName"/>

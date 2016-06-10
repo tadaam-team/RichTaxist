@@ -39,7 +39,7 @@
                     android:layout_weight="1"/>
                 <Button
                     android:text="@string/shiftsListScreenName"
-                    android:id="@+id/btnOpenShift"
+                    android:id="@+id/btnOpenShiftsList"
                     style="@style/ButtonBordered"
                     android:layout_width="0dp"
                     android:layout_height="70dp"

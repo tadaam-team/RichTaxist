@@ -15,7 +15,6 @@ import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import tt.richTaxist.Bricks.SingleChoiceListDF;
 import tt.richTaxist.DB.DataSource;
 import tt.richTaxist.Fragments.ShiftsListFragment;
 import tt.richTaxist.SharedPreferences.SharedPrefEntry;
@@ -79,7 +78,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
         fragment.setSoloView(isListSingleVisible);
         if (isListSingleVisible){
             ft.replace(R.id.container_first_screen, fragment, ShiftsListFragment.TAG);
-            ft.addToBackStack("OrdersListFragmentTransaction");
+            //TODO: эта запись в стэке заставляет пользователя второй раз нажимать назад
+            // если из списка смен повернуть устройство в ландшафт и попытаться выйти
+            ft.addToBackStack("ShiftsListFragmentTransaction");
             ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
         } else {
             ft.replace(R.id.container_shifts_list, fragment, ShiftsListFragment.TAG);
@@ -110,12 +111,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
         switch (buttonIndex){
             case R.id.btnOpenLastShift:
                 if (lastShift != null){
-                    Intent intent = new Intent(this, ShiftTotalsActivity.class);
-                    intent.putExtra(Constants.SHIFT_ID_EXTRA, lastShift.shiftID);
-                    intent.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
-                    startActivity(intent);
-                    Log.d(Constants.LOG_TAG, "открываю последнюю сохранённую смену");
-                    finish();
+                    editShift(lastShift);
                 } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 }
@@ -124,10 +120,9 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnNewShift:
                 startActivity(new Intent(this, MainActivity.class));
                 Log.d(Constants.LOG_TAG, "открываю новую смену");
-                finish();
                 break;
 
-            case R.id.btnOpenShift:
+            case R.id.btnOpenShiftsList:
                 //Обработчик нажатия кнопки "Список смен"
                 if (!getResources().getBoolean(R.bool.screenWiderThan450)) {
                     if (lastShift != null){
@@ -164,9 +159,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnGrandTotals:
                 if (lastShift != null){
-                    Intent intent2 = new Intent(this, GrandTotalsActivity.class);
-                    intent2.putExtra(Constants.AUTHOR_EXTRA, "FirstScreenActivity");
-                    startActivity(intent2);
+                    startActivity(new Intent(this, GrandTotalsActivity.class));
                     Log.d(Constants.LOG_TAG, "открываю итоги по зарплате");
                 } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
@@ -191,6 +184,13 @@ public class FirstScreenActivity extends AppCompatActivity implements
         } else {
             openShiftDeleteDialog(selectedShift, positionInRVList);
         }
+    }
+
+    @Override
+    public void editShift(Shift selectedShift) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(Constants.SHIFT_ID_EXTRA, selectedShift.shiftID);
+        startActivity(intent);
     }
 
     private void openShiftDeleteDialog(final Shift shift, final int positionInRVList) {
