@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -18,11 +17,10 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import tt.richCabman.util.Constants;
 import tt.richCabman.database.DataSource;
 import tt.richCabman.util.EmailValidator;
 import tt.richCabman.R;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.SharedPrefEntry;
 import tt.richCabman.util.SharedPrefsHelper;
 import tt.richCabman.util.Util;
@@ -124,14 +122,14 @@ public class SignInActivity extends AppCompatActivity {
         SignUpCallback signUpCallback = new SignUpCallback() {
             public void done(ParseException error) {
                 if (error == null) {
-                    Log.d(Constants.LOG_TAG, "SignUp success. Waiting for email confirmation");
+                    Logger.d("SignUp success. Waiting for email confirmation");
                     Toast.makeText(getApplicationContext(), res.getString(R.string.confirmEmail), Toast.LENGTH_LONG).show();
                     tvWelcome.setText(res.getString(R.string.confirmEmail));
                     //сохранять данные пользователя локально в SharedPreferences логично только после подтверждения от Parse.com
                     saveLocalSharedPrefs(username, password);
                     showLogInORLogOut(false, true);
                 } else {
-                    Log.d(Constants.LOG_TAG, "SignUp error code " + error.getCode());
+                    Logger.d("SignUp error code " + error.getCode());
                     String errorMsg;
                     switch (error.getCode()) {
                         case 203: errorMsg = res.getString(R.string.emailError); break;
@@ -152,9 +150,9 @@ public class SignInActivity extends AppCompatActivity {
         SharedPrefEntry entry = new SharedPrefEntry(username, password);
         boolean isSuccess = sharedPrefsHelper.savePersonalInfo(entry);
         if (isSuccess) {
-            Log.d(Constants.LOG_TAG, "Personal information saved");
+            Logger.d("Personal information saved");
         } else {
-            Log.d(Constants.LOG_TAG, "Failed to write personal information to SharedPreferences");
+            Logger.d("Failed to write personal information to SharedPreferences");
         }
     }
 
@@ -224,7 +222,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     public void onClaimChangeDeviceClick(View v) {
-        Log.d(Constants.LOG_TAG, "IMEI before detach: " + Util.currentUser.getString("IMEI"));
+        Logger.d("IMEI before detach: " + Util.currentUser.getString("IMEI"));
         Util.currentUser.put("IMEI", "detached");
         Util.currentUser.saveInBackground();
         showLogInORLogOut(true, false);
@@ -274,13 +272,13 @@ public class SignInActivity extends AppCompatActivity {
             public void done(ParseUser user, ParseException error) {
                 if (user != null) {
                     cbUserActive.setChecked(true);
-                    Log.d(Constants.LOG_TAG, "user logged in");
+                    Logger.d("user logged in");
                     Util.userHasAccess = Util.verifyUser(user, context);
                     saveLocalSharedPrefs(username, password);
                     Util.saveSettingsToCloud();
                     showLogInORLogOut(false, true);
                 } else {
-                    Log.d(Constants.LOG_TAG, "error code " + error.getCode());
+                    Logger.d("error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
                         case 100: msg = getResources().getString(R.string.noInternetMSG); break;

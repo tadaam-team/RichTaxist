@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,11 @@ import java.util.Calendar;
 import tt.richCabman.fragments.bricks.CustomSpinner;
 import tt.richCabman.fragments.bricks.CustomSpinner.TypeOfSpinner;
 import tt.richCabman.fragments.bricks.DateTimeButtons;
-import tt.richCabman.util.Constants;
 import tt.richCabman.model.Order;
 import tt.richCabman.model.TypeOfPayment;
 import tt.richCabman.R;
 import tt.richCabman.activities.Settings4ParksAndBillingsActivity;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.Util;
 
 public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeButtonsInterface {
@@ -34,7 +33,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
     private CustomSpinner spnTaxopark, spnBilling;
 
     public void setOrder(Order order){
-        Log.d(Constants.LOG_TAG, "OrderFragment.setOrder() " + String.valueOf(order == null ? "null" : order.price));
+        Logger.d("OrderFragment.setOrder() " + String.valueOf(order == null ? "null" : order.price));
         try { refreshWidgets(order);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,7 +51,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(Constants.LOG_TAG, "OrderFragment.onCreateView");
+        Logger.d("OrderFragment.onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_order, container, false);
 
         typeOfPaymentUI = (RadioGroup)    rootView.findViewById(R.id.payTypeRadioGroup);
@@ -182,7 +181,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         try {
             price = Integer.parseInt(etPrice.getText().toString());
         } catch (NumberFormatException e) {
-            Log.d(Constants.LOG_TAG, getResources().getString(R.string.wrongPriceErrMsg));
+            Logger.d(getResources().getString(R.string.wrongPriceErrMsg));
             Toast.makeText(getContext(), String.valueOf(getResources().getString(R.string.wrongPriceErrMsg)), Toast.LENGTH_LONG).show();
             price = 0;
         }
@@ -190,7 +189,7 @@ public class OrderFragment extends Fragment implements DateTimeButtons.DateTimeB
         try {
             note = etNote.getText().toString();
         } catch (Exception e) {
-            Log.d(Constants.LOG_TAG, getResources().getString(R.string.wrongNoteErrMsg));
+            Logger.d(getResources().getString(R.string.wrongNoteErrMsg));
             Toast.makeText(getContext(), String.valueOf(getResources().getString(R.string.wrongNoteErrMsg)), Toast.LENGTH_LONG).show();
             note = "";
         }

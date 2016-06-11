@@ -62,7 +62,7 @@ public class CustomSpinner extends Spinner {
                 } else {
                     taxopark = dataSource.getTaxoparksSource().getTaxoparkByID(id);
                 }
-//                Log.d(LOG_TAG, "setPositionOfSpinner. taxopark: " + String.valueOf(taxopark));
+//                Logger.d("setPositionOfSpinner. taxopark: " + String.valueOf(taxopark));
                 int tIndexInSpinner = 0;
                 if (taxopark != null){
                     tIndexInSpinner = spnTaxoparkAdapter.getPosition(taxopark);

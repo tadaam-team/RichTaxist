@@ -8,7 +8,6 @@ import tt.richCabman.interfaces.MapProvider;
 import tt.richCabman.services.GPSService;
 import tt.richCabman.fragments.MapPathFragment;
 import tt.richCabman.model.Coordinates;
-
 /**
  * Created by AlexShredder on 06.07.2015.
  */

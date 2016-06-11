@@ -6,14 +6,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
-import tt.richCabman.util.Constants;
 import tt.richCabman.database.MySQLHelper;
 import tt.richCabman.model.Order;
 import tt.richCabman.model.Shift;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.Util;
 import static tt.richCabman.database.tables.ShiftsTable.*;
 /**
@@ -97,7 +96,7 @@ public class ShiftsSource {
                 shiftsList.add(shift);
             }
         }
-        Log.d(Constants.LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        Logger.d("shiftsList.size(): " + String.valueOf(shiftsList.size()));
         return shiftsList;
     }
 
@@ -123,12 +122,12 @@ public class ShiftsSource {
             while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(Constants.LOG_TAG, "shiftsList.size(): " + String.valueOf(shiftsList.size()));
+        Logger.d("shiftsList.size(): " + String.valueOf(shiftsList.size()));
         return shiftsList;
     }
     private boolean checkTaxoparkInShift(Shift shift, long taxoparkID){
         ArrayList<Order> orders = ordersSource.getOrdersList(shift.shiftID, taxoparkID);
-        Log.d(Constants.LOG_TAG, "orders: " + String.valueOf(orders.size()));
+        Logger.d("orders: " + String.valueOf(orders.size()));
         boolean hasOrdersWithTargetTaxopark = false;
         for (Order order: orders) {
             if (order.taxoparkID == taxoparkID) hasOrdersWithTargetTaxopark = true;

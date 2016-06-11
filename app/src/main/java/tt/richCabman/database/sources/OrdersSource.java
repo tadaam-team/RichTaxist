@@ -6,16 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.provider.BaseColumns;
-import android.util.Log;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import tt.richCabman.util.Constants;
 import tt.richCabman.database.MySQLHelper;
 import tt.richCabman.model.Billing;
 import tt.richCabman.model.Order;
 import tt.richCabman.model.Shift;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.Util;
 import static tt.richCabman.database.tables.OrdersTable.*;
 /**
@@ -84,7 +83,7 @@ public class OrdersSource {
                     + TAXOPARK_ID + "='" + String.valueOf(taxoparkID) + "'"
                     + " ORDER BY " + ARRIVAL_DATE_TIME + " " + sortMethod;
         }
-//        Log.d(Constants.LOG_TAG, "getOrdersList. selectQuery: " + String.valueOf(selectQuery));
+//        Logger.d("getOrdersList. selectQuery: " + String.valueOf(selectQuery));
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -95,7 +94,7 @@ public class OrdersSource {
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Log.d(Constants.LOG_TAG, "OrdersSource. ordersList.size(): " + String.valueOf(ordersList.size()));
+        Logger.d("OrdersSource. ordersList.size(): " + String.valueOf(ordersList.size()));
         return ordersList;
     }
 
@@ -109,7 +108,7 @@ public class OrdersSource {
             ordersListCount = cursor.getInt(0);
         }
         cursor.close();
-        Log.d(Constants.LOG_TAG, "OrdersSource. ordersListCount: " + String.valueOf(ordersListCount));
+        Logger.d("OrdersSource. ordersListCount: " + String.valueOf(ordersListCount));
         return ordersListCount;
     }
 

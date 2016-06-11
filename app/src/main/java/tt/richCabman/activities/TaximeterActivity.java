@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,9 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
-
-import tt.richCabman.util.Constants;
 import tt.richCabman.R;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.Util;
 import tt.richCabman.model.Order;
 import tt.richCabman.model.Coordinates;
@@ -54,12 +52,12 @@ public class TaximeterActivity extends AppCompatActivity{
         distance = 0;
         travelTime = 0;
         coordinatesList = new ArrayList<>();
-        Log.d(Constants.LOG_TAG, "onCreate");
+        Logger.d("onCreate");
 
         try {
             stopService(new Intent(this, GPSService.class));
         } catch (Exception e) {
-            Log.d(Constants.LOG_TAG, "Ошибка остановки сервиса");
+            Logger.d("Ошибка остановки сервиса");
         }
 
        Intent intent = new Intent(TaximeterActivity.this, GPSService.class);//.putExtra(GPSHelper.PARAM_PINTENT, pi);
@@ -73,12 +71,12 @@ public class TaximeterActivity extends AppCompatActivity{
                 PendingIntent pi = createPendingResult(GPSHelper.GPS_REQUEST_FROM_ORDER, getIntent(), 0);
                 gpsService.setPendingIntent(pi);
                 gpsService.restart();
-                Log.d(Constants.LOG_TAG,"Service connected");
+                Logger.d("Service connected");
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(Constants.LOG_TAG,"Service disconnected");
+                Logger.d("Service disconnected");
             }
         };
         bindService(intent, serviceConnection, BIND_AUTO_CREATE);
@@ -118,14 +116,14 @@ public class TaximeterActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
-        Log.d(Constants.LOG_TAG, "On destroy");
+        Logger.d("On destroy");
 
         try {
             unbindService(serviceConnection);
             serviceConnection = null;
             stopService(new Intent(this, GPSService.class));
         } catch (Exception e) {
-            Log.d(Constants.LOG_TAG, "Ошибка остановки сервиса");
+            Logger.d("Ошибка остановки сервиса");
         }
         if (updateTimeTask != null) updateTimeTask.cancel(true);
 
@@ -135,7 +133,7 @@ public class TaximeterActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(Constants.LOG_TAG, "on activity result: " + requestCode + " " + resultCode);
+        Logger.d("on activity result: " + requestCode + " " + resultCode);
         if (requestCode == GPSHelper.GPS_REQUEST_FROM_ORDER && resultCode == GPSHelper.PARAM_RETURN_DATA){
             distance   = data.getIntExtra(GPSHelper.PARAM_DISTANCE, 0);
             double lat = data.getDoubleExtra(GPSHelper.PARAM_LAT, 0);
@@ -147,13 +145,13 @@ public class TaximeterActivity extends AppCompatActivity{
 
     @Override
     protected void onResume() {
-        Log.d(Constants.LOG_TAG, "onResume");
+        Logger.d("onResume");
         super.onResume();
     }
 
     @Override
     protected void onPause() {
-        Log.d(Constants.LOG_TAG, "OnPause");
+        Logger.d("OnPause");
         super.onPause();
     }
 
@@ -163,12 +161,12 @@ public class TaximeterActivity extends AppCompatActivity{
         protected void onPreExecute() {
             super.onPreExecute();
             travelTimeTextView.setText("---");
-            Log.d(Constants.LOG_TAG, "UTT: Preexecute");
+            Logger.d("UTT: Preexecute");
         }
 
         @Override
         protected Void doInBackground(Void... params) {
-            Log.d(Constants.LOG_TAG, "UTT: doInBackground");
+            Logger.d("UTT: doInBackground");
             try {
                 while (true) {
                     TimeUnit.SECONDS.sleep(1);
@@ -192,14 +190,14 @@ public class TaximeterActivity extends AppCompatActivity{
 
         @Override
         protected void onPostExecute(Void result) {
-            Log.d(Constants.LOG_TAG, "UTT: onPostExecute");
+            Logger.d("UTT: onPostExecute");
             super.onPostExecute(result);
             travelTimeTextView.setText("stop travel");
         }
 
         @Override
         protected void onCancelled() {
-            Log.d(Constants.LOG_TAG, "UTT: cancelled");
+            Logger.d("UTT: cancelled");
             super.onCancelled();
         }
 

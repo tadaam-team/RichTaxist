@@ -85,8 +85,8 @@ public class GrandTotalsActivity extends AppCompatActivity {
         processWholeShifts(wholeShifts);
 //        Util.logDate("firstShiftStart", firstShiftStart);
 //        Util.logDate("lastShiftStart", lastShiftStart);
-//        Log.d(Constants.LOG_TAG, "taxoparkID: " + String.valueOf(taxoparkID));
-//        Log.d(Constants.LOG_TAG, "wholeShifts.size(): " + String.valueOf(wholeShifts.size()));
+//        Logger.d("taxoparkID: " + String.valueOf(taxoparkID));
+//        Logger.d("wholeShifts.size(): " + String.valueOf(wholeShifts.size()));
     }
 
     private void processWholeShifts(ArrayList<Shift> wholeShifts) {

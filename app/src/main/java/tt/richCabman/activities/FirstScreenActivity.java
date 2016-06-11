@@ -8,18 +8,17 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-
 import tt.richCabman.util.Constants;
 import tt.richCabman.database.DataSource;
 import tt.richCabman.fragments.ShiftsListFragment;
 import tt.richCabman.R;
+import tt.richCabman.util.Logger;
 import tt.richCabman.util.SharedPrefEntry;
 import tt.richCabman.util.SharedPrefsHelper;
 import tt.richCabman.util.Util;
@@ -45,16 +44,16 @@ public class FirstScreenActivity extends AppCompatActivity implements
             ParseAnalytics.trackAppOpened(getIntent());
             ParseUser.enableAutomaticUser();
         } catch (RuntimeException e){
-            Log.d(Constants.LOG_TAG, "Parse already launched");
+            Logger.d("Parse already launched");
         }
 
         TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         Util.deviceIMEI = tm.getDeviceId();
-//        Log.d(Constants.LOG_TAG, "IMEI: " + Util.deviceIMEI);
+//        Logger.d("IMEI: " + Util.deviceIMEI);
 
         if (Util.currentUser == null) {
             // Отправляем данные на Parse.com для проверки только если юзер еще не авторизован
-            Log.d(Constants.LOG_TAG, "username: " + Util.username + ", password: " + Util.password);
+            Logger.d("username: " + Util.username + ", password: " + Util.password);
             authorize();
         }
 
@@ -121,7 +120,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnNewShift:
                 startActivity(new Intent(this, MainActivity.class));
-                Log.d(Constants.LOG_TAG, "открываю новую смену");
+                Logger.d("открываю новую смену");
                 break;
 
             case R.id.btnOpenShiftsList:
@@ -139,12 +138,12 @@ public class FirstScreenActivity extends AppCompatActivity implements
 
             case R.id.btnSettings:
                 startActivity(new Intent(this, SettingsActivity.class));
-                Log.d(Constants.LOG_TAG, "открываю настройки");
+                Logger.d("открываю настройки");
                 break;
 
             case R.id.btnSignIn:
                 startActivity(new Intent(this, SignInActivity.class));
-                Log.d(Constants.LOG_TAG, "открываю экран учетных записей");
+                Logger.d("открываю экран учетных записей");
                 break;
 
             case R.id.btnRoute:
@@ -153,7 +152,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     Intent intent3 = new Intent(this, RouteActivity.class);
                     intent3.putExtra(Constants.SHIFT_ID_EXTRA, lastShift.shiftID);
                     startActivity(intent3);
-                    Log.d(Constants.LOG_TAG, "открываю карту маршрута смены");
+                    Logger.d("открываю карту маршрута смены");
                 } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 }
@@ -162,7 +161,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
             case R.id.btnGrandTotals:
                 if (lastShift != null){
                     startActivity(new Intent(this, GrandTotalsActivity.class));
-                    Log.d(Constants.LOG_TAG, "открываю итоги по зарплате");
+                    Logger.d("открываю итоги по зарплате");
                 } else {
                     Toast.makeText(this, R.string.noShiftsMSG, Toast.LENGTH_SHORT).show();
                 }
@@ -228,7 +227,7 @@ public class FirstScreenActivity extends AppCompatActivity implements
                     Util.userHasAccess = Util.verifyUser(user, getApplicationContext());
                     Util.saveSettingsToCloud();
                 } else {
-                    Log.d(Constants.LOG_TAG, "error code " + error.getCode());
+                    Logger.d("error code " + error.getCode());
                     String msg;
                     switch (error.getCode()){
                         case 100: msg = getResources().getString(R.string.noInternetMSG); break;

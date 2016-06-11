@@ -97,7 +97,7 @@ public class RouteActivity extends FragmentActivity {
             @Override
             protected void onProgressUpdate(Object[] values) {
                 //super.onProgressUpdate(values);
-                //Log.d(LOG_TAG,"Updating map");
+                //Logger.d("Updating map");
                 try {
                     seekBar.setNormalizedMaxValue(Calendar.getInstance().getTimeInMillis());
                     mapFragment.showPath(dataSource.getLocationsSource().getLocationsByPeriod

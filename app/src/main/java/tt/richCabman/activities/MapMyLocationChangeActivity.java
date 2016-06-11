@@ -3,15 +3,12 @@ package tt.richCabman.activities;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-
-import tt.richCabman.util.Constants;
 import tt.richCabman.R;
+import tt.richCabman.util.Logger;
 
 public class MapMyLocationChangeActivity extends FragmentActivity {
     //Called when the activity is first created.
@@ -45,7 +42,7 @@ public class MapMyLocationChangeActivity extends FragmentActivity {
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
-                Log.d(Constants.LOG_TAG, "onMapLoaded");
+                Logger.d("onMapLoaded");
                 Location location = map.getMyLocation();
 
                 if (location != null) {
@@ -63,7 +60,7 @@ public class MapMyLocationChangeActivity extends FragmentActivity {
     @Override
     public void onMyLocationChange(MyLocationItem myLocationItem) {
         double speed = myLocationItem.getSpeed();
-        Log.d(Constants.LOG_TAG, "speed: "+String.valueOf(speed));
+        Logger.d("speed: "+String.valueOf(speed));
         if (speed==0.0) mMapController.setZoomCurrent(13); else mMapController.setZoomCurrent(13-((float) speed)/4);
 
     }

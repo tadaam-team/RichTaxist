@@ -5,13 +5,12 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
-import android.util.Log;
-import tt.richCabman.util.Constants;
 import tt.richCabman.database.tables.BillingsTable;
 import tt.richCabman.database.tables.LocationsTable;
 import tt.richCabman.database.tables.OrdersTable;
 import tt.richCabman.database.tables.ShiftsTable;
 import tt.richCabman.database.tables.TaxoparksTable;
+import tt.richCabman.util.Logger;
 
 public class MySQLHelper extends SQLiteOpenHelper {
     //helper is one no matter how much tables there are
@@ -39,12 +38,12 @@ public class MySQLHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         updateMyDatabase(db, 0, DB_VERSION);
-        Log.d(Constants.LOG_TAG, "MySQLHelper: onCreate");
+        Logger.d("MySQLHelper: onCreate");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d(Constants.LOG_TAG, "Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
+        Logger.d("Found new DB version. About to update to: " + String.valueOf(DB_VERSION));
         updateMyDatabase(db, oldVersion, newVersion);
     }
 

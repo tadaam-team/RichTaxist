@@ -5,12 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import java.util.Date;
-
 import tt.richCabman.util.Constants;
 import tt.richCabman.database.DataSource;
 import tt.richCabman.fragments.OrdersListFragment;
@@ -18,6 +16,7 @@ import tt.richCabman.R;
 import tt.richCabman.model.Order;
 import tt.richCabman.model.Shift;
 import tt.richCabman.fragments.OrderFragment;
+import tt.richCabman.util.Logger;
 /**
  * Created by Tau on 08.06.2015.
  */
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements
             if (orderFragment != null) {
                 orderFragment.setOrder(currentOrder);
             } else {
-                Log.d(Constants.LOG_TAG, "MainActivity.showDetails() failed to find OrderFragment");
+                Logger.d("MainActivity.showDetails() failed to find OrderFragment");
             }
         }
     }

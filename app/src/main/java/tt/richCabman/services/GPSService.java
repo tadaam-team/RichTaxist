@@ -9,13 +9,11 @@ import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
-
 import tt.richCabman.activities.GPSHelper;
 import tt.richCabman.database.DataSource;
 import tt.richCabman.model.Coordinates;
-import tt.richCabman.util.Constants;
+import tt.richCabman.util.Logger;
 
 public class GPSService extends Service {
     static PendingIntent pi;
@@ -58,7 +56,7 @@ public class GPSService extends Service {
 
         @Override
         protected void finalize() throws Throwable {
-            Log.d(Constants.LOG_TAG, "on finalize Service thread");
+            Logger.d("on finalize Service thread");
             locationManager.removeUpdates(locationListener);
             super.finalize();
         }
@@ -66,32 +64,32 @@ public class GPSService extends Service {
         private void sendLocation(){
 
             if (lastLocation == null){
-                Log.d(Constants.LOG_TAG,"curLoc = null");
+                Logger.d("curLoc = null");
                 return;
             }
 
             if (pi != null) {
-                Log.d(Constants.LOG_TAG, "create intent 4 sending");
+                Logger.d("create intent 4 sending");
                 Intent intent = new Intent();
                 intent.putExtra(GPSHelper.PARAM_DISTANCE, distance);
                 intent.putExtra(GPSHelper.PARAM_LAT, lastLocation.getLatitude());
                 intent.putExtra(GPSHelper.PARAM_LON, lastLocation.getLongitude());
 
-                Log.d(Constants.LOG_TAG, "sending intent");
+                Logger.d("sending intent");
                 try {
                     pi.send(GPSService.this, GPSHelper.PARAM_RETURN_DATA, intent);
                 } catch (PendingIntent.CanceledException e) {
-                    Log.d(Constants.LOG_TAG, e.getMessage());
+                    Logger.d(e.getMessage());
                 }
             }else{
-                Log.d(Constants.LOG_TAG, "pi == null");
+                Logger.d("pi == null");
             }
             try {
                 dataSource.getLocationsSource().create(new Coordinates(lastLocation.getLongitude(), lastLocation.getLatitude()));
             } catch (Exception e) {
                 e.printStackTrace();
 
-                Log.d(Constants.LOG_TAG, "Error by store locations, database not ready");
+                Logger.d("Error by store locations, database not ready");
                 stopSelf();
             }
         }
@@ -106,7 +104,7 @@ public class GPSService extends Service {
 //            while (true){
 //                try {
 //                    TimeUnit.SECONDS.sleep(1);
-//                    Log.d(Constants.LOG_TAG, "tiktak");
+//                    Logger.d("tiktak");
 //                } catch (InterruptedException e) {
 //                    break;
 //                }
@@ -116,7 +114,7 @@ public class GPSService extends Service {
 
             @Override
             public void onLocationChanged(Location location) {
-                Log.d(Constants.LOG_TAG, "on loc change");
+                Logger.d("on loc change");
                 if(lastLocation == null) lastLocation = location;
                 float[] result = new float[1];
                 Location.distanceBetween(lastLocation.getLatitude(), lastLocation.getLongitude(),
@@ -153,7 +151,7 @@ public class GPSService extends Service {
                     case 2: caption = "ok"; break;
                 }
                 if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                    Log.d(Constants.LOG_TAG, "gps status: "+ caption);
+                    Logger.d("gps status: "+ caption);
                     //Toast.makeText(GPSService.this, "gps status: "+ caption, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -167,24 +165,24 @@ public class GPSService extends Service {
         //try {
         //    pi = intent.getParcelableExtra(GPSHelper.PARAM_PINTENT);
         //} catch (Exception e) {
-        //    Log.d(Constants.LOG_TAG, "Ошибка при bind сервиса");
+        //    Logger.d("Ошибка при bind сервиса");
         //    stopSelf();
 
        // }
 
-        Log.d(Constants.LOG_TAG, "on bind");
+        Logger.d("on bind");
         return binder;
 
     }
 
     public void setPendingIntent(PendingIntent pendingIntent){
         pi = pendingIntent;
-        Log.d(Constants.LOG_TAG, "set pi to "+pi);
+        Logger.d("set pi to "+pi);
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.d(Constants.LOG_TAG, "on REbind");
+        Logger.d("on REbind");
         super.onRebind(intent);
     }
 
@@ -198,13 +196,13 @@ public class GPSService extends Service {
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(Constants.LOG_TAG, "on UNbind");
+        Logger.d("on UNbind");
         return super.onUnbind(intent);
     }
 
     @Override
     public void onDestroy(){
-        Log.d(Constants.LOG_TAG, "on destroy");
+        Logger.d("on destroy");
         stopSelf();
         super.onDestroy();
     }
