@@ -12,7 +12,7 @@
         android:orientation="vertical"/>
 
     <fragment
-        android:name="tt.richTaxist.Fragments.FirstScreenFragment"
+        android:name="tt.richCabman.fragments.FirstScreenFragment"
         android:id="@+id/firstScreenFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"

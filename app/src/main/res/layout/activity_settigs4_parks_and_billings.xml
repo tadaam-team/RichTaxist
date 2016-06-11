@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context="tt.richTaxist.Settings4ParksAndBillingsActivity"
+    tools:context=".activities.Settings4ParksAndBillingsActivity"
     android:orientation="vertical">
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:name="tt.richTaxist.Fragments.TaxoparksFragment"
+        android:name="tt.richCabman.fragments.TaxoparksFragment"
         android:id="@+id/fragmentTaxoparks"
         tools:layout="@layout/fragment_taxoparks"/>
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:name="tt.richTaxist.Fragments.BillingsFragment"
+        android:name="tt.richCabman.fragments.BillingsFragment"
         android:id="@+id/fragmentBillings"
         android:layout_gravity="center_horizontal"
         tools:layout="@layout/fragment_billings"/>

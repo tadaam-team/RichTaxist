@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="tt.richTaxist"
+<manifest package="tt.richCabman"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,7 +20,7 @@
         android:label="@string/appName"
         android:theme="@style/MyMaterialTheme">
         <activity
-            android:name=".FirstScreenActivity"
+            android:name="tt.richCabman.activities.FirstScreenActivity"
             android:label="@string/appName">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,39 +29,39 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="tt.richCabman.activities.MainActivity"
             android:label="@string/mainScreenName"/>
         <activity
-            android:name=".ShiftTotalsActivity"
+            android:name="tt.richCabman.activities.ShiftTotalsActivity"
             android:label="@string/shiftTotalsScreenName"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name=".GrandTotalsActivity"
+            android:name="tt.richCabman.activities.GrandTotalsActivity"
             android:label="@string/grandTotalsScreenName"/>
         <activity
-            android:name=".SettingsActivity"
+            android:name="tt.richCabman.activities.SettingsActivity"
             android:label="@string/settingsScreenName"/>
         <activity
-            android:name=".Settings4ParksAndBillingsActivity"
+            android:name="tt.richCabman.activities.Settings4ParksAndBillingsActivity"
             android:label="@string/settingsScreenName"/>
         <activity
-            android:name=".gps.google.MapMyLocationChangeActivity"
+            android:name="tt.richCabman.activities.MapMyLocationChangeActivity"
             android:label="@string/appName"/>
         <activity
-            android:name=".TaximeterActivity"
+            android:name="tt.richCabman.activities.TaximeterActivity"
             android:label="@string/mainScreenName"/>
         <activity
-            android:name=".gps.RouteActivity"
+            android:name="tt.richCabman.activities.RouteActivity"
             android:label="@string/routeMap"/>
         <activity
-            android:name=".SignInActivity"
+            android:name="tt.richCabman.activities.SignInActivity"
             android:label="@string/userAccountsScreenName"/>
         <activity
-            android:name=".OrdersListActivity"
+            android:name="tt.richCabman.activities.OrdersListActivity"
             android:label="@string/ordersList"/>
 
         <service
-            android:name=".gps.GPSService"
+            android:name="tt.richCabman.services.GPSService"
             android:enabled="true"
             android:exported="true"/>
 

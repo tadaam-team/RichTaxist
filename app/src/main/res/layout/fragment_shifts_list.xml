@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    tools:context=".Fragments.ShiftsListFragment"
+    tools:context=".fragments.ShiftsListFragment"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +17,7 @@
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <tt.richTaxist.Bricks.CustomSpinner
+        <tt.richCabman.fragments.bricks.CustomSpinner
             android:id="@+id/spnTaxopark"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

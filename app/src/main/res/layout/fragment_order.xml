@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.OrderFragment"
+    tools:context=".fragments.OrderFragment"
     android:id="@+id/orderFragment">
 
     <ScrollView
@@ -155,13 +155,13 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:gravity="center_vertical">
-                <tt.richTaxist.Bricks.CustomSpinner
+                <tt.richCabman.fragments.bricks.CustomSpinner
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:id="@+id/spnTaxopark"
                     android:spinnerMode="dialog"/>
-                <tt.richTaxist.Bricks.CustomSpinner
+                <tt.richCabman.fragments.bricks.CustomSpinner
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

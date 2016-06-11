@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context="tt.richTaxist.Bricks.DateTimeButtons">
+    tools:context=".fragments.bricks.DateTimeButtons">
 
     <Button
         style="@style/ButtonBordered"
