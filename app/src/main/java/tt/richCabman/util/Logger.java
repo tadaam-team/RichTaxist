@@ -11,5 +11,4 @@ public class Logger {
             Log.d(TAG, message);
         }
     }
-
 }

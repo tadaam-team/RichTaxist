@@ -20,6 +20,7 @@ import tt.richCabman.fragments.bricks.CustomSpinner;
 import tt.richCabman.fragments.bricks.CustomSpinner.TypeOfSpinner;
 import tt.richCabman.fragments.bricks.DateTimeRangeFrag;
 import tt.richCabman.fragments.bricks.SingleChoiceListDF;
+import tt.richCabman.interfaces.RecyclerViewClickListener;
 import tt.richCabman.util.Constants;
 import tt.richCabman.database.DataSource;
 import tt.richCabman.R;
@@ -67,7 +68,7 @@ public class ShiftsListFragment extends Fragment implements
         recyclerView.setAdapter(rvAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        rvAdapter.setListener(new RecyclerViewShiftAdapter.Listener() {
+        rvAdapter.setListener(new RecyclerViewClickListener() {
             @Override
             public void onClick(Object selectedObject) {
                 Shift selectedShift = (Shift) selectedObject;

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import tt.richCabman.R;
+import tt.richCabman.interfaces.RecyclerViewClickListener;
 import tt.richCabman.model.TypeOfPayment;
 import tt.richCabman.model.Order;
 /**
@@ -20,7 +21,7 @@ import tt.richCabman.model.Order;
  */
 public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<ViewHolder> {
     private ArrayList<Order> orders;
-    private Listener listener;
+    private RecyclerViewClickListener listener;
 
     public RecyclerViewOrderAdapter(ArrayList<Order> orders) {
         this.orders = orders;
@@ -70,6 +71,16 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<ViewHolder> {
                 }
             }
         });
+        viewStub.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                //в случае длинного тапа на основном поле строки делаем то же, что и при клике на многоточии
+                if (listener != null) {
+                    listener.onClickMore(orders.get(holder.getAdapterPosition()), holder.getAdapterPosition());
+                }
+                return false;
+            }
+        });
 
         ImageView moreIcon = (ImageView) cardView.findViewById(R.id.moreIcon);
         moreIcon.setOnClickListener(new View.OnClickListener() {
@@ -103,12 +114,7 @@ public class RecyclerViewOrderAdapter extends RecyclerView.Adapter<ViewHolder> {
         notifyItemRemoved(positionInRVList);
     }
 
-    public void setListener(Listener listener){
+    public void setListener(RecyclerViewClickListener listener){
         this.listener = listener;
-    }
-
-    public interface Listener {
-        void onClick(Object selectedObject);
-        void onClickMore(Object selectedObject, int positionInRVList);
     }
 }
