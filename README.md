@@ -1,0 +1,2 @@
+# RichTaxist
+Accounting app that accumulates data on orders, which a cabman (so far not rich) executed. It calculates totals of shift and salary in desired time range. Main features: adoptive interface built of fragments and nested fragments, data storage in SQLite, lists based on RecyclerView & CardView, AsyncExecutor in bind service class for heavy tasks, user accounts system, SharedPreferences and cloud storage via parse.com, accounting can be held with several parks and billing systems if needed, multilingual interface, GPS tags for orders and geo track of shift.
